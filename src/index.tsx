@@ -11,10 +11,13 @@ type Input = {
 
 export function render(id: string, state: Input) {
   const element = document.getElementById(id)!;
-  return ReactDOM.render(
+  ReactDOM.render(
     <State.Provider state={defaults(element, state)}><GanttChart /></State.Provider>,
     element
   );
+  return {
+    get: State.get
+  };
 }
 
 const defaults = (element: HTMLElement, state: Input): State.State => {

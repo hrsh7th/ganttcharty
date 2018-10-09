@@ -30,3 +30,4 @@ export const handlers = {
     Action.Task.deleteSelectedTask();
   }
 };
+

@@ -16,6 +16,7 @@ export const {
   Provider,
   Consumer,
   update,
-  select
+  select,
+  get
 } = define<State>();
 

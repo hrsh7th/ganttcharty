@@ -7,24 +7,18 @@ import * as State from '../../state';
 import Header from './Header/Header';
 import Task from './Task/Task';
 
-injectGlobal`
-  * {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-  }
-`;
-
 const Consumer = State.select(state => state);
 
 export default class extends React.Component {
+
+  private chart  = React.createRef<HTMLDivElement>();
 
   public render() {
     return (
       <HotKeys keyMap={keyMap} handlers={handlers}>
         <Consumer>
           {state => (
-              <GanttChart>
+              <GanttChart innerRef={this.chart}>
                 <ScrollArea>
                   <HeaderList {...state.option}>
                     {State.Task.getTree(state.tasks).map(node => (
@@ -56,10 +50,20 @@ export default class extends React.Component {
 
   private onWheel = (e: React.WheelEvent<HTMLElement>) => {
     e.preventDefault();
-    const diff = (24 * 60 * 60 * 1000) * (e.deltaX / 50);
-    Action.Option.updateBaseTime(diff);
+    const diffX = (24 * 60 * 60 * 1000) * (e.deltaX / 50);
+    Action.Option.updateBaseTime(diffX);
+    const diffY = e.deltaY;
+    this.chart.current && (this.chart.current.scrollTop += diffY);
   };
 }
+
+injectGlobal`
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+`;
 
 const GanttChart = styled.div`
   width: 100%;
@@ -101,3 +105,4 @@ const TaskList = styled.div<State.Option.Option>`
     #fff ${props => props.columnWidth * 2}px
   );
 `;
+
