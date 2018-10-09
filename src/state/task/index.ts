@@ -58,7 +58,7 @@ export const x = (option: State.Option.Option, task: Task) => {
   const baseTime = option.baseTime;
   return Math.floor((
     task.startedAt.getTime() - baseTime.getTime()
-  ) / State.Option.scaleTime(option.scale)) * option.columnWidth;
+  ) / State.Option.scaleTime(option.scale) * option.columnWidth);
 };
 
 /**

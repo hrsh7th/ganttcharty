@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import ScrollIntoView from 'react-scroll-into-view-if-needed';
 import enhanceWithClickOutside from 'react-click-outside';
 import * as Action from '../../../action';
 import * as State from '../../../state';
@@ -16,9 +17,11 @@ export default enhanceWithClickOutside(
     public render() {
       return (
         <Header {...this.props}>
-          <HeaderNode {...this.props} onClick={this.onClick}>
-            {this.props.node.task.name}
-          </HeaderNode>
+          <ScrollIntoView active={this.props.selectedTaskId === this.props.node.task.id}>
+            <HeaderNode {...this.props} onClick={this.onClick}>
+              {this.props.node.task.name}
+            </HeaderNode>
+          </ScrollIntoView>
 
           {this.props.node.children.length && !this.props.node.task.collapsed ? (
             <HeaderChildren {...this.props}>

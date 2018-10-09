@@ -55,8 +55,9 @@ export default class extends React.Component {
   }
 
   private onWheel = (e: React.WheelEvent<HTMLElement>) => {
+    e.preventDefault();
     const diff = (24 * 60 * 60 * 1000) * (e.deltaX / 50);
-    Action.Option.updateBasestate(diff);
+    Action.Option.updateBaseTime(diff);
   };
 }
 
@@ -65,6 +66,7 @@ const GanttChart = styled.div`
   height: 100%;
   overflow-y: scroll;
   box-sizing: border-box;
+  border: 1px solid #dfdfdf;
 `;
 
 const ScrollArea = styled.div`
@@ -99,4 +101,3 @@ const TaskList = styled.div<State.Option.Option>`
     #fff ${props => props.columnWidth * 2}px
   );
 `;
-

@@ -5,18 +5,23 @@ const DAY = 24 * 60 * 60 * 1000;
 render('app', {
   option: {},
   tasks: [
-    task(1, 'ParentTask1', ''),
-    task(2, 'ChildTask1', '', 1),
-    task(3, 'ChildTask2', '', 1),
-    task(4, 'ParentTask2', ''),
-    task(5, 'ChildTask1', '', 4),
-    task(6, 'ChildTask1', '', 4),
-    task(7, 'ChildTask1', '', 4),
-    task(8, 'ChildTask1', '', 4),
-    task(9, 'ChildTask1', '', 4),
-    task(10, 'ChildTask1', '', 4),
-    task(11, 'ChildTask1', '', 4),
-    task(12, 'ChildTask1', '', 4)
+    task( 1, 'ParentTask1', ''),
+    task( 2, 'ChildTask1', '', 1),
+    task( 3, 'ChildTask2', '', 1),
+    task( 4, 'ChildTask3', '', 1),
+    task( 5, 'ChildTask4', '', 1),
+    task( 6, 'ChildTask5', '', 1),
+    task( 7, 'ChildTask6', '', 1),
+    task( 8, 'ChildTask7', '', 1),
+    task( 9, 'ParentTask2', ''),
+    task(10, 'ChildTask1', '', 9),
+    task(11, 'ChildTask1', '', 9),
+    task(12, 'ChildTask1', '', 9),
+    task(13, 'ChildTask1', '', 9),
+    task(14, 'ChildTask1', '', 9),
+    task(15, 'ChildTask1', '', 9),
+    task(16, 'ChildTask1', '', 9),
+    task(17, 'ChildTask1', '', 9)
   ]
 });
 

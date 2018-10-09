@@ -17,10 +17,10 @@ export const handlers = {
     Action.Task.selectNextTask();
   },
   'left': () => {
-    Action.Option.updateBasestate(24 * 60 * 60 * 1000);
+    Action.Option.updateBaseTime(24 * 60 * 60 * 1000);
   },
   'right': () => {
-    Action.Option.updateBasestate(-24 * 60 * 60 * 1000);
+    Action.Option.updateBaseTime(-24 * 60 * 60 * 1000);
   },
   'add': (event?: KeyboardEvent) => {
     event!.preventDefault();
@@ -30,4 +30,3 @@ export const handlers = {
     Action.Task.deleteSelectedTask();
   }
 };
-
