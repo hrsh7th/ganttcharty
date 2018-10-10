@@ -20,16 +20,16 @@ export default class Draggable extends React.Component<Props, State> {
   public state: State = {};
 
   public render() {
-    const children = React.cloneElement(React.Children.only(this.props.children), {
-      ...this.props,
-      onMouseDown: this.onMouseDown
-    });
+    const { children, ...props } = this.props;
     return (
       <>
-        {this.state.isDragging && this.props.preview ? (
-          <Preview x={this.state.x!} y={this.state.y!} preview={this.props.preview!} />
+        {this.state.isDragging && props.preview ? (
+          <Preview x={this.state.x!} y={this.state.y!} preview={props.preview!} />
         ) : null}
-        {children}
+        {React.cloneElement(React.Children.only(children), {
+          ...props,
+          onMouseDown: this.onMouseDown
+        })}
       </>
     );
   }

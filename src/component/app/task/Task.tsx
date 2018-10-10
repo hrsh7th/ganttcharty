@@ -111,54 +111,65 @@ export default class Node extends React.Component<Props, State> {
 
 }
 
+const BAR_MARGIN = 5;
+
 const Task = styled.div<Props>`
   height: ${props => props.height}px;
-  display: flex;
-  align-items: center;
+  padding: ${BAR_MARGIN}px 0;
 `;
 
-const BAR_MARGIN = 3;
 const TaskLine = styled.div<Props>`
   position: relative;
   padding: 0 4px;
-  height: ${props => props.height - (BAR_MARGIN * 2)}px;
+  height: 100%;
   line-height: ${props => props.height - (BAR_MARGIN * 2)}px;
-  font-size: 10px;
+  font-size: 8px;
   border-radius: 3px;
   background: ${props => props.selectedTaskId === props.node.task.id ? '#484' : '#448'};
-  color: #fff;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+
+  :hover {
+    ${() => HandleNext}, ${() => HandlePrev} {
+      display: block;
+    }
+  }
 `;
 
 const TaskLabel = styled.div`
   pointer-events: none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  color: #fff;
 `;
 
-const HandleNext = styled.div`
+const Handle = styled.div<{
+  content: string;
+  x: string;
+  left: string;
+}>`
+  display: none;
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
-  right: 0;
+  transform: translate(${props => props.x}, -50%);
+  left: ${props => props.left};
   z-index: 1;
-  pointer: cursor;
-
+  cursor: pointer;
   ::before {
-    content: '>>';
+    content: '${props => props.content}';
+    color: #000;
   }
 `;
 
-const HandlePrev = styled.div`
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  left: 0;
-  z-index: 1;
-  pointer: cursor;
+const HandleNext = Handle.extend.attrs({
+  content: '>>',
+  x: '0',
+  left: '100%'
+})``;
 
-  ::before {
-    content: '<<';
-  }
-`;
+const HandlePrev = Handle.extend.attrs({
+  content: '<<',
+  x: '-100%',
+  left: '0%'
+})``;
+

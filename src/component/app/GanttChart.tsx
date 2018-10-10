@@ -10,7 +10,7 @@ const Consumer = State.select(state => state);
 
 export default class extends React.Component {
 
-  private chart  = React.createRef<HTMLDivElement>();
+  private chart = React.createRef<HTMLDivElement>();
 
   public render() {
     return (
@@ -81,13 +81,14 @@ const HeaderArea = styled.div<State.Option.Option>`
   width: ${props => props.headerWidth}px;
   min-height: 100%;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-  z-index: 2;
+  overflow-x: scroll;
+  z-index: 3;
   background-image: repeating-linear-gradient(
     180deg,
-    #f8f8f8,
-    #f8f8f8 ${props => props.rowHeight}px,
-    #fff ${props => props.rowHeight}px,
-    #fff ${props => props.rowHeight * 2}px
+    transparent 0px,
+    transparent ${props => props.rowHeight * 1 - 1}px,
+    #f0f0f0 ${props => props.rowHeight * 1 - 1}px,
+    #f0f0f0 ${props => props.rowHeight * 1}px
   );
 `;
 
@@ -115,12 +116,17 @@ const TaskListBackground = styled.div<State.Option.Option>`
   bottom: 0;
   z-index: 1;
   background-image: repeating-linear-gradient(
+    180deg,
+    transparent 0px,
+    transparent ${props => props.rowHeight * 1 - 1}px,
+    #f0f0f0 ${props => props.rowHeight * 1 - 1}px,
+    #f0f0f0 ${props => props.rowHeight * 1}px
+  ), repeating-linear-gradient(
     90deg,
-    #fff 0px,
-    #fff 0px,
     #f8f8f8 0px,
     #f8f8f8 ${props => props.columnWidth * 1}px,
-    #fff ${props => props.columnWidth * 1}px,
-    #fff ${props => props.columnWidth * 2}px
+    transparent ${props => props.columnWidth * 1}px,
+    transparent ${props => props.columnWidth * 2}px
   );
 `;
+

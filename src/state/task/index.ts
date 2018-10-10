@@ -177,7 +177,11 @@ export const getNext = (tasks: Task[], taskId: TaskId): Task | null => {
   return null;
 };
 
-export const defaults = (tasks: Task[]) => {
-  return tasks.sort((a, b) => a.startedAt.getTime() - b.startedAt.getTime());
+export const defaults = (option: Partial<State.Option.Option>, tasks: Task[]) => {
+  return tasks.sort((a, b) => a.startedAt.getTime() - b.startedAt.getTime()).map(task => {
+    task.startedAt = normalizeDate(option.scale!, task.startedAt);
+    task.finishedAt = normalizeDate(option.scale!, task.finishedAt);
+    return task;
+  });
 };
 

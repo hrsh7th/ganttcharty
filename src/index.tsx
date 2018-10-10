@@ -23,7 +23,7 @@ export function render(id: string, state: Input) {
 const defaults = (element: HTMLElement, state: Input): State.State => {
   state.option = State.Option.defaults(state.option || {});
   state.ui = State.UI.defaults(element, state.option, state.ui || {});
-  state.tasks = State.Task.defaults(state.tasks || []);
+  state.tasks = State.Task.defaults(state.option, state.tasks || []);
   return state as State.State;
 };
 
