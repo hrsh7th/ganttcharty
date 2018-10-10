@@ -9,7 +9,6 @@ export type State = {
   ui: UI.UI;
   option: Option.Option;
   tasks: Task.Task[];
-  selectedTaskId?: Task.TaskId;
 };
 
 export const {

@@ -1,4 +1,5 @@
 import * as Task from './task';
-import * as Option from './option';
-export { Task, Option };
+import * as UI from './ui';
+import * as Hotkey from './hotkey';
+export { Task, UI, Hotkey };
 

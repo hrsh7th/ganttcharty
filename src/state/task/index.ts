@@ -45,29 +45,36 @@ export const getTree = memoize((tasks: Task[]) => {
 /**
  * create view width.
  */
-export const width = (option: State.Option.Option, task: Task) => {
-  return Math.floor(
-    (task.finishedAt.getTime() - task.startedAt.getTime()) / State.Option.scaleTime(option.scale)
-  ) * option.columnWidth
+export const width = (
+  scale: State.Option.Scale,
+  columnWidth: number,
+  startedAt: Date,
+  finishedAt: Date
+) => {
+  return (finishedAt.getTime() - startedAt.getTime()) / State.Option.scaleTime(scale) * columnWidth;
 };
 
 /**
  * create view x.
  */
-export const x = (option: State.Option.Option, task: Task) => {
-  const baseTime = option.baseTime;
+export const x = (
+  scale: State.Option.Scale,
+  baseTime: Date,
+  columnWidth: number,
+  startedAt: Date
+) => {
   return Math.floor((
-    task.startedAt.getTime() - baseTime.getTime()
-  ) / State.Option.scaleTime(option.scale) * option.columnWidth);
+    startedAt.getTime() - baseTime.getTime()
+  ) / State.Option.scaleTime(scale) * columnWidth);
 };
 
 /**
  * normalize date.
  */
-export const normalizeDate = (state: State.State, date: Date) => {
+export const normalizeDate = (scale: State.Option.Scale, date: Date) => {
   const time = date.getTime();
   return new Date(
-    time - time % State.Option.scaleTime(state.option.scale)
+    time - time % State.Option.scaleTime(scale)
   );
 };
 

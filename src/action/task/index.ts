@@ -1,37 +1,41 @@
 import * as uuid from 'uuid';
 import * as State from '../../state';
 
-export const selectTask = (taskId: State.Task.TaskId | undefined) => {
+export const updateTask = (taskId: State.Task.TaskId, attrs: Partial<State.Task.Task>) => {
   State.update(state => {
-    state.selectedTaskId = taskId;
-  });
+    const task = State.Task.getTask(state.tasks, taskId);
+    Object.keys(attrs).forEach(key => {
+      // @ts-ignore
+      task[key] = attrs[key];
+    });
+  })
 };
 
 export const selectNextTask = () => {
   State.update(state => {
-    if (!state.selectedTaskId) return;
-    const next = State.Task.getNext(state.tasks, state.selectedTaskId);
+    if (!state.ui.selectedTaskId) return;
+    const next = State.Task.getNext(state.tasks, state.ui.selectedTaskId);
     if (next) {
-      state.selectedTaskId = next.id;
+      state.ui.selectedTaskId = next.id;
     }
   });
 };
 
 export const selectPrevTask = () => {
   State.update(state => {
-    if (!state.selectedTaskId) return;
-    const prev = State.Task.getPrev(state.tasks, state.selectedTaskId);
+    if (!state.ui.selectedTaskId) return;
+    const prev = State.Task.getPrev(state.tasks, state.ui.selectedTaskId);
     if (prev) {
-      state.selectedTaskId = prev.id;
+      state.ui.selectedTaskId = prev.id;
     }
   });
 };
 
 export const expand = () => {
   State.update(state => {
-    if (!state.selectedTaskId) return;
-    const selected = State.Task.getTask(state.tasks, state.selectedTaskId)!;
-    if (selected) {
+    if (!state.ui.selectedTaskId) return;
+    const selected = State.Task.getTask(state.tasks, state.ui.selectedTaskId)!;
+    if (selected && selected.collapsed) {
       selected.collapsed = false;
     }
   });
@@ -39,9 +43,9 @@ export const expand = () => {
 
 export const collapse = () => {
   State.update(state => {
-    if (!state.selectedTaskId) return;
-    const selected = State.Task.getTask(state.tasks, state.selectedTaskId)!;
-    if (selected) {
+    if (!state.ui.selectedTaskId) return;
+    const selected = State.Task.getTask(state.tasks, state.ui.selectedTaskId)!;
+    if (selected && !selected.collapsed) {
       selected.collapsed = true;
     }
   });
@@ -49,10 +53,10 @@ export const collapse = () => {
 
 export const add = () => {
   State.update(state => {
-    if (!state.selectedTaskId) return;
+    if (!state.ui.selectedTaskId) return;
 
     // create newTask and extends selected task.
-    const selected = State.Task.getTask(state.tasks, state.selectedTaskId)!;
+    const selected = State.Task.getTask(state.tasks, state.ui.selectedTaskId)!;
     const newTask: State.Task.Task = {
       id: uuid.v4(),
       name: 'new task',
@@ -70,20 +74,20 @@ export const add = () => {
     );
 
     // select newTask.
-    state.selectedTaskId = newTask.id;
+    state.ui.selectedTaskId = newTask.id;
   });
 };
 
 export const deleteSelectedTask = () => {
   State.update(state => {
-    if (!state.selectedTaskId) return;
+    if (!state.ui.selectedTaskId) return;
 
     // memory target to move.
-    const prev = State.Task.getPrev(state.tasks, state.selectedTaskId);
-    const next = State.Task.getNext(state.tasks, state.selectedTaskId);
+    const prev = State.Task.getPrev(state.tasks, state.ui.selectedTaskId);
+    const next = State.Task.getNext(state.tasks, state.ui.selectedTaskId);
 
     // remove selected task.
-    const target = State.Task.getTask(state.tasks, state.selectedTaskId)!;
+    const target = State.Task.getTask(state.tasks, state.ui.selectedTaskId)!;
     state.tasks.splice(
       state.tasks.indexOf(target),
       1
@@ -91,14 +95,14 @@ export const deleteSelectedTask = () => {
 
     // move to target.
     if (next) {
-      state.selectedTaskId = next.id;
+      state.ui.selectedTaskId = next.id;
     } else if (prev) {
-      state.selectedTaskId = prev.id;
+      state.ui.selectedTaskId = prev.id;
     }
 
     // clear selecting if remove last task.
     if (state.tasks.length === 0) {
-      state.selectedTaskId = undefined;
+      state.ui.selectedTaskId = undefined;
     }
   });
 };

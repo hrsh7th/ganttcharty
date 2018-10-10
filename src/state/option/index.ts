@@ -9,6 +9,14 @@ export type Option = {
 
 export type Scale = 'day' | 'week';
 
+/**
+ * create scale time.
+ */
+export const scaleTime = (scale: Scale) => ({
+  day: 24 * 60 * 60 * 1000,
+  week: 7 * 24 * 60 * 60 * 1000
+}[scale]);
+
 export const defaults = (option: Partial<Option> = {}) => {
   option.headerWidth = 180;
   option.rowHeight = 24;
@@ -18,8 +26,3 @@ export const defaults = (option: Partial<Option> = {}) => {
   option.baseTime = new Date(Date.now() - scaleTime(option.scale) * 7);
   return option as Option;
 };
-
-export const scaleTime = (scale: Scale) => ({
-  day: 24 * 60 * 60 * 1000,
-  week: 7 * 24 * 60 * 60 * 1000
-}[scale]);

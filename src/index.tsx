@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import GanttChart from './component/GanttChart/GanttChart'
+import GanttChart from './component/app/GanttChart'
 import * as State from './state';
 
 type Input = {
@@ -21,8 +21,8 @@ export function render(id: string, state: Input) {
 }
 
 const defaults = (element: HTMLElement, state: Input): State.State => {
-  state.ui = State.UI.defaults(element, state.ui || {});
   state.option = State.Option.defaults(state.option || {});
+  state.ui = State.UI.defaults(element, state.option, state.ui || {});
   state.tasks = State.Task.defaults(state.tasks || []);
   return state as State.State;
 };

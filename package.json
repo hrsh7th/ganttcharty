@@ -36,7 +36,7 @@
     "react-dom": "^16.5.2",
     "react-hotkeys": "^1.1.4",
     "react-scroll-into-view-if-needed": "^2.1.6",
-    "srimmer": "0.1.0",
+    "srimmer": "0.2.0",
     "styled-components": "^3.4.9",
     "tslib": "^1.9.3",
     "uuid": "^3.3.2"

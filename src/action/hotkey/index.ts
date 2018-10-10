@@ -1,4 +1,4 @@
-import * as Action from './';
+import * as Action from '../';
 
 export const keyMap = {
   'up': ['k', 'up'],
@@ -17,10 +17,10 @@ export const handlers = {
     Action.Task.selectNextTask();
   },
   'left': () => {
-    Action.Option.updateBaseTime(24 * 60 * 60 * 1000);
+    Action.Task.collapse();
   },
   'right': () => {
-    Action.Option.updateBaseTime(-24 * 60 * 60 * 1000);
+    Action.Task.expand();
   },
   'add': (event?: KeyboardEvent) => {
     event!.preventDefault();

@@ -13,15 +13,20 @@ render('app', {
     task( 6, 'ChildTask5', '', 1),
     task( 7, 'ChildTask6', '', 1),
     task( 8, 'ChildTask7', '', 1),
-    task( 9, 'ParentTask2', ''),
-    task(10, 'ChildTask1', '', 9),
-    task(11, 'ChildTask1', '', 9),
-    task(12, 'ChildTask1', '', 9),
-    task(13, 'ChildTask1', '', 9),
-    task(14, 'ChildTask1', '', 9),
-    task(15, 'ChildTask1', '', 9),
-    task(16, 'ChildTask1', '', 9),
-    task(17, 'ChildTask1', '', 9)
+    task( 9, 'ChildTask8', '', 1),
+    task(10, 'ChildTask9', '', 1),
+    task(11, 'ChildTask10', '', 1),
+    task(12, 'ChildTask11', '', 1),
+    task(13, 'ChildTask12', '', 1),
+    task(14, 'ParentTask2', ''),
+    task(15, 'ChildTask1', '', 14),
+    task(16, 'ChildTask1', '', 14),
+    task(17, 'ChildTask1', '', 14),
+    task(18, 'ChildTask1', '', 14),
+    task(19, 'ChildTask1', '', 14),
+    task(20, 'ChildTask1', '', 14),
+    task(21, 'ChildTask1', '', 14),
+    task(22, 'ChildTask1', '', 14)
   ]
 });
 
