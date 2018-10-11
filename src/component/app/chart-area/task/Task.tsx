@@ -37,11 +37,10 @@ export default class Node extends React.Component<Props, State> {
       <>
         <Task {...this.props} style={{
           transform: `translateX(${State.Task.x(this.props.scale, this.props.baseTime, this.props.columnWidth, startedAt)}px)`,
+          width: `${State.Task.width(this.props.scale, this.props.columnWidth, startedAt, finishedAt)}px`
         }}>
           {/* This task */}
-          <TaskLine title={this.props.node.task.name} {...this.props} style={{
-             width: `${State.Task.width(this.props.scale, this.props.columnWidth, startedAt, finishedAt)}px`
-          }}>
+          <TaskLine title={this.props.node.task.name} {...this.props}>
             <Draggable onDragStart={this.onDragStart} onDragEnd={this.onDragEnd} onDragging={this.onDragPrev}>
               <HandlePrev />
             </Draggable>
@@ -121,6 +120,7 @@ const Task = styled.div<Props>`
 const TaskLine = styled.div<Props>`
   position: relative;
   padding: 0 4px;
+  width: 100%;
   height: 100%;
   line-height: ${props => props.height - (BAR_MARGIN * 2)}px;
   font-size: 8px;
