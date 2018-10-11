@@ -24,6 +24,23 @@ export const x = (
   ) / State.Option.scaleTime(scale) * columnWidth);
 };
 
+/**
+ * create view rest width.
+ */
+export const rest = (
+  time: Date,
+  scale: State.Option.Scale,
+  columnWidth: number,
+  multiple: number = 1
+) => {
+  const scaleTime = State.Option.scaleTime(scale) * multiple;
+  const width = columnWidth * multiple;
+  return Math.floor(time.getTime() % scaleTime / scaleTime * width);
+};
+
+/**
+ * create days axis.
+ */
 export const daysAxis = (
   currentTime: Date,
   scale: State.Option.Scale,

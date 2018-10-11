@@ -47,6 +47,7 @@ const TimeAxis = styled.div<State.Select<typeof Consumer>>`
 `;
 
 const Weeks = styled.div<State.Select<typeof Consumer>>`
+  will-change: transform;
   position: absolute;
   top: 0;
   left: 0;
