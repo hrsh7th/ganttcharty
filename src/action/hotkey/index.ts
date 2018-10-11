@@ -1,4 +1,5 @@
 import * as Action from '../';
+import * as State from '../../state';
 
 export const keyMap = {
   'up': ['k', 'up'],
@@ -17,10 +18,12 @@ export const handlers = {
     Action.Task.selectNextTask();
   },
   'left': () => {
-    Action.Task.collapse();
+    const state = State.get()!;
+    Action.Task.moveSelectedTask(-State.Option.scaleTime(state.option.scale));
   },
   'right': () => {
-    Action.Task.expand();
+    const state = State.get()!;
+    Action.Task.moveSelectedTask(State.Option.scaleTime(state.option.scale));
   },
   'add': (event?: KeyboardEvent) => {
     event!.preventDefault();

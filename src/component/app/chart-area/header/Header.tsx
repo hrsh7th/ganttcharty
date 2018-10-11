@@ -54,5 +54,8 @@ const Header = styled.div<Props>`
 `;
 
 const HeaderChildren = styled.div<Props>`
-  margin-left: ${props => props.indentWidth}px;
+  & ${Header} {
+    padding-left: ${props => props.indentWidth}px;
+  }
 `;
+

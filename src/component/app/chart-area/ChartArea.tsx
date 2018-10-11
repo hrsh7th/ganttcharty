@@ -53,6 +53,7 @@ export default ({ innerRef, onWheel }: Props) => (
 const ChartArea = styled.div<State.Select<typeof Consumer>>`
   width: 100%;
   height: ${props => props.viewportHeight - props.fixedAreaHeight}px;
+  overflow: hidden;
 `;
 
 const ChartBody = styled.div<State.Select<typeof Consumer>>`
@@ -87,9 +88,9 @@ const TaskListBackground = styled.div<State.Select<typeof Consumer>>`
   will-change: transform;
   position: absolute;
   top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  left: -${props => props.columnWidth * 2}px;
+  right: -${props => props.columnWidth * 2}px;
+  bottom: 0;
   background-image: repeating-linear-gradient(
     180deg,
     transparent 0px,
@@ -107,8 +108,7 @@ const TaskListBackground = styled.div<State.Select<typeof Consumer>>`
 
 const TaskListSeekArea = styled.div<State.Select<typeof Consumer>>`
   will-change: transform;
-  width:100%;
-  height: 100%;
+  width: 100%;
 `;
 
 const Now = styled.div<State.Select<typeof Consumer>>`

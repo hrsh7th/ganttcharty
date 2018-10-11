@@ -11,6 +11,18 @@ export type UI = {
 };
 
 /**
+ * create view width.
+ */
+export const width = (
+  startTime: Date,
+  finishTime: Date,
+  scale: State.Option.Scale,
+  columnWidth: number,
+) => {
+  return (finishTime.getTime() - startTime.getTime()) / State.Option.scaleTime(scale) * columnWidth;
+};
+
+/**
  * create view x.
  */
 export const x = (
