@@ -1,8 +1,11 @@
+import * as State from '../src/state';
 import { render } from '../src/index';
 
 const DAY = 24 * 60 * 60 * 1000;
 
-render('app', {
+(window as any).State = State;
+
+(window as any).chart = render('app', {
   option: {},
   tasks: [
     task( 1, 'ParentTask1', ''),

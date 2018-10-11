@@ -82,16 +82,19 @@ export const deleteSelectedTask = () => {
   State.update(state => {
     if (!state.ui.selectedTaskId) return;
 
+    // remove selected task.
+    const target = State.Task.getTask(state.tasks, state.ui.selectedTaskId)!;
+
+    // remove children.
+    const children = State.Task.getChildren(state.tasks, target.id);
+    children.forEach(child => state.tasks.splice(state.tasks.indexOf(child), 1));
+
     // memory target to move.
     const prev = State.Task.getPrev(state.tasks, state.ui.selectedTaskId);
     const next = State.Task.getNext(state.tasks, state.ui.selectedTaskId);
 
-    // remove selected task.
-    const target = State.Task.getTask(state.tasks, state.ui.selectedTaskId)!;
-    state.tasks.splice(
-      state.tasks.indexOf(target),
-      1
-    );
+    // remove target task.
+    state.tasks.splice(state.tasks.indexOf(target), 1);
 
     // move to target.
     if (next) {

@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Draggable } from '../../ui-kit/dnd'
-import * as Action from '../../../action';
-import * as State from '../../../state';
+import { Draggable } from '../../../ui-kit/dnd'
+import * as Action from '../../../../action';
+import * as State from '../../../../state';
 
 export type Props = {
   node: State.Task.TaskTreeNode;

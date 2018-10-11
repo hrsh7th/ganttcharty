@@ -14,11 +14,13 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/date-fns": "^2.6.0",
     "@types/jest": "^23.3.2",
     "@types/memoize-one": "^3.1.1",
     "@types/react": "^16.4.15",
     "@types/react-click-outside": "^3.0.2",
     "@types/react-dom": "^16.0.8",
+    "@types/react-resize-detector": "^3.1.0",
     "@types/styled-components": "^3.0.1",
     "@types/uuid": "^3.4.4",
     "jest": "^23.6.0",
@@ -30,13 +32,15 @@
     "webpack-dev-server": "^3.1.9"
   },
   "dependencies": {
+    "date-fns": "^1.29.0",
     "memoize-one": "^4.0.2",
     "react": "^16.5.2",
     "react-click-outside": "^3.0.1",
     "react-dom": "^16.5.2",
     "react-hotkeys": "^1.1.4",
+    "react-resize-detector": "^3.1.3",
     "react-scroll-into-view-if-needed": "^2.1.6",
-    "srimmer": "0.2.0",
+    "srimmer": "0.3.0",
     "styled-components": "^3.4.9",
     "tslib": "^1.9.3",
     "uuid": "^3.3.2"

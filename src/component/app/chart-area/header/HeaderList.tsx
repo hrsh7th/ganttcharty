@@ -1,5 +1,5 @@
 import React from 'react';
-import * as State from '../../../state';
+import * as State from '../../../../state';
 import Header from './Header';
 
 const Consumer = State.select(state => {
