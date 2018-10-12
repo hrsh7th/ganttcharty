@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import format from 'date-fns/format';
 import ScrollIntoView from 'react-scroll-into-view-if-needed';
 import enhanceWithClickOutside from 'react-click-outside';
 import * as Action from '../../../../action';
@@ -21,7 +22,9 @@ export default enhanceWithClickOutside(
         <>
           <ScrollIntoView active={this.props.selectedTaskId === this.props.node.task.id}>
             <Header {...this.props} onClick={this.onClick}>
-              {node.task.name}
+              <Column>{node.task.name}</Column>
+              <Column>{format(node.task.startedAt, 'YYYY/MM/DD')}</Column>
+              <Column>{format(node.task.finishedAt, 'YYYY/MM/DD')}</Column>
             </Header>
           </ScrollIntoView>
 
@@ -45,12 +48,23 @@ export default enhanceWithClickOutside(
 );
 
 const Header = styled.div<Props>`
+  display: flex;
   padding: 0 8px;
   height: ${props => props.height}px;
   line-height: ${props => props.height}px;
   font-size: 10px;
   white-space: nowrap;
   outline: ${props => props.selectedTaskId === props.node.task.id ? 'auto' : 'none'};
+`;
+
+const Column = styled.div`
+  overflow: hidden;
+  min-width: 80px;
+  white-space: nowrap;
+
+  & + & {
+    border-left: 1px solid #888;
+  }
 `;
 
 const HeaderChildren = styled.div<Props>`

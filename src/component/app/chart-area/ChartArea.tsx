@@ -26,14 +26,14 @@ export type Props = {
 export default ({ innerRef, onWheel }: Props) => (
   <Consumer>
     {state => (
-      <ChartArea {...state} innerRef={innerRef} onWheel={onWheel}>
+      <ChartArea {...state} innerRef={innerRef}>
         <ChartBody {...state}>
           <HeaderArea {...state}>
             <HeaderList />
           </HeaderArea>
-          <TaskArea {...state}>
+          <TaskArea {...state} onWheel={onWheel}>
             <TaskListBackground {...state} style={{
-              transform: `translateX(${-State.UI.rest(state.currentTime, state.scale, state.columnWidth, 2)}px)`
+              transform: `translateX(${-State.UI.rest(new Date(state.currentTime.getTime() - state.baseTime.getTime()), state.scale, state.columnWidth, 2)}px)`
             }} />
             <TaskListSeekArea {...state} style={{
               transform: `translateX(${-State.UI.x(state.currentTime, state.baseTime, state.scale, state.columnWidth)}px)`
@@ -65,9 +65,9 @@ const ChartBody = styled.div<State.Select<typeof Consumer>>`
 const HeaderArea = styled.div<State.Select<typeof Consumer>>`
   width: ${props => props.headerWidth}px;
   min-height: 100%;
-  overflow: hidden;
+  overflow-x: scroll;
+  overflow-y: hidden;
   z-index: 2;
-  border-right: 1px solid #888;
   background-image: repeating-linear-gradient(
     180deg,
     #fff 0px,
@@ -112,10 +112,9 @@ const TaskListSeekArea = styled.div<State.Select<typeof Consumer>>`
 `;
 
 const Now = styled.div<State.Select<typeof Consumer>>`
-  will-change: transform;
   position: absolute;
   top: 0;
-  left: 0;
+  left: ${props => props.columnWidth / 2}px;
   height: 100%;
   border-left: 2px dashed #888;
 `;

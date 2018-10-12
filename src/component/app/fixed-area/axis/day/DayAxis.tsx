@@ -9,7 +9,7 @@ const Consumer = State.select(state => ({
   columnWidth: state.option.columnWidth,
   dayLabel: state.option.dayLabel,
   viewportWidth: state.ui.viewportWidth,
-  currentTimestamp:  startOfWeek(state.ui.currentTime).getTime()
+  currentTimestamp:  startOfWeek(state.ui.currentTime, { weekStartsOn: 1 }).getTime()
 }));
 
 export default () => (
@@ -33,10 +33,12 @@ const days = (state: State.Select<typeof Consumer>) => {
 };
 
 const Week = styled.div<State.Select<typeof Consumer>>`
+  width: ${props => props.columnWidth * 7}px;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
+
   & + & {
     border-left: 1px solid #ddd;
   }

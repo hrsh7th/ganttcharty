@@ -14,7 +14,7 @@ export default () => (
   <Consumer>
     {state => (
       <Axis {...state} style={{
-        transform: `translateX(${State.UI.x(startOfWeek(state.currentTime), state.currentTime, state.scale, state.columnWidth)}px)`
+        transform: `translateX(${State.UI.x(startOfWeek(state.currentTime, { weekStartsOn: 1 }), state.currentTime, state.scale, state.columnWidth)}px)`
       }}>
         <DayAxis />
       </Axis>

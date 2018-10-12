@@ -1,6 +1,5 @@
 import memoize from 'memoize-one';
 import startOfDay from 'date-fns/start_of_day';
-import * as State from '../';
 
 /**
  * task types.
@@ -42,16 +41,6 @@ export const getTree = memoize((tasks: Task[]) => {
       });
   })(tasks);
 });
-
-/**
- * normalize date.
- */
-export const normalizeDate = (scale: State.Option.Scale, date: Date) => {
-  const time = date.getTime();
-  return new Date(
-    time - time % State.Option.scaleTime(scale)
-  );
-};
 
 /**
  * get task by id.

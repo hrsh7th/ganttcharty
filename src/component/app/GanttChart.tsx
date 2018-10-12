@@ -17,13 +17,13 @@ export default class extends React.Component {
         <ResizeDetector handleWidth handleHeight onResize={this.onResize} />
         <HotKeys keyMap={Action.Hotkey.keyMap} handlers={Action.Hotkey.handlers}>
           <FixedArea />
-          <ChartArea innerRef={this.chart} onWheel={this.onChartAreaWheel} />
+          <ChartArea innerRef={this.chart} onWheel={this.onTaskAreaWheel} />
         </HotKeys>
       </>
     );
   }
 
-  private onChartAreaWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+  private onTaskAreaWheel = (e: React.WheelEvent<HTMLDivElement>) => {
     e.preventDefault();
     const state = State.get()!;
     const diffX = State.Option.scaleTime(state.option.scale) * (e.deltaX / state.option.columnWidth);
