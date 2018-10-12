@@ -1,5 +1,6 @@
 import * as Action from '../';
 import * as State from '../../state';
+import throttle from 'lodash/throttle';
 
 export const keyMap = {
   'up': ['k', 'up'],
@@ -17,14 +18,14 @@ export const handlers = {
   'down': () => {
     Action.Task.selectNextTask();
   },
-  'left': () => {
+  'left': throttle(() => {
     const state = State.get()!;
     Action.Task.moveSelectedTask(-State.Option.scaleTime(state.option.scale));
-  },
-  'right': () => {
+  }, 60),
+  'right': throttle(() => {
     const state = State.get()!;
     Action.Task.moveSelectedTask(State.Option.scaleTime(state.option.scale));
-  },
+  }, 60),
   'add': (event?: KeyboardEvent) => {
     event!.preventDefault();
     Action.Task.add();
