@@ -14,23 +14,20 @@ const Consumer = State.select(state => ({
 
 export default () => (
   <Consumer>
-    {state => days(state)}
+    {state => (
+      State.UI.dayAxis(new Date(state.currentTimestamp), state.scale, state.columnWidth, state.viewportWidth).map(week => (
+        <Week key={week.day.getTime()} {...state}>
+          <WeekLabel {...state}>{format(week.day, 'YYYY/MM/DD')}</WeekLabel>
+          <Days {...state}>
+          {week.days.map(day => (
+            <Day key={day.getTime()} title={format(day, 'YYYY/MM/DD')} {...state}>{state.dayLabel[day.getDay()]}</Day>
+          ))}
+          </Days>
+        </Week>
+      ))
+    )}
   </Consumer>
 );
-
-const days = (state: State.Select<typeof Consumer>) => {
-  const weeks = State.UI.daysAxis(new Date(state.currentTimestamp), state.scale, state.columnWidth, state.viewportWidth);
-  return weeks.map(week => (
-    <Week key={week.day.getTime()} {...state}>
-      <WeekLabel {...state}>{format(week.day, 'YYYY/MM/DD')}</WeekLabel>
-      <Days {...state}>
-        {week.days.map(day => (
-          <Day key={day.getTime()} title={format(day, 'YYYY/MM/DD')} {...state}>{state.dayLabel[day.getDay()]}</Day>
-        ))}
-      </Days>
-    </Week>
-  ));
-};
 
 const Week = styled.div<State.Select<typeof Consumer>>`
   width: ${props => props.columnWidth * 7}px;

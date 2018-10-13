@@ -2,14 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import startOfDay from 'date-fns/start_of_day';
 import * as State from '../../../state';
-import HeaderList from './header/HeaderList';
 import TaskList from './task/TaskList';
+import Axis from './axis/Axis';
 
 const Consumer = State.select(state => ({
-  fixedAreaHeight: state.option.fixedAreaHeight,
   viewportWidth: state.ui.viewportWidth,
   viewportHeight: state.ui.viewportHeight,
   headerWidth: state.option.headerWidth,
+  axisHeight: state.option.axisHeight,
   rowHeight: state.option.rowHeight,
   columnWidth: state.option.columnWidth,
   scale: state.option.scale,
@@ -26,12 +26,12 @@ export type Props = {
 export default ({ innerRef, onWheel }: Props) => (
   <Consumer>
     {state => (
-      <ChartArea {...state} innerRef={innerRef}>
-        <ChartBody {...state}>
-          <HeaderArea {...state}>
-            <HeaderList />
-          </HeaderArea>
-          <TaskArea {...state} onWheel={onWheel}>
+      <ChartArea {...state}>
+        <Box height={state.axisHeight}>
+          <Axis />
+        </Box>
+        <Box height={state.viewportHeight - state.axisHeight} innerRef={innerRef} onWheel={onWheel}>
+          <TaskListContentArea {...state}>
             <TaskListBackground {...state} style={{
               transform: `translateX(${-State.UI.rest(new Date(state.currentTime.getTime() - state.baseTime.getTime()), state.scale, state.columnWidth, 2)}px)`
             }} />
@@ -43,45 +43,29 @@ export default ({ innerRef, onWheel }: Props) => (
               }} />
               <TaskList />
             </TaskListSeekArea>
-          </TaskArea>
-        </ChartBody>
+          </TaskListContentArea>
+        </Box>
       </ChartArea>
     )}
   </Consumer>
 );
 
-const ChartArea = styled.div<State.Select<typeof Consumer>>`
-  width: 100%;
-  height: ${props => props.viewportHeight - props.fixedAreaHeight}px;
-  overflow: hidden;
-`;
-
-const ChartBody = styled.div<State.Select<typeof Consumer>>`
-  width: 100%;
-  min-height: 100%;
-  display: flex;
-`;
-
-const HeaderArea = styled.div<State.Select<typeof Consumer>>`
-  width: ${props => props.headerWidth}px;
-  min-height: 100%;
-  overflow-x: scroll;
-  overflow-y: hidden;
-  z-index: 2;
-  background-image: repeating-linear-gradient(
-    180deg,
-    #fff 0px,
-    #fff ${props => props.rowHeight - 1}px,
-    #f0f0f0 ${props => props.rowHeight - 1}px,
-    #f0f0f0 ${props => props.rowHeight}px
-  );
-`;
-
-const TaskArea = styled.div<State.Select<typeof Consumer>>`
-  position: relative;
+const ChartArea = styled.div<{ viewportWidth: number; headerWidth: number; }>`
   width: ${props => props.viewportWidth - props.headerWidth}px;
-  min-height: 100%;
+  height: 100%;
+`;
+
+const Box = styled.div<{ height: number; }>`
+  width: 100%;
+  height: ${props => props.height}px;
+  position: relative;
   overflow: hidden;
+`;
+
+const TaskListContentArea = styled.div<State.Select<typeof Consumer>>`
+  width: 100%;
+  min-height: 100%;
+  position: relative;
 `;
 
 const TaskListBackground = styled.div<State.Select<typeof Consumer>>`
@@ -109,6 +93,7 @@ const TaskListBackground = styled.div<State.Select<typeof Consumer>>`
 const TaskListSeekArea = styled.div<State.Select<typeof Consumer>>`
   will-change: transform;
   width: 100%;
+  min-height: 100%;
 `;
 
 const Now = styled.div<State.Select<typeof Consumer>>`

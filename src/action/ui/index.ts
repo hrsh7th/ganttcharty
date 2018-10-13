@@ -1,8 +1,9 @@
 import * as State from '../../state';
 
-export const updateCurrentTime = (diff: number) => {
+export const updateCurrentTime = (diffX: number) => {
   State.update(state => {
-    state.ui.currentTime = new Date(state.ui.currentTime.getTime() + diff);
+    const diffTime = State.Option.scaleTime(state.option.scale) * (diffX / state.option.columnWidth);
+    state.ui.currentTime = new Date(state.ui.currentTime.getTime() + diffTime);
   });
 };
 

@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`moveSelectedTask 1`] = `
+"Snapshot Diff:
+- First value
++ Second value
+
+@@ -18,14 +18,14 @@
+      \\"scale\\": \\"day\\",
+    },
+    \\"tasks\\": Array [
+      Object {
+        \\"description\\": \\"\\",
+-       \\"finishedAt\\": 2018-10-13T15:00:00.000Z,
++       \\"finishedAt\\": 2018-10-14T15:00:00.000Z,
+        \\"id\\": 1,
+        \\"name\\": \\"default task name\\",
+-       \\"startedAt\\": 2018-10-12T15:00:00.000Z,
++       \\"startedAt\\": 2018-10-13T15:00:00.000Z,
+      },
+      Object {
+        \\"description\\": \\"\\",
+        \\"finishedAt\\": 2018-10-13T15:00:00.000Z,
+        \\"id\\": 2,"
+`;
+
+exports[`moveSelectedTask 2`] = `
+"Snapshot Diff:
+- First value
++ Second value
+
+@@ -18,14 +18,14 @@
+      \\"scale\\": \\"day\\",
+    },
+    \\"tasks\\": Array [
+      Object {
+        \\"description\\": \\"\\",
+-       \\"finishedAt\\": 2018-10-14T15:00:00.000Z,
++       \\"finishedAt\\": 2018-10-13T15:00:00.000Z,
+        \\"id\\": 1,
+        \\"name\\": \\"default task name\\",
+-       \\"startedAt\\": 2018-10-13T15:00:00.000Z,
++       \\"startedAt\\": 2018-10-12T15:00:00.000Z,
+      },
+      Object {
+        \\"description\\": \\"\\",
+        \\"finishedAt\\": 2018-10-13T15:00:00.000Z,
+        \\"id\\": 2,"
+`;

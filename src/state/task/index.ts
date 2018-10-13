@@ -18,27 +18,35 @@ export type Task = {
 /**
  * task tree types.
  */
-export type TaskTreeNode = {
-  task: Task;
-  children: TaskTreeNode[];
+export type TaskNode = Task & {
+  parent?: Task;
+  children: TaskNode[];
+  depth: number;
 };
 
 /**
- * create task tree.
+ * create tasks.
  */
-export const getTree = memoize((tasks: Task[]) => {
+export const tasks = memoize((tasks: Task[]) => {
   return (function traverse(
     tasks: Task[],
     parentId?: TaskId,
-  ): TaskTreeNode[] {
+    depth: number = 0
+  ): TaskNode[] {
+    const parent = getTask(tasks, parentId);
     return tasks
       .filter(task => task.parentId === parentId)
-      .map(task => {
-        return {
-          task: task,
-          children: traverse(tasks, task.id)
-        };
-      });
+      .reduce((nodes, task) => {
+        const children = !task.collapsed ? traverse(tasks, task.id, depth + 1) : [];
+        return nodes
+          .concat([{
+            ...task,
+            parent,
+            children,
+            depth
+          }])
+          .concat(children);
+      }, [] as TaskNode[]);
   })(tasks);
 });
 
