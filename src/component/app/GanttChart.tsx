@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { injectGlobal } from 'styled-components';
-import { HotKeys } from 'react-hotkeys';
 import ResizeDetector from 'react-resize-detector';
+import Hotkeys from '../ui-kit/hotkeys';
 import HeaderArea from './header-area/HeaderArea';
 import ChartArea from './chart-area/ChartArea';
 import * as Action from '../../action';
@@ -15,12 +15,12 @@ export default class extends React.Component {
     return (
       <>
         <ResizeDetector handleWidth handleHeight onResize={this.onResize} />
-        <HotKeys keyMap={Action.Hotkey.keyMap} handlers={Action.Hotkey.handlers}>
+        <Hotkeys keymap={Action.Hotkey.keyMap} listeners={Action.Hotkey.handlers}>
           <GanttChart>
             <HeaderArea innerRef={this.header} onWheel={this.onHeaderAreaWheel} />
             <ChartArea innerRef={this.chart} onWheel={this.onChartAreaWheel} />
           </GanttChart>
-        </HotKeys>
+        </Hotkeys>
       </>
     );
   }
@@ -65,3 +65,4 @@ injectGlobal`
     font-size: 8px;
   }
 `;
+

@@ -26,10 +26,10 @@ export type Props = {
 export default ({ innerRef, onWheel }: Props) => (
   <Consumer>
     {state => (
-      <ChartArea {...state}>
-        <Box height={state.axisHeight}>
+      <ChartArea width={state.viewportWidth - state.headerWidth}>
+        <HeaderBox height={state.axisHeight}>
           <Axis />
-        </Box>
+        </HeaderBox>
         <Box height={state.viewportHeight - state.axisHeight} innerRef={innerRef} onWheel={onWheel}>
           <TaskListContentArea {...state}>
             <TaskListBackground {...state} style={{
@@ -50,8 +50,8 @@ export default ({ innerRef, onWheel }: Props) => (
   </Consumer>
 );
 
-const ChartArea = styled.div<{ viewportWidth: number; headerWidth: number; }>`
-  width: ${props => props.viewportWidth - props.headerWidth}px;
+const ChartArea = styled.div<{ width: number; }>`
+  width: ${props => props.width}px;
   height: 100%;
 `;
 
@@ -62,13 +62,17 @@ const Box = styled.div<{ height: number; }>`
   overflow: hidden;
 `;
 
-const TaskListContentArea = styled.div<State.Select<typeof Consumer>>`
+const HeaderBox = styled(Box)`
+  z-index: 1;
+`;
+
+const TaskListContentArea = styled.div`
   width: 100%;
   min-height: 100%;
   position: relative;
 `;
 
-const TaskListBackground = styled.div<State.Select<typeof Consumer>>`
+const TaskListBackground = styled.div<{ columnWidth: number; rowHeight: number; }>`
   will-change: transform;
   position: absolute;
   top: 0;
@@ -90,13 +94,13 @@ const TaskListBackground = styled.div<State.Select<typeof Consumer>>`
   );
 `;
 
-const TaskListSeekArea = styled.div<State.Select<typeof Consumer>>`
+const TaskListSeekArea = styled.div`
   will-change: transform;
   width: 100%;
   min-height: 100%;
 `;
 
-const Now = styled.div<State.Select<typeof Consumer>>`
+const Now = styled.div<{ columnWidth: number; }>`
   position: absolute;
   top: 0;
   left: ${props => props.columnWidth / 2}px;

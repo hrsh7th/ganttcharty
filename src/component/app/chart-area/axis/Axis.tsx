@@ -28,6 +28,6 @@ const Axis = styled.div`
   width; 100%;
   height: 100%;
   display: flex;
-  border-bottom: 1px solid #888;
+  border-bottom: 1px solid #ddd;
 `;
 

@@ -8,7 +8,7 @@ export const keyMap = {
   'move left': ['h', 'left'],
   'move right': ['l', 'right'],
   'add task': ['enter'],
-  'delete task': ['backspace'],
+  'delete task': ['delete'],
   'expand task': ['shift+right'],
   'collapse task': ['shift+left']
 };
@@ -36,10 +36,16 @@ export const handlers = {
     Action.Task.deleteSelectedTask();
   },
   'expand task': () => {
-    Action.Task.expand();
+    const state = State.get()!;
+    if (state.ui.selectedTaskId) {
+      Action.Task.expand(state.ui.selectedTaskId);
+    }
   },
   'collapse task': () => {
-    Action.Task.collapse();
+    const state = State.get()!;
+    if (state.ui.selectedTaskId) {
+      Action.Task.collapse(state.ui.selectedTaskId);
+    }
   }
 };
 

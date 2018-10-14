@@ -178,6 +178,6 @@ const Handle = styled.div<{ x: string; left: string; cursor: 'w-resize' | 'e-res
   z-index: 1;
 `;
 
-const HandleNext = Handle.extend.attrs({ x: '-100%', left: '100%', cursor: 'e-resize' })``;
-const HandlePrev = Handle.extend.attrs({ x: '0%', left: '0', cursor: 'w-resize' })``;
+const HandleNext = styled(Handle).attrs({ x: '-100%', left: '100%', cursor: 'e-resize' })``;
+const HandlePrev = styled(Handle).attrs({ x: '0%', left: '0', cursor: 'w-resize' })``;
 

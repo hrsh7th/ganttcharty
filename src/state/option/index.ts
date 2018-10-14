@@ -1,6 +1,6 @@
 import startOfDay from 'date-fns/start_of_day';
 import * as State from '../';
-import { Column } from '../../component/ui-kit/grid/Grid';
+import { Column } from '../../component/ui-kit/grid';
 
 export const DAY = 24 * 60 * 60 * 1000;
 
@@ -49,7 +49,7 @@ export const defaults = (option: Partial<Option> = {}) => {
     {
       key: 'name',
       name: 'タスク',
-      width: 320
+      width: 200
 
     },
     {
@@ -67,3 +67,4 @@ export const defaults = (option: Partial<Option> = {}) => {
   ];
   return option as Option;
 };
+
