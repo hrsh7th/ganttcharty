@@ -27,8 +27,6 @@ export default class Hotkeys<Keymap extends { [name: string]: string[]; }> exten
 
   public componentDidMount() {
     this.id = this.props.scope || 'default';
-
-    // bind events.
     Object.keys(this.props.keymap).forEach(name => {
       this.props.keymap[name].forEach(key => {
         hotkeys(key, this.id, (ke: KeyboardEvent, he: HotkeysEvent) => {
@@ -36,8 +34,6 @@ export default class Hotkeys<Keymap extends { [name: string]: string[]; }> exten
         });
       });
     });
-
-    // set this scope.
     hotkeys.setScope(this.id);
   }
 

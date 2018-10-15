@@ -28,6 +28,8 @@ const InlineStyle = {
 
 export default class InlineEdit<T extends Date | string | number> extends React.Component<Props<T>, State<T>> {
 
+  private editing: React.RefObject<HTMLInputElement> = React.createRef();
+
   private keymap = {
     finish: ['esc', 'enter']
   };
@@ -35,6 +37,12 @@ export default class InlineEdit<T extends Date | string | number> extends React.
   public constructor(props: Props<T>) {
     super(props);
     this.state = { value: props.value, editing: false };
+  }
+
+  public componentDidUpdate() {
+    if (this.editing.current) {
+      this.editing.current.focus();
+    }
   }
 
   public render() {
@@ -59,9 +67,9 @@ export default class InlineEdit<T extends Date | string | number> extends React.
 
   private edit() {
     if (this.props.value instanceof Date) {
-      return <input style={InlineStyle} type="date" value={format(this.state.value, 'YYYY-MM-DD')} onChange={this.onChange} />;
+      return <input ref={this.editing} style={InlineStyle} type="date" value={format(this.state.value, 'YYYY-MM-DD')} onChange={this.onChange} />;
     }
-    return <input style={InlineStyle} type="text" value={String(this.state.value)}  onChange={this.onChange} />;
+    return <input ref={this.editing} style={InlineStyle} type="text" value={String(this.state.value)}  onChange={this.onChange} />;
   }
 
   private onClick = () => {
