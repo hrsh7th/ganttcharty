@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import closest from 'closest-element';
-import uuid from 'uuid';
 import hotkeys, { KeyHandler, HotkeysEvent } from 'hotkeys-js';
+
+hotkeys.filter = () => true;
 
 export type Props<Keymap extends { [name: string]: string[]; }> = {
   scope?: string;
@@ -12,14 +13,20 @@ export type Props<Keymap extends { [name: string]: string[]; }> = {
 
 export default class Hotkeys<Keymap extends { [name: string]: string[]; }> extends React.Component<Props<Keymap>> {
 
+  private static recentTarget: HTMLElement | null = null;
+
+  public static setScope(scope: string, target: HTMLElement) {
+    if (this.recentTarget === target) {
+      return;
+    }
+    this.recentTarget = target;
+    hotkeys.setScope(scope);
+  }
+
   private id: string = '';
 
   public componentDidMount() {
-    hotkeys.filter = () => {
-      return true;
-    };
-
-    this.id = uuid.v4();
+    this.id = this.props.scope || 'default';
 
     // bind events.
     Object.keys(this.props.keymap).forEach(name => {
@@ -42,22 +49,22 @@ export default class Hotkeys<Keymap extends { [name: string]: string[]; }> exten
     return React.Children.map(this.props.children, (c: any) => {
       return React.cloneElement(c, {
         ...c.props,
-        onFocus: (e: React.FocusEvent) => {
-          c.props.onFocus && c.props.onFocus(e);
-          this.onFocus(e);
+        onClick: (e: React.MouseEvent) => {
+          this.onClick(e);
+          c.props.onClick && c.props.onClick(e);
         }
       });
     });
   }
 
-  private onFocus = (e: React.FocusEvent) => {
+  private onClick = (e: React.MouseEvent) => {
     const element = ReactDOM.findDOMNode(this);
     if (element && element instanceof HTMLElement) {
-      if (!closest(e.target as any, element)) {
-        hotkeys.setScope(this.id);
+      if (closest(e.target as any, element)) {
+        Hotkeys.setScope(this.id, e.target as HTMLElement);
       }
     }
-  };
+  }
 
 }
 

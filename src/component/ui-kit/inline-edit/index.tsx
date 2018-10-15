@@ -41,7 +41,7 @@ export default class InlineEdit<T extends Date | string | number> extends React.
     if (this.state.editing) {
       return (
         <Outside onClick={this.onFinish}>
-          <Hotkeys keymap={this.keymap} listeners={{ finish: this.onFinish }}>
+          <Hotkeys scope="inline" keymap={this.keymap} listeners={{ finish: this.onFinish }}>
             {this.edit()}
           </Hotkeys>
         </Outside>

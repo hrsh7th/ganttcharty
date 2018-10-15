@@ -20,7 +20,13 @@ export default class Draggable extends React.Component<Props, State> {
   public state: State = {};
 
   public render() {
-    const { children, ...props } = this.props;
+    const {
+      children,
+      onDragging: _,
+      onDragStart: __,
+      onDragEnd: ___,
+      ...props
+    } = this.props;
     return (
       <>
         {this.state.isDragging && props.preview ? (

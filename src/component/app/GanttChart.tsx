@@ -1,10 +1,19 @@
 import React from 'react';
-import styled, { injectGlobal } from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 import ResizeDetector from 'react-resize-detector';
 import Hotkeys from '../ui-kit/hotkeys';
 import HeaderArea from './header-area/HeaderArea';
 import ChartArea from './chart-area/ChartArea';
 import * as Action from '../../action';
+
+const GlobalStyle = createGlobalStyle`
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-size: 8px;
+  }
+`;
 
 export default class extends React.Component {
 
@@ -15,12 +24,13 @@ export default class extends React.Component {
     return (
       <>
         <ResizeDetector handleWidth handleHeight onResize={this.onResize} />
-        <Hotkeys keymap={Action.Hotkey.keyMap} listeners={Action.Hotkey.handlers}>
+        <Hotkeys scope="root" keymap={Action.Hotkey.keyMap} listeners={Action.Hotkey.handlers}>
           <GanttChart>
-            <HeaderArea innerRef={this.header} onWheel={this.onHeaderAreaWheel} />
-            <ChartArea innerRef={this.chart} onWheel={this.onChartAreaWheel} />
+            <HeaderArea ref={this.header} onWheel={this.onHeaderAreaWheel} />
+            <ChartArea ref={this.chart} onWheel={this.onChartAreaWheel} />
           </GanttChart>
         </Hotkeys>
+        <GlobalStyle />
       </>
     );
   }
@@ -55,14 +65,5 @@ const GanttChart = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-`;
-
-injectGlobal`
-  * {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-    font-size: 8px;
-  }
 `;
 

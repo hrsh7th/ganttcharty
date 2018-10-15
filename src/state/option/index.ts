@@ -11,6 +11,7 @@ export type Option = {
   rowHeight: number;
   columnWidth: number;
   scale: Scale;
+  barHeight: number;
   axisHeight: number;
   indentWidth: number;
   baseTime: Date;
@@ -33,6 +34,7 @@ export const defaults = (option: Partial<Option> = {}) => {
   option.rowHeight = 24;
   option.columnWidth = 18;
   option.scale = 'day';
+  option.barHeight = 4;
   option.axisHeight = 32;
   option.indentWidth = 12;
   option.baseTime = startOfDay(new Date(Date.now() - scaleTime(option.scale) * 7));

@@ -19,18 +19,17 @@ const Consumer = State.select(state => ({
 }));
 
 export type Props = {
-  innerRef: React.RefObject<HTMLDivElement>;
   onWheel: React.WheelEventHandler<HTMLDivElement>;
 };
 
-export default ({ innerRef, onWheel }: Props) => (
+export default React.forwardRef(({ onWheel }: Props, ref: any) => (
   <Consumer>
     {state => (
       <ChartArea width={state.viewportWidth - state.headerWidth}>
         <HeaderBox height={state.axisHeight}>
           <Axis />
         </HeaderBox>
-        <Box height={state.viewportHeight - state.axisHeight} innerRef={innerRef} onWheel={onWheel}>
+        <Box height={state.viewportHeight - state.axisHeight} ref={ref} onWheel={onWheel}>
           <TaskListContentArea {...state}>
             <TaskListBackground {...state} style={{
               transform: `translateX(${-State.UI.rest(new Date(state.currentTime.getTime() - state.baseTime.getTime()), state.scale, state.columnWidth, 2)}px)`
@@ -48,7 +47,7 @@ export default ({ innerRef, onWheel }: Props) => (
       </ChartArea>
     )}
   </Consumer>
-);
+));
 
 const ChartArea = styled.div<{ width: number; }>`
   width: ${props => props.width}px;

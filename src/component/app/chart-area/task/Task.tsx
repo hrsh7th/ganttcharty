@@ -9,6 +9,7 @@ export type Props = {
   node: State.Task.TaskNode;
   height: number;
   scale: State.Option.Scale;
+  barHeight: number;
   columnWidth: number;
   baseTime: Date;
   selectedTaskId?: State.Task.TaskId;
@@ -33,10 +34,10 @@ export default class Node extends React.Component<Props, State> {
     const finishedAt = (this.state.dragging && this.state.dragging.finishedAt) || node.finishedAt;
 
     return (
-      <Task {...this.props} style={{
+      <Task {...this.props} onClick={this.onClick} style={{
         transform: `translateX(${State.UI.x(startedAt, baseTime, scale, columnWidth)}px)`,
         width: `${State.UI.width(startedAt, finishedAt, scale, columnWidth)}px`
-      }} onClick={this.onClick}>
+      }}>
         <TaskLabel {...this.props}>{this.props.node.name}</TaskLabel>
         <Draggable onDragStart={this.onDragStart} onDragEnd={this.onDragEnd} onDragging={this.onDragPrev}><HandlePrev /></Draggable>
         <Draggable onDragStart={this.onDragStart} onDragEnd={this.onDragEnd} onDragging={this.onDragSelf}>
@@ -140,12 +141,10 @@ export default class Node extends React.Component<Props, State> {
 
 }
 
-const BAR_MARGIN = 8;
-
 const Task = styled.div<Props>`
   position: relative;
   height: ${props => props.height}px;
-  padding: ${BAR_MARGIN}px 0;
+  padding: ${props => (props.height - props.barHeight) / 2}px 0;
 `;
 
 const TaskLine = styled.div<Props>`

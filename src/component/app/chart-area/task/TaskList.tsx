@@ -5,6 +5,7 @@ import Task from './Task';
 const Consumer = State.select(state => ({
   tasks: state.tasks,
   height: state.option.rowHeight,
+  barHeight: state.option.barHeight,
   columnWidth: state.option.columnWidth,
   scale: state.option.scale,
   baseTime: state.option.baseTime,
@@ -20,6 +21,7 @@ export default () => (
           node={node}
           height={state.height}
           scale={state.scale}
+          barHeight={state.barHeight}
           columnWidth={state.columnWidth}
           baseTime={state.baseTime}
           selectedTaskId={state.selectedTaskId}

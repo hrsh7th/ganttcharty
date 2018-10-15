@@ -3,17 +3,17 @@ const path = require('path');
 module.exports = {
 
   entry: {
-    index: path.resolve(__dirname, 'src/index.tsx')
+    index: path.resolve(__dirname, 'debug/index.ts')
   },
 
-  output: {
-    path: __dirname + '/dist',
-    filename: '[name].min.js',
-    library: 'GanttCharty',
-    libraryTarget: 'umd'
-  },
+  mode: 'development',
 
-  mode: process.env.NODE_ENV || 'development',
+  devServer: {
+    port: 8080,
+    open: true,
+    openPage: 'index.html',
+    contentBase: path.resolve(__dirname, 'debug')
+  },
 
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx']

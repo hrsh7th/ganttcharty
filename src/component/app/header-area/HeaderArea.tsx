@@ -16,16 +16,14 @@ const Consumer = State.select(state => ({
 }));
 
 export type Props = {
-  innerRef: React.RefObject<HTMLDivElement>;
   onWheel: React.WheelEventHandler;
 };
 
-export default ({ innerRef, onWheel }: Props) => (
+export default React.forwardRef(({ onWheel }: Props, ref: any) => (
   <Consumer>
     {state => (
       <HeaderArea {...state}>
         <Grid<State.Task.TaskNode>
-          key="1"
           keyName="id"
           columns={state.columns}
           rows={State.Task.tasks(state.tasks)}
@@ -62,13 +60,13 @@ export default ({ innerRef, onWheel }: Props) => (
               }
             })()}</BodyCell>
           }}
-          innerRef={innerRef}
+          forwardedRef={ref}
           onWheel={onWheel}
         />
       </HeaderArea>
     )}
   </Consumer>
-);
+));
 
 const onTaskClick = (e: React.MouseEvent<HTMLElement>) => {
   Action.UI.selectTask(e.currentTarget.getAttribute('data-task-id')!);
@@ -149,7 +147,7 @@ const HeaderCell = styled.div<{ width: number; height: number; }>`
   border-right: 1px solid #ddd;
 
   & + & {
-    border-right: none;
+    border-left: none;
   }
 `;
 
@@ -160,7 +158,7 @@ const BodyRow = styled.div<{ height: number; }>`
 
 const BodyCell = styled.div<{ width: number; height: number; }>`
   padding: 0 8px;
-  min-width: ${props => props.width};
+  min-width: ${props => props.width}px;
   height: ${props => props.height}px;
   line-height: ${props => props.height}px;
   text-overflow: ellipsis;
@@ -170,7 +168,7 @@ const BodyCell = styled.div<{ width: number; height: number; }>`
   border-right: 1px solid #ddd;
 
   & + & {
-    border-right: none;
+    border-left: none;
   }
 `;
 

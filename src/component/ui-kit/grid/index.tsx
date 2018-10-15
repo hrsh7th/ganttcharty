@@ -21,7 +21,7 @@ export type Props<Row extends object> = {
     BodyRow: React.ComponentType<unknown & { row: Row; }>;
     BodyCell: React.ComponentType<unknown & { column: Column<Row>; row: Row; }>;
   };
-  innerRef: React.RefObject<HTMLDivElement>;
+  forwardedRef: React.RefObject<HTMLDivElement>;
   onWheel: React.WheelEventHandler;
 };
 
@@ -35,19 +35,37 @@ export default class Grid<Row extends object> extends React.Component<Props<Row>
 
   private header = React.createRef<HTMLDivElement>();
 
+  public getSnapshotBeforeUpdate() {
+    if (this.header.current && this.props.forwardedRef.current) {
+      return {
+        x: this.header.current.scrollLeft,
+        y: this.props.forwardedRef.current.scrollTop
+      };
+    }
+    return null;
+  }
+
+  public componentDidUpdate(_: Props<Row>, __: any, snapshot: { x: number; y: number; }) {
+    if (this.header.current && this.props.forwardedRef.current) {
+      this.header.current.scrollLeft = snapshot.x;
+      this.props.forwardedRef.current.scrollLeft = snapshot.x;
+      this.props.forwardedRef.current.scrollTop = snapshot.y;
+    }
+  }
+
   public render() {
     const { Box } = this.props;
     const { HeaderBox } = this.props.header;
     const { BodyBox } = this.props.body;
     return (
-      <Box key="1">
+      <Box>
         <HeaderBox>
           <div style={ScrollableStyle} ref={this.header}>
             {this.columns()}
           </div>
         </HeaderBox>
         <BodyBox>
-          <div key="2" style={ScrollableStyle} ref={this.props.innerRef} onWheel={this.onWheel}>
+          <div style={ScrollableStyle} ref={this.props.forwardedRef} onWheel={this.onWheel}>
             {this.rows()}
           </div>
         </BodyBox>
