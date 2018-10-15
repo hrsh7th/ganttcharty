@@ -1,12 +1,11 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
+import closest from 'closest-element';
 import uuid from 'uuid';
 import hotkeys, { KeyHandler, HotkeysEvent } from 'hotkeys-js';
 
-hotkeys.filter = () => true;
-
 export type Props<Keymap extends { [name: string]: string[]; }> = {
   scope?: string;
-  ref?: React.RefObject<any>;
   keymap: Keymap;
   listeners: { [K in keyof Keymap]: KeyHandler; };
 };
@@ -14,25 +13,20 @@ export type Props<Keymap extends { [name: string]: string[]; }> = {
 export default class Hotkeys<Keymap extends { [name: string]: string[]; }> extends React.Component<Props<Keymap>> {
 
   private id: string = '';
-  private _refs: React.RefObject<any>[] = [];
 
   public componentDidMount() {
+    hotkeys.filter = () => {
+      return true;
+    };
+
     this.id = uuid.v4();
 
     // bind events.
     Object.keys(this.props.keymap).forEach(name => {
       this.props.keymap[name].forEach(key => {
-        hotkeys(
-          key,
-          {
-            scope: this.id
-          },
-          (ke: KeyboardEvent, he: HotkeysEvent) => {
-            ke.stopPropagation();
-            ke.preventDefault();
-            this.props.listeners[name](ke, he);
-          }
-        );
+        hotkeys(key, this.id, (ke: KeyboardEvent, he: HotkeysEvent) => {
+          this.props.listeners[name](ke, he);
+        });
       });
     });
 
@@ -46,17 +40,23 @@ export default class Hotkeys<Keymap extends { [name: string]: string[]; }> exten
 
   public render() {
     return React.Children.map(this.props.children, (c: any) => {
-      this._refs[this._refs.length] = c.ref || React.createRef();
       return React.cloneElement(c, {
-        ref: this._refs[this._refs.length - 1],
-        onFocus: this.onFocus
+        ...c.props,
+        onFocus: (e: React.FocusEvent) => {
+          c.props.onFocus && c.props.onFocus(e);
+          this.onFocus(e);
+        }
       });
     });
   }
 
-  private onFocus = () => {
-    console.log(this._refs);
-    hotkeys.setScope(this.id);
+  private onFocus = (e: React.FocusEvent) => {
+    const element = ReactDOM.findDOMNode(this);
+    if (element && element instanceof HTMLElement) {
+      if (!closest(e.target as any, element)) {
+        hotkeys.setScope(this.id);
+      }
+    }
   };
 
 }

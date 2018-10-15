@@ -1,14 +1,13 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
+import closest from 'closest-element';
 
 export type Props = {
   onClick: (e: MouseEvent) => void;
   children: React.ReactNode;
-  ref?: React.RefObject<any>;
 };
 
 export default class Outside extends React.Component<Props> {
-
-  private _refs: React.RefObject<HTMLElement>[] = [];
 
   public componentDidMount() {
     document.addEventListener('click', this.onClick);
@@ -19,21 +18,16 @@ export default class Outside extends React.Component<Props> {
   }
 
   public render() {
-    return React.Children.map(this.props.children, (c: any) => {
-      this._refs[this._refs.length] = c.ref || React.createRef();
-      return React.cloneElement(c, {
-        ref: this._refs[this._refs.length - 1]
-      });
-    });
+    return React.Children.only(this.props.children);
   }
 
   private onClick = (e: MouseEvent) => {
-    if (this._refs.some(ref => (
-      !!ref.current && ref.current === e.target
-    ))) {
-      return;
+    const element = ReactDOM.findDOMNode(this);
+    if (element && element instanceof HTMLElement) {
+      if (!closest(e.target as any, element)) {
+        this.props.onClick(e);
+      }
     }
-    this.props.onClick(e);
   }
 
 }

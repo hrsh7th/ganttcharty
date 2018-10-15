@@ -28,10 +28,8 @@ const InlineStyle = {
 
 export default class InlineEdit<T extends Date | string | number> extends React.Component<Props<T>, State<T>> {
 
-  private editing: React.RefObject<HTMLInputElement> = React.createRef();
-
   private keymap = {
-    'finish': ['escape']
+    finish: ['esc', 'enter']
   };
 
   public constructor(props: Props<T>) {
@@ -42,11 +40,11 @@ export default class InlineEdit<T extends Date | string | number> extends React.
   public render() {
     if (this.state.editing) {
       return (
-        <Hotkeys keymap={this.keymap} listeners={{ finish: this.onFinish }}>
-          <Outside onClick={this.onFinish}>
+        <Outside onClick={this.onFinish}>
+          <Hotkeys keymap={this.keymap} listeners={{ finish: this.onFinish }}>
             {this.edit()}
-          </Outside>
-        </Hotkeys>
+          </Hotkeys>
+        </Outside>
       );
     }
     return this.value();
@@ -61,30 +59,40 @@ export default class InlineEdit<T extends Date | string | number> extends React.
 
   private edit() {
     if (this.props.value instanceof Date) {
-      return <input style={InlineStyle} type="date" ref={this.editing} defaultValue={format(this.props.value, 'YYYY-MM-DD')} />;
+      return <input style={InlineStyle} type="date" value={format(this.state.value, 'YYYY-MM-DD')} onChange={this.onChange} />;
     }
-    return <input style={InlineStyle} type="text" ref={this.editing} defaultValue={String(this.props.value)} />;
+    return <input style={InlineStyle} type="text" value={String(this.state.value)}  onChange={this.onChange} />;
   }
 
   private onClick = () => {
-    if (!this.state.editing) {
-      this.setState({
-        editing: true
-      });
-    }
+    if (this.state.editing) return;
+
+    this.setState({
+      editing: true
+    });
   };
 
-  private onFinish = () => {
-    if (this.editing.current) {
-      if (this.props.value instanceof Date) {
-        this.props.onChange(parse(this.editing.current.value!) as any as T);
-      } else {
-        this.props.onChange(this.editing.current.value! as any as T);
-      }
+  private onChange = (e: React.FormEvent<HTMLInputElement>) => {
+    if (this.props.value instanceof Date) {
+      this.setState({ value: parse(e.currentTarget.value!) as any as T });
+    } else {
+      this.setState({ value: e.currentTarget.value! as any as T });
     }
+  }
+
+  private onFinish = () => {
+    if (!this.state.editing) return;
+
     this.setState({
       editing: false
+    }, () => {
+      if (this.props.value instanceof Date) {
+        this.props.onChange(parse(this.state.value) as any as T);
+      } else {
+        this.props.onChange(this.state.value as any as T);
+      }
     });
+
   };
 
 }

@@ -8,7 +8,7 @@ export const keyMap = {
   'move left': ['h', 'left'],
   'move right': ['l', 'right'],
   'add task': ['enter'],
-  'delete task': ['delete'],
+  'delete task': ['backspace'],
   'expand task': ['shift+right'],
   'collapse task': ['shift+left']
 };
