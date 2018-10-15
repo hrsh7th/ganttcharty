@@ -1,3 +1,4 @@
+import startOfWeek from 'date-fns/start_of_week';
 import endOfWeek from 'date-fns/end_of_week';
 import eachDay from 'date-fns/each_day';
 import * as State from '../';
@@ -49,16 +50,18 @@ export const rest = (
 };
 
 /**
- * create days axis.
+ * create day axis.
  */
-export const daysAxis = (
+export const dayAxis = (
   currentTime: Date,
   scale: State.Option.Scale,
   columnWidth: number,
   viewportWidth: number
 ) => {
-  const startTime = currentTime;
-  const finishTime = endOfWeek(new Date(currentTime.getTime() + (viewportWidth / columnWidth * State.Option.scaleTime(scale))));
+  const scaleTime = State.Option.scaleTime(scale);
+  const viewportTime = viewportWidth / columnWidth * scaleTime;
+  const startTime = startOfWeek(currentTime, { weekStartsOn: 1 });
+  const finishTime = endOfWeek(startTime.getTime() + viewportTime + State.Option.WEEK, { weekStartsOn: 1 });
   return eachDay(startTime, finishTime).reduce((weeks, day) => {
     if (day.getDay() === 1) {
       weeks.push({

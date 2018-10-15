@@ -4,7 +4,7 @@ import startOfDay from 'date-fns/start_of_day';
 /**
  * task types.
  */
-export type TaskId = string | number;
+export type TaskId = string;
 export type Task = {
   id: TaskId;
   startedAt: Date;
@@ -18,27 +18,35 @@ export type Task = {
 /**
  * task tree types.
  */
-export type TaskTreeNode = {
-  task: Task;
-  children: TaskTreeNode[];
+export type TaskNode = Task & {
+  parent?: Task;
+  children: TaskNode[];
+  depth: number;
 };
 
 /**
- * create task tree.
+ * create tasks.
  */
-export const getTree = memoize((tasks: Task[]) => {
+export const tasks = memoize((tasks: Task[]) => {
   return (function traverse(
     tasks: Task[],
     parentId?: TaskId,
-  ): TaskTreeNode[] {
+    depth: number = 0
+  ): TaskNode[] {
+    const parent = getTask(tasks, parentId);
     return tasks
       .filter(task => task.parentId === parentId)
-      .map(task => {
-        return {
-          task: task,
-          children: traverse(tasks, task.id)
-        };
-      });
+      .reduce((nodes, task) => {
+        const children = !task.collapsed ? traverse(tasks, task.id, depth + 1) : [];
+        return nodes
+          .concat([{
+            ...task,
+            parent,
+            children,
+            depth
+          }])
+          .concat(children);
+      }, [] as TaskNode[]);
   })(tasks);
 });
 
@@ -46,15 +54,15 @@ export const getTree = memoize((tasks: Task[]) => {
  * get task by id.
  */
 export const getTask = (tasks: Task[], taskId?: TaskId) => {
-  return tasks.find(task => task.id === taskId);
+  return tasks.find(task => String(task.id) === String(taskId));
 };
 
 /**
  * get children by id.
  */
-export const getChildren = (tasks: Task[], taskId?: TaskId) => {
+export const getChildren = (tasks: Task[], taskId?: TaskId, checkExpanded: boolean = true) => {
   const target = getTask(tasks, taskId)!;
-  if (target && target.collapsed) {
+  if (target && (target.collapsed && checkExpanded)) {
     return [];
   }
   return tasks.filter(task => task.parentId === taskId);

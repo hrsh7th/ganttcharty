@@ -3,35 +3,49 @@ import * as State from '../../state';
 import throttle from 'lodash/throttle';
 
 export const keyMap = {
-  'up': ['k', 'up'],
-  'down': ['j', 'down'],
-  'left': ['h', 'left'],
-  'right': ['l', 'right'],
-  'add': ['enter'],
-  'delete': ['backspace']
+  'selected up': ['k', 'up'],
+  'selected down': ['j', 'down'],
+  'move left': ['h', 'left'],
+  'move right': ['l', 'right'],
+  'add task': ['enter'],
+  'delete task': ['backspace'],
+  'expand task': ['shift+right'],
+  'collapse task': ['shift+left']
 };
 
 export const handlers = {
-  'up': () => {
+  'selected up': () => {
     Action.Task.selectPrevTask();
   },
-  'down': () => {
+  'selected down': () => {
     Action.Task.selectNextTask();
   },
-  'left': throttle(() => {
+  'move left': throttle(() => {
     const state = State.get()!;
     Action.Task.moveSelectedTask(-State.Option.scaleTime(state.option.scale));
   }, 60),
-  'right': throttle(() => {
+  'move right': throttle(() => {
     const state = State.get()!;
     Action.Task.moveSelectedTask(State.Option.scaleTime(state.option.scale));
   }, 60),
-  'add': (event?: KeyboardEvent) => {
+  'add task': (event?: KeyboardEvent) => {
     event!.preventDefault();
     Action.Task.add();
   },
-  'delete': () => {
+  'delete task': () => {
     Action.Task.deleteSelectedTask();
+  },
+  'expand task': () => {
+    const state = State.get()!;
+    if (state.ui.selectedTaskId) {
+      Action.Task.expand(state.ui.selectedTaskId);
+    }
+  },
+  'collapse task': () => {
+    const state = State.get()!;
+    if (state.ui.selectedTaskId) {
+      Action.Task.collapse(state.ui.selectedTaskId);
+    }
   }
 };
 

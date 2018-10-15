@@ -75,23 +75,21 @@ export const selectPrevTask = () => {
   });
 };
 
-export const expand = () => {
+export const expand = (taskId: State.Task.TaskId) => {
   State.update(state => {
-    if (!state.ui.selectedTaskId) return;
-
-    const selected = State.Task.getTask(state.tasks, state.ui.selectedTaskId)!;
-    if (selected && selected.collapsed) {
+    const selected = State.Task.getTask(state.tasks, taskId)!;
+    const children = State.Task.getChildren(state.tasks, selected.id, false);
+    if (selected && children.length && selected.collapsed) {
       selected.collapsed = false;
     }
   });
 };
 
-export const collapse = () => {
+export const collapse = (taskId: State.Task.TaskId) => {
   State.update(state => {
-    if (!state.ui.selectedTaskId) return;
-
-    const selected = State.Task.getTask(state.tasks, state.ui.selectedTaskId)!;
-    if (selected && !selected.collapsed) {
+    const selected = State.Task.getTask(state.tasks, taskId)!;
+    const children = State.Task.getChildren(state.tasks, selected.id, false);
+    if (selected && children.length &&  !selected.collapsed) {
       selected.collapsed = true;
     }
   });

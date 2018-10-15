@@ -14,9 +14,9 @@ const Consumer = State.select(state => ({
 export default () => (
   <Consumer>
     {state => (
-      State.Task.getTree(state.tasks).map(node => (
+      State.Task.tasks(state.tasks).map(node => (
         <Task
-          key={node.task.id}
+          key={node.id}
           node={node}
           height={state.height}
           scale={state.scale}

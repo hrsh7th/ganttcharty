@@ -29,19 +29,28 @@ const DAY = 24 * 60 * 60 * 1000;
     task(19, 'ChildTask1', '', 14),
     task(20, 'ChildTask1', '', 14),
     task(21, 'ChildTask1', '', 14),
-    task(22, 'ChildTask1', '', 14)
+    task(22, 'ChildTask1', '', 14),
+
+    task(23, 'ChildTask1', '', 6),
+    task(24, 'ChildTask1', '', 6),
+    task(25, 'ChildTask1', '', 6),
+    task(26, 'ChildTask1', '', 6),
+    task(27, 'ChildTask1', '', 6),
+    task(28, 'ChildTask1', '', 6),
+    task(29, 'ChildTask1', '', 6),
+    task(30, 'ChildTask1', '', 6)
   ]
 });
 
 function task(id: number, name: string, description: string, parentId?: number) {
   const startedAt = new Date(Date.now() + (DAY * 10) - DAY * Math.floor(Math.random() * 10));
   return {
-    id: id,
+    id: String(id),
     startedAt: startedAt,
     finishedAt: new Date(startedAt.getTime() + DAY * Math.floor(Math.random() * 30)),
     name: name,
     description: description,
-    parentId: parentId
+    parentId: parentId ? String(parentId) : undefined
   };
 }
 
