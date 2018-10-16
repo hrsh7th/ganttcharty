@@ -58,17 +58,10 @@ export default class InlineEdit<T extends Date | string | number> extends React.
   }
 
   private value() {
-    return (
-      <>
-      <span style={{ display: 'inline-block', height: '100%', fontSize: 0, verticalAlign: 'middle' }} />
-      {(() => {
-        if (this.props.value instanceof Date) {
-          return <span style={InlineStyle} onDoubleClick={this.onDoubleClick}>{format(this.props.value, (this.props as any).format)}</span>;
-        }
-        return <span style={InlineStyle} onDoubleClick={this.onDoubleClick}>{String(this.props.value)}</span>;
-      })()}
-      </>
-    );
+    if (this.props.value instanceof Date) {
+      return <span style={InlineStyle} onDoubleClick={this.onDoubleClick}>{format(this.props.value, (this.props as any).format)}</span>;
+    }
+    return <span style={InlineStyle} onDoubleClick={this.onDoubleClick}>{String(this.props.value)}</span>;
   }
 
   private edit() {
