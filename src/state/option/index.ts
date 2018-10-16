@@ -6,6 +6,8 @@ export const DAY = 24 * 60 * 60 * 1000;
 
 export const WEEK = DAY * 7;
 
+export type Column = Column<State.Task.TaskNode>;
+
 export type Option = {
   headerWidth: number;
   rowHeight: number;

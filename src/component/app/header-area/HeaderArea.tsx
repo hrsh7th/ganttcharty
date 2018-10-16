@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import * as Action from '../../../action';
 import * as State from '../../../state';
+import { Draggable } from '../../ui-kit/dnd';
 import Grid from '../../ui-kit/grid';
 import InlineEdit from '../../ui-kit/inline-edit';
 
@@ -36,29 +37,7 @@ export default React.forwardRef(({ onWheel }: Props, ref: any) => (
           body={{
             BodyBox: props => <Box height={state.viewportHeight - state.axisHeight}>{props.children}</Box>,
             BodyRow: props => <BodyRow height={state.rowHeight}>{props.children}</BodyRow>,
-            BodyCell: props => <BodyCell data-task-id={props.row.id} width={props.column.width} height={state.rowHeight} onClick={onTaskClick}>{(() => {
-              const onChange = (value: any) => Action.Task.updateTask(props.row.id, { [props.column.key]: value });
-              switch (props.column.key) {
-                case 'startedAt':
-                  return <InlineEdit value={props.row[props.column.key]} format={'YYYY/MM/DD'} onChange={onChange} />
-                case 'finishedAt':
-                  return <InlineEdit value={props.row[props.column.key]} format={'YYYY/MM/DD'} onChange={onChange} />
-                case 'name':
-                  return (
-                    <>
-                      <Handle />
-                      {(props.row.children.length || props.row.collapsed) ? (
-                        <Expander data-task-id={props.row.id} indentWidth={state.indentWidth} depth={props.row.depth} collapsed={!!props.row.collapsed} onClick={onExpandClick} />
-                      ) : (
-                        <Spacer indentWidth={state.indentWidth} depth={props.row.depth} />
-                      )}
-                      <InlineEdit value={props.row[props.column.key]} onChange={onChange} />
-                    </>
-                  );
-                default:
-                  return null;
-              }
-            })()}</BodyCell>
+            BodyCell: props => createBodyCell(props, state)
           }}
           forwardedRef={ref}
           onWheel={onWheel}
@@ -67,6 +46,49 @@ export default React.forwardRef(({ onWheel }: Props, ref: any) => (
     )}
   </Consumer>
 ));
+
+const createBodyCell = (props: { row: State.Task.TaskNode; column: State.Option.Column; }, state: State.Select<typeof Consumer>) => {
+  return (
+    <BodyCell data-task-id={props.row.id} width={props.column.width} height={state.rowHeight} onClick={onTaskClick}>
+      {(() => {
+        const onChange = (value: any) => Action.Task.updateTask(props.row.id, { [props.column.key]: value });
+        switch (props.column.key) {
+          case 'startedAt':
+            return <InlineEdit value={props.row[props.column.key]} format={'YYYY/MM/DD'} onChange={onChange} />
+          case 'finishedAt':
+            return <InlineEdit value={props.row[props.column.key]} format={'YYYY/MM/DD'} onChange={onChange} />
+          case 'name':
+            return (
+              <>
+                <Draggable preview={() => createBodyCell(props, state)}>
+                  <Handle />
+                </Draggable>
+                {(props.row.children.length || props.row.collapsed) ? (
+                  <Expander
+                    data-task-id={props.row.id}
+                    indentWidth={state.indentWidth}
+                    depth={props.row.depth}
+                    collapsed={!!props.row.collapsed}
+                    onClick={onExpandClick}
+                  />
+                ) : (
+                  <Spacer
+                    indentWidth={state.indentWidth}
+                    depth={props.row.depth}
+                  />
+                )}
+                <InlineEdit value={props.row[props.column.key]} onChange={onChange} />
+              </>
+            );
+          default:
+            return null;
+        }
+
+        return null
+      })()}
+    </BodyCell>
+  );
+}
 
 const onTaskClick = (e: React.MouseEvent<HTMLElement>) => {
   Action.UI.selectTask(e.currentTarget.getAttribute('data-task-id')!);
@@ -113,7 +135,7 @@ const Handle = styled.div`
   width: 12px;
   border-top: 1px solid #ccc;
   border-bottom: 1px solid #ccc;
-  cursor: pointer;
+  cursor: move;
 
   &::before {
     display: block;
@@ -166,6 +188,7 @@ const BodyCell = styled.div<{ width: number; height: number; }>`
   white-space: nowrap;
   border-bottom: 1px solid #ddd;
   border-right: 1px solid #ddd;
+  background: #fff;
 
   & + & {
     border-left: none;

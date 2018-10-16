@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Body from '../body';
 
 type Props = {
   preview: () => React.ReactNode;
@@ -11,11 +12,18 @@ export default class extends React.Component<Props> {
 
   public render() {
     return ReactDOM.createPortal((
-      <div {...this.props} style={{
-        position: 'fixed',
-        top: this.props.y,
-        left: this.props.x
-      }}>{this.props.preview()}</div>
+      <>
+        <Body style={{ cursor: 'move' }} />
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left:0,
+          transform: `translate(${this.props.x - 5}px, ${this.props.y - 5}px)`,
+          zIndex: 100000
+        }}>
+          {this.props.preview()}
+        </div>
+      </>
     ), document.body);
   }
 

@@ -16,12 +16,11 @@ export type Props<T extends Date | string | number> = {
 export type State<T> = {
   value: T;
   editing: boolean;
-
 };
 
 const InlineStyle = {
   display: 'inline-block',
-  verticalAlign: 'top',
+  verticalAlign: 'middle',
   width: '100%',
   height: '100%'
 };
@@ -59,10 +58,17 @@ export default class InlineEdit<T extends Date | string | number> extends React.
   }
 
   private value() {
-    if (this.props.value instanceof Date) {
-      return <span style={InlineStyle} onClick={this.onClick}>{format(this.props.value, (this.props as any).format)}</span>;
-    }
-    return <span style={InlineStyle} onClick={this.onClick}>{String(this.props.value)}</span>;
+    return (
+      <>
+      <span style={{ display: 'inline-block', height: '100%', fontSize: 0, verticalAlign: 'middle' }} />
+      {(() => {
+        if (this.props.value instanceof Date) {
+          return <span style={InlineStyle} onDoubleClick={this.onDoubleClick}>{format(this.props.value, (this.props as any).format)}</span>;
+        }
+        return <span style={InlineStyle} onDoubleClick={this.onDoubleClick}>{String(this.props.value)}</span>;
+      })()}
+      </>
+    );
   }
 
   private edit() {
@@ -72,7 +78,7 @@ export default class InlineEdit<T extends Date | string | number> extends React.
     return <input ref={this.editing} style={InlineStyle} type="text" value={String(this.state.value)}  onChange={this.onChange} />;
   }
 
-  private onClick = () => {
+  private onDoubleClick = () => {
     if (this.state.editing) return;
 
     this.setState({
@@ -104,4 +110,3 @@ export default class InlineEdit<T extends Date | string | number> extends React.
   };
 
 }
-

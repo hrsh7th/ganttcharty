@@ -40,13 +40,18 @@ export default class Draggable extends React.Component<Props, State> {
     );
   }
 
-  private onMouseDown = () => {
-    document.body.addEventListener('mousemove', this.onMouseMove);
-    document.body.addEventListener('mouseup', this.onMouseUp);
+  private onMouseDown = (e: MouseEvent) => {
+    e.preventDefault();
+    document.addEventListener('mousemove', this.onMouseMove);
+    document.addEventListener('mouseup', this.onMouseUp);
   };
 
   private onMouseMove = (e: MouseEvent) => {
     if (this.state.isDragging) {
+      this.setState({
+        x: e.clientX,
+        y: e.clientY
+      });
       this.onDragging(e);
       return;
     }
@@ -60,8 +65,8 @@ export default class Draggable extends React.Component<Props, State> {
   };
 
   private onMouseUp = (e: MouseEvent) => {
-    document.body.removeEventListener('mousemove', this.onMouseMove);
-    document.body.removeEventListener('mouseup', this.onMouseUp);
+    document.removeEventListener('mousemove', this.onMouseMove);
+    document.removeEventListener('mouseup', this.onMouseUp);
     this.setState({ isDragging: false });
     this.onDragEnd(e);
   };
