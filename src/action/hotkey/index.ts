@@ -1,5 +1,6 @@
 import * as Action from '../';
 import * as State from '../../state';
+import { HotkeysEvent } from 'hotkeys-js';
 import throttle from 'lodash/throttle';
 
 export const keyMap = {
@@ -14,10 +15,12 @@ export const keyMap = {
 };
 
 export const handlers = {
-  'selected up': () => {
+  'selected up': (e: KeyboardEvent) => {
+    e.preventDefault();
     Action.Task.selectPrevTask();
   },
-  'selected down': () => {
+  'selected down': (e: KeyboardEvent) => {
+    e.preventDefault();
     Action.Task.selectNextTask();
   },
   'move left': throttle(() => {
@@ -28,8 +31,8 @@ export const handlers = {
     const state = State.get()!;
     Action.Task.moveSelectedTask(State.Option.scaleTime(state.option.scale));
   }, 60),
-  'add task': (event?: KeyboardEvent) => {
-    event!.preventDefault();
+  'add task': (e: KeyboardEvent) => {
+    e.preventDefault();
     Action.Task.add();
   },
   'delete task': () => {
@@ -47,5 +50,5 @@ export const handlers = {
       Action.Task.collapse(state.ui.selectedTaskId);
     }
   }
-};
+} as { [key in keyof typeof keyMap]: (ke: KeyboardEvent, he: HotkeysEvent) => void };
 

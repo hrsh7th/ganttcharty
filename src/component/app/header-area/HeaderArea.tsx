@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { MdKeyboardArrowRight, MdKeyboardArrowDown } from 'react-icons/md';
 import * as Action from '../../../action';
 import * as State from '../../../state';
 import { Draggable } from '../../ui-kit/dnd';
@@ -28,7 +29,7 @@ export default React.forwardRef(({ onWheel }: Props, ref: any) => (
           keyName="id"
           columns={state.columns}
           rows={State.Task.tasks(state.tasks)}
-          Box={props => <Box height={'100%'}>{props.children}</Box>}
+          Box={props => <Box height={state.viewportHeight}>{props.children}</Box>}
           header={{
             HeaderBox: props => <HeaderBox height={state.axisHeight}>{props.children}</HeaderBox>,
             HeaderRow: props => <HeaderRow height={state.axisHeight}>{props.children}</HeaderRow>,
@@ -51,33 +52,35 @@ const createBodyCell = (props: { row: State.Task.TaskNode; column: State.Option.
   return (
     <BodyCell data-task-id={props.row.id} width={props.column.width} height={state.rowHeight} onClick={onTaskClick}>
       {(() => {
-        const onChange = (value: any) => Action.Task.updateTask(props.row.id, { [props.column.key]: value });
-        switch (props.column.key) {
+        const { row, column } = props;
+        const onChange = (value: any) => Action.Task.updateTask(row.id, { [column.key]: value });
+        switch (column.key) {
           case 'startedAt':
-            return <InlineEdit value={props.row[props.column.key]} format={'YYYY/MM/DD'} onChange={onChange} />
+            return <InlineEdit value={row[column.key]} format={'YYYY/MM/DD'} onChange={onChange} />
           case 'finishedAt':
-            return <InlineEdit value={props.row[props.column.key]} format={'YYYY/MM/DD'} onChange={onChange} />
+            return <InlineEdit value={row[column.key]} format={'YYYY/MM/DD'} onChange={onChange} />
           case 'name':
             return (
               <>
                 <Draggable preview={() => createBodyCell(props, state)}>
                   <Handle />
                 </Draggable>
-                {(props.row.children.length || props.row.collapsed) ? (
-                  <Expander
-                    data-task-id={props.row.id}
-                    indentWidth={state.indentWidth}
-                    depth={props.row.depth}
-                    collapsed={!!props.row.collapsed}
-                    onClick={onExpandClick}
-                  />
+                {row.children.length || row.collapsed ? (
+                  <Expander indentWidth={state.indentWidth} rowHeight={state.rowHeight} depth={row.depth}>
+                    {row.collapsed ? (
+                      <MdKeyboardArrowRight data-task-id={row.id} size="100%" onClick={onExpandClick} />
+                    ) : (
+                      <MdKeyboardArrowDown data-task-id={row.id} size="100%" onClick={onExpandClick} />
+                    )}
+                  </Expander>
                 ) : (
                   <Spacer
                     indentWidth={state.indentWidth}
-                    depth={props.row.depth}
+                    rowHeight={state.rowHeight}
+                    depth={row.depth}
                   />
                 )}
-                <InlineEdit value={props.row[props.column.key]} onChange={onChange} />
+                <InlineEdit value={row[column.key]} onChange={onChange} />
               </>
             );
           default:
@@ -94,7 +97,7 @@ const onTaskClick = (e: React.MouseEvent<HTMLElement>) => {
   Action.UI.selectTask(e.currentTarget.getAttribute('data-task-id')!);
 };
 
-const onExpandClick = (e: React.MouseEvent<HTMLElement>) => {
+const onExpandClick = (e: React.MouseEvent<SVGElement>) => {
   const task = State.Task.getTask(State.get()!.tasks, e.currentTarget.getAttribute('data-task-id')!)!;
   if (task.collapsed) {
     Action.Task.expand(task.id);
@@ -110,20 +113,25 @@ const HeaderArea = styled.div<State.Select<typeof Consumer>>`
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.26);
 `;
 
-const Spacer = styled.div<{ indentWidth: number; depth: number; }>`
-  width: ${props => props.indentWidth * (props.depth + 1)}px;
+const Expander = styled.div<{ rowHeight: number; indentWidth: number; depth: number; }>`
   display: inline-block;
-  vertical-align: top;
+  vertical-align: bottom;
+  margin-left: ${props => props.indentWidth * props.depth}px;
+  width: ${props => props.rowHeight}px;
+  height: 100%;
+  padding: ${props => props.rowHeight * 0.2}px 0;
+  color: #ccc;
+  cursor: pointer;
+
+  & * {
+    margin-top: 1px;
+  }
 `;
 
-const Expander = styled(Spacer)<{ collapsed: boolean; }>`
-  &::after {
-    display: block;
-    padding-right: 4px;
-    height: 100%;
-    text-align: right;
-    content: '${props => props.collapsed ? '+' : '-'}';
-  }
+const Spacer = styled.div<{ indentWidth: number; rowHeight: number; depth: number; }>`
+  width: ${props => props.indentWidth * props.depth + props.rowHeight}px;
+  display: inline-block;
+  vertical-align: top;
 `;
 
 const Handle = styled.div`
@@ -147,7 +155,7 @@ const Handle = styled.div`
 
 const Box = styled.div<{ height: string | number; }>`
   min-width: 100%;
-  height: ${props => props.height};
+  height: ${props => typeof props.height === 'number' ? `${props.height}px` : props.height};
   overflow: hidden;
 `;
 

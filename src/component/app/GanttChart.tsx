@@ -11,7 +11,6 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     padding: 0;
     margin: 0;
-    font-size: 8px;
   }
 `;
 
@@ -25,7 +24,7 @@ export default class extends React.Component {
       <>
         <ResizeDetector handleWidth handleHeight onResize={this.onResize} />
         <Hotkeys scope="root" keymap={Action.Hotkey.keyMap} listeners={Action.Hotkey.handlers}>
-          <GanttChart>
+          <GanttChart className="GanttChart">
             <HeaderArea ref={this.header} onWheel={this.onHeaderAreaWheel} />
             <ChartArea ref={this.chart} onWheel={this.onChartAreaWheel} />
           </GanttChart>
@@ -44,16 +43,16 @@ export default class extends React.Component {
     if (this.header.current) {
       this.header.current.scrollLeft += e.deltaX;
     }
-    this.syncX(this.header, this.chart, e.deltaY);
+    this.syncY(this.header, this.chart, e.deltaY);
   };
 
   private onChartAreaWheel = (e: React.WheelEvent<HTMLDivElement>) => {
     e.preventDefault();
     Action.UI.updateCurrentTime(e.deltaX);
-    this.syncX(this.chart, this.header, e.deltaY);
+    this.syncY(this.chart, this.header, e.deltaY);
   };
 
-  private syncX = (from: React.RefObject<HTMLDivElement>, to: React.RefObject<HTMLDivElement>, diffY: number) => {
+  private syncY = (from: React.RefObject<HTMLDivElement>, to: React.RefObject<HTMLDivElement>, diffY: number) => {
     if (from.current && to.current) {
       from.current.scrollTop += diffY;
       to.current.scrollTop = from.current.scrollTop;
@@ -65,5 +64,6 @@ const GanttChart = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
+  font-size: 8px;
 `;
 

@@ -1,7 +1,8 @@
+const merge = require('webpack-merge');
 const path = require('path');
+const config = require('./webpack.config');
 
-module.exports = {
-
+module.exports = merge(config, {
   entry: {
     index: path.resolve(__dirname, 'debug/index.ts')
   },
@@ -15,22 +16,6 @@ module.exports = {
     contentBase: path.resolve(__dirname, 'debug')
   },
 
-  resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx']
-  },
-
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        use: ['ts-loader']
-      },
-      {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader']
-      }
-    ]
-  }
-
-};
+  plugins: []
+});
 

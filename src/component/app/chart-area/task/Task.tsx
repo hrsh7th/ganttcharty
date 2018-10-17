@@ -160,7 +160,6 @@ const TaskLabel = styled.div<Props>`
   top: 0;
   right: 100%;
   margin-right: 4px;
-  font-size: 8px;
   line-height: ${props => props.height}px;
   white-space: nowrap;
   pointer-events: none;

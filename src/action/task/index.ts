@@ -1,4 +1,4 @@
-import * as uuid from 'uuid';
+import { v4 as uuid } from 'uuid';
 import * as State from '../../state';
 
 export const updateTask = (taskId: State.Task.TaskId, attrs: Partial<State.Task.Task>) => {
@@ -102,8 +102,8 @@ export const add = () => {
     // create newTask and extends selected task.
     const selected = State.Task.getTask(state.tasks, state.ui.selectedTaskId)!;
     const newTask: State.Task.Task = {
-      id: uuid.v4(),
-      name: 'new task',
+      id: uuid(),
+      name: `new task ${state.tasks.length}`,
       description: '',
       startedAt: new Date(selected.startedAt.getTime()),
       finishedAt: new Date(selected.finishedAt.getTime()),

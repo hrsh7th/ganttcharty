@@ -13,7 +13,7 @@ const DAY = 24 * 60 * 60 * 1000;
     task( 3, 'ChildTask2', '', 1),
     task( 4, 'ChildTask3', '', 1),
     task( 5, 'ChildTask4', '', 1),
-    task( 6, 'ChildTask5', '', 1),
+    task( 6, 'ParentParentTask1', '', 1),
     task( 7, 'ChildTask6', '', 1),
     task( 8, 'ChildTask7', '', 1),
     task( 9, 'ChildTask8', '', 1),

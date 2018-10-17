@@ -42,7 +42,6 @@ const Week = styled.div<State.Select<typeof Consumer>>`
 `;
 
 const WeekLabel = styled.div<State.Select<typeof Consumer>>`
-  font-size: 8px;
   text-align: center;
 `;
 
@@ -54,7 +53,6 @@ const Days = styled.div<State.Select<typeof Consumer>>`
 const Day = styled.div<State.Select<typeof Consumer>>`
   width: ${props => props.columnWidth}px;
   text-align: center;
-  font-size: 8px;
   overflow: hidden;
 `;
 

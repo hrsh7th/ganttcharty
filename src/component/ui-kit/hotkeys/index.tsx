@@ -2,6 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import closest from 'closest-element';
 import hotkeys, { KeyHandler, HotkeysEvent } from 'hotkeys-js';
+import Outside from '../outside';
+
+const SCOPE_NOTHING = 'nothing';
 
 hotkeys.filter = () => true;
 
@@ -42,15 +45,18 @@ export default class Hotkeys<Keymap extends { [name: string]: string[]; }> exten
   }
 
   public render() {
-    return React.Children.map(this.props.children, (c: any) => {
-      return React.cloneElement(c, {
-        ...c.props,
-        onClick: (e: React.MouseEvent) => {
-          this.onClick(e);
-          c.props.onClick && c.props.onClick(e);
-        }
-      });
-    });
+    const kid = React.Children.only(this.props.children);
+    return (
+      <Outside onClick={this.onOutsideClick}>
+        {React.cloneElement(kid, {
+          ...kid.props,
+          onClick: (e: React.MouseEvent) => {
+            this.onClick(e);
+            kid.props.onClick && kid.props.onClick(e);
+          }
+        })}
+      </Outside>
+    );
   }
 
   private onClick = (e: React.MouseEvent) => {
@@ -60,6 +66,10 @@ export default class Hotkeys<Keymap extends { [name: string]: string[]; }> exten
         Hotkeys.setScope(this.id, e.target as HTMLElement);
       }
     }
+  }
+
+  private onOutsideClick() {
+    hotkeys.setScope(SCOPE_NOTHING);
   }
 
 }
