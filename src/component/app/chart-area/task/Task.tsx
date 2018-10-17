@@ -7,7 +7,7 @@ import * as State from '../../../../state';
 
 export type Props = {
   node: State.Task.TaskNode;
-  height: number;
+  rowHeight: number;
   scale: State.Option.Scale;
   barHeight: number;
   columnWidth: number;
@@ -38,7 +38,7 @@ export default class Node extends React.Component<Props, State> {
         transform: `translateX(${State.UI.x(startedAt, baseTime, scale, columnWidth)}px)`,
         width: `${State.UI.width(startedAt, finishedAt, scale, columnWidth)}px`
       }}>
-        <TaskLabel {...this.props}>{this.props.node.name}</TaskLabel>
+        <TaskLabel rowHeight={this.props.rowHeight}>{this.props.node.name}</TaskLabel>
         <Draggable onDragStart={this.onDragStart} onDragEnd={this.onDragEnd} onDragging={this.onDragPrev}><HandlePrev /></Draggable>
         <Draggable onDragStart={this.onDragStart} onDragEnd={this.onDragEnd} onDragging={this.onDragSelf}>
           <TaskLine title={this.props.node.name} {...this.props}></TaskLine>
@@ -141,13 +141,13 @@ export default class Node extends React.Component<Props, State> {
 
 }
 
-const Task = styled.div<Props>`
+const Task = styled.div<{ rowHeight: number; barHeight: number; }>`
   position: relative;
-  height: ${props => props.height}px;
-  padding: ${props => (props.height - props.barHeight) / 2}px 0;
+  height: ${props => props.rowHeight}px;
+  padding: ${props => (props.rowHeight - props.barHeight) / 2}px 0;
 `;
 
-const TaskLine = styled.div<Props>`
+const TaskLine = styled.div<{ selectedTaskId?: State.Task.TaskId; node: State.Task.TaskNode; }>`
   width: 100%;
   height: 100%;
   border-radius: 2px;
@@ -155,12 +155,12 @@ const TaskLine = styled.div<Props>`
   cursor: move;
 `;
 
-const TaskLabel = styled.div<Props>`
+const TaskLabel = styled.div<{ rowHeight: number; }>`
   position: absolute;
   top: 0;
   right: 100%;
   margin-right: 4px;
-  line-height: ${props => props.height}px;
+  line-height: ${props => props.rowHeight}px;
   white-space: nowrap;
   pointer-events: none;
 `;

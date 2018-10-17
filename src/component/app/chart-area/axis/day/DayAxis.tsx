@@ -16,11 +16,11 @@ export default () => (
   <Consumer>
     {state => (
       State.UI.dayAxis(new Date(state.currentTimestamp), state.scale, state.columnWidth, state.viewportWidth).map(week => (
-        <Week key={week.day.getTime()} {...state}>
-          <WeekLabel {...state}>{format(week.day, 'YYYY/MM/DD')}</WeekLabel>
-          <Days {...state}>
+        <Week key={week.day.getTime()} columnWidth={state.columnWidth}>
+          <WeekLabel>{format(week.day, 'YYYY/MM/DD')}</WeekLabel>
+          <Days>
           {week.days.map(day => (
-            <Day key={day.getTime()} title={format(day, 'YYYY/MM/DD')} {...state}>{state.dayLabel[day.getDay()]}</Day>
+            <Day key={day.getTime()} title={format(day, 'YYYY/MM/DD')} columnWidth={state.columnWidth}>{state.dayLabel[day.getDay()]}</Day>
           ))}
           </Days>
         </Week>
@@ -29,7 +29,7 @@ export default () => (
   </Consumer>
 );
 
-const Week = styled.div<State.Select<typeof Consumer>>`
+const Week = styled.div<{ columnWidth: number; }>`
   width: ${props => props.columnWidth * 7}px;
   height: 100%;
   display: flex;
@@ -41,16 +41,16 @@ const Week = styled.div<State.Select<typeof Consumer>>`
   }
 `;
 
-const WeekLabel = styled.div<State.Select<typeof Consumer>>`
+const WeekLabel = styled.div`
   text-align: center;
 `;
 
-const Days = styled.div<State.Select<typeof Consumer>>`
+const Days = styled.div`
   display: flex;
   align-items: center;
 `;
 
-const Day = styled.div<State.Select<typeof Consumer>>`
+const Day = styled.div<{ columnWidth: number; }>`
   width: ${props => props.columnWidth}px;
   text-align: center;
   overflow: hidden;

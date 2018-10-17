@@ -24,7 +24,7 @@ export type Props = {
 export default React.forwardRef(({ onWheel }: Props, ref: any) => (
   <Consumer>
     {state => (
-      <HeaderArea {...state}>
+      <HeaderArea headerWidth={state.headerWidth}>
         <Grid<State.Task.TaskNode>
           keyName="id"
           columns={state.columns}
@@ -106,14 +106,14 @@ const onExpandClick = (e: React.MouseEvent<SVGElement>) => {
   }
 };
 
-const HeaderArea = styled.div<State.Select<typeof Consumer>>`
+const HeaderArea = styled.div<{ headerWidth: number; }>`
   width: ${props => props.headerWidth}px;
   height: 100%;
   z-index: 2;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.26);
 `;
 
-const Expander = styled.div<{ rowHeight: number; indentWidth: number; depth: number; }>`
+const Expander = styled.div<{ indentWidth: number; rowHeight: number; depth: number; }>`
   display: inline-block;
   vertical-align: bottom;
   margin-left: ${props => props.indentWidth * props.depth}px;

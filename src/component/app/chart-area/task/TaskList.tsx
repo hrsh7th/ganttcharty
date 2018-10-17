@@ -4,7 +4,7 @@ import Task from './Task';
 
 const Consumer = State.select(state => ({
   tasks: state.tasks,
-  height: state.option.rowHeight,
+  rowHeight: state.option.rowHeight,
   barHeight: state.option.barHeight,
   columnWidth: state.option.columnWidth,
   scale: state.option.scale,
@@ -19,7 +19,7 @@ export default () => (
         <Task
           key={node.id}
           node={node}
-          height={state.height}
+          rowHeight={state.rowHeight}
           scale={state.scale}
           barHeight={state.barHeight}
           columnWidth={state.columnWidth}
