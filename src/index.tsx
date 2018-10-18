@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import GanttChart from './component/app/GanttChart'
+import GanttChart from './component/app/GanttChart';
 import * as State from './state';
 
 type Input = {
@@ -12,7 +12,9 @@ type Input = {
 export function render(id: string, state: Input) {
   const element = document.getElementById(id)!;
   ReactDOM.render(
-    <State.Provider state={defaults(element, state)}><GanttChart /></State.Provider>,
+    <State.Provider state={defaults(element, state)}>
+      <GanttChart />
+    </State.Provider>,
     element
   );
   return {
@@ -26,4 +28,3 @@ const defaults = (element: HTMLElement, state: Input): State.State => {
   state.tasks = State.Task.defaults(state.tasks || []);
   return state as State.State;
 };
-

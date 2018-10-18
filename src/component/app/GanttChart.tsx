@@ -15,7 +15,6 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 export default class extends React.Component {
-
   private header = React.createRef<HTMLDivElement>();
   private chart = React.createRef<HTMLDivElement>();
 
@@ -23,7 +22,11 @@ export default class extends React.Component {
     return (
       <>
         <ResizeDetector handleWidth handleHeight onResize={this.onResize} />
-        <Hotkeys scope="root" keymap={Action.Hotkey.keyMap} listeners={Action.Hotkey.handlers}>
+        <Hotkeys
+          scope="root"
+          keymap={Action.Hotkey.keyMap}
+          listeners={Action.Hotkey.handlers}
+        >
           <GanttChart className="GanttChart">
             <HeaderArea ref={this.header} onWheel={this.onHeaderAreaWheel} />
             <ChartArea ref={this.chart} onWheel={this.onChartAreaWheel} />
@@ -52,7 +55,11 @@ export default class extends React.Component {
     this.syncY(this.chart, this.header, e.deltaY);
   };
 
-  private syncY = (from: React.RefObject<HTMLDivElement>, to: React.RefObject<HTMLDivElement>, diffY: number) => {
+  private syncY = (
+    from: React.RefObject<HTMLDivElement>,
+    to: React.RefObject<HTMLDivElement>,
+    diffY: number
+  ) => {
     if (from.current && to.current) {
       from.current.scrollTop += diffY;
       to.current.scrollTop = from.current.scrollTop;
@@ -66,4 +73,3 @@ const GanttChart = styled.div`
   display: flex;
   font-size: 8px;
 `;
-

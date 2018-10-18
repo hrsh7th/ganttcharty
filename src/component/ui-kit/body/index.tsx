@@ -6,7 +6,6 @@ export type Props = {
 };
 
 export default class Body extends React.Component<Props> {
-
   public static defaultProps = {
     className: '',
     style: {}
@@ -49,19 +48,19 @@ export default class Body extends React.Component<Props> {
     const styles = Object.keys(this.props.style!).map((prop: any) => {
       const value = (this.props.style! as any)[prop];
       return {
-        prop: prop.replace(/([a-z])([A-Z])/, '$1-\L$2'),
+        prop: prop.replace(/([a-z])([A-Z])/, '$1-L$2'),
         value: typeof value === 'number' ? `${value}px` : value
       };
     });
 
     if (apply) {
       this.previousStyles = { ...document.body.style };
-      styles.forEach(({ prop, value}) => {
+      styles.forEach(({ prop, value }) => {
         document.body.style[prop] = value;
       });
     } else {
       styles.forEach(({ prop }) => {
-        document.body.style[prop] = null as any as string;
+        document.body.style[prop] = (null as any) as string;
       });
       Object.keys(this.previousStyles || {}).map(key => {
         // @ts-ignore
@@ -69,6 +68,4 @@ export default class Body extends React.Component<Props> {
       });
     }
   }
-
 }
-

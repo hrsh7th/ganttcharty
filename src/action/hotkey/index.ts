@@ -50,5 +50,6 @@ export const handlers = {
       Action.Task.collapse(state.ui.selectedTaskId);
     }
   }
-} as { [key in keyof typeof keyMap]: (ke: KeyboardEvent, he: HotkeysEvent) => void };
-
+} as {
+  [key in keyof typeof keyMap]: (ke: KeyboardEvent, he: HotkeysEvent) => void
+};

@@ -26,10 +26,11 @@ export type Scale = 'day' | 'week';
 /**
  * create scale time.
  */
-export const scaleTime = (scale: Scale) => ({
-  day: DAY,
-  week: WEEK
-}[scale]);
+export const scaleTime = (scale: Scale) =>
+  ({
+    day: DAY,
+    week: WEEK
+  }[scale]);
 
 export const defaults = (option: Partial<Option> = {}) => {
   option.headerWidth = 240;
@@ -39,36 +40,26 @@ export const defaults = (option: Partial<Option> = {}) => {
   option.barHeight = 4;
   option.axisHeight = 32;
   option.indentWidth = 12;
-  option.baseTime = startOfDay(new Date(Date.now() - scaleTime(option.scale) * 7));
-  option.dayLabel = [
-    '日',
-    '月',
-    '火',
-    '水',
-    '木',
-    '金',
-    '土'
-  ];
+  option.baseTime = startOfDay(
+    new Date(Date.now() - scaleTime(option.scale) * 7)
+  );
+  option.dayLabel = ['日', '月', '火', '水', '木', '金', '土'];
   option.columns = [
     {
       key: 'name',
       name: 'タスク',
       width: 200
-
     },
     {
       key: 'startedAt',
       name: '開始日',
       width: 120
-
     },
     {
       key: 'finishedAt',
       name: '終了日',
       width: 120
-
     }
   ];
   return option as Option;
 };
-

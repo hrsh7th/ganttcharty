@@ -9,12 +9,12 @@ const Consumer = State.select(state => ({
   columnWidth: state.option.columnWidth,
   scale: state.option.scale,
   baseTime: state.option.baseTime,
-  selectedTaskId: state.ui.selectedTaskId,
+  selectedTaskId: state.ui.selectedTaskId
 }));
 
 export default () => (
   <Consumer>
-    {state => (
+    {state =>
       State.Task.tasks(state.tasks).map(node => (
         <Task
           key={node.id}
@@ -27,7 +27,6 @@ export default () => (
           selectedTaskId={state.selectedTaskId}
         />
       ))
-    )}
+    }
   </Consumer>
 );
-

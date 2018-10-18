@@ -11,12 +11,4 @@ export type State = {
   tasks: Task.Task[];
 };
 
-export const {
-  Provider,
-  Consumer,
-  update,
-  select,
-  get,
-  set
-} = define<State>();
-
+export const { Provider, Consumer, update, select, get, set } = define<State>();

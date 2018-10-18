@@ -1,14 +1,17 @@
 import { v4 as uuid } from 'uuid';
 import * as State from '../../state';
 
-export const updateTask = (taskId: State.Task.TaskId, attrs: Partial<State.Task.Task>) => {
+export const updateTask = (
+  taskId: State.Task.TaskId,
+  attrs: Partial<State.Task.Task>
+) => {
   State.update(state => {
     const task = State.Task.getTask(state.tasks, taskId);
     Object.keys(attrs).forEach(key => {
       // @ts-ignore
       task[key] = attrs[key];
     });
-  })
+  });
 };
 
 export const moveSelectedTask = (adder: number) => {
@@ -30,7 +33,9 @@ export const deleteSelectedTask = () => {
 
     // remove children.
     const children = State.Task.getChildren(state.tasks, target.id);
-    children.forEach(child => state.tasks.splice(state.tasks.indexOf(child), 1));
+    children.forEach(child =>
+      state.tasks.splice(state.tasks.indexOf(child), 1)
+    );
 
     // memory target to move.
     const prev = State.Task.getPrev(state.tasks, state.ui.selectedTaskId);
@@ -89,7 +94,7 @@ export const collapse = (taskId: State.Task.TaskId) => {
   State.update(state => {
     const selected = State.Task.getTask(state.tasks, taskId)!;
     const children = State.Task.getChildren(state.tasks, selected.id, false);
-    if (selected && children.length &&  !selected.collapsed) {
+    if (selected && children.length && !selected.collapsed) {
       selected.collapsed = true;
     }
   });
@@ -111,14 +116,9 @@ export const add = () => {
     };
 
     // insert newTask to next to selected task.
-    state.tasks.splice(
-      state.tasks.indexOf(selected) + 1,
-      0,
-      newTask
-    );
+    state.tasks.splice(state.tasks.indexOf(selected) + 1, 0, newTask);
 
     // select newTask.
     state.ui.selectedTaskId = newTask.id;
   });
 };
-

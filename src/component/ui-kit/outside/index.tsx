@@ -8,7 +8,6 @@ export type Props = {
 };
 
 export default class Outside extends React.Component<Props> {
-
   public componentDidMount() {
     document.addEventListener('click', this.onClick);
   }
@@ -28,7 +27,5 @@ export default class Outside extends React.Component<Props> {
         this.props.onClick(e);
       }
     }
-  }
-
+  };
 }
-

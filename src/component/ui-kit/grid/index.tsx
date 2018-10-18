@@ -14,12 +14,12 @@ export type Props<Row extends object> = {
   header: {
     HeaderBox: React.ComponentType<any>;
     HeaderRow: React.ComponentType<any>;
-    HeaderCell: React.ComponentType<unknown & { column: Column<Row>; }>;
+    HeaderCell: React.ComponentType<unknown & { column: Column<Row> }>;
   };
   body: {
     BodyBox: React.ComponentType<any>;
-    BodyRow: React.ComponentType<unknown & { row: Row; }>;
-    BodyCell: React.ComponentType<unknown & { column: Column<Row>; row: Row; }>;
+    BodyRow: React.ComponentType<unknown & { row: Row }>;
+    BodyCell: React.ComponentType<unknown & { column: Column<Row>; row: Row }>;
   };
   forwardedRef: React.RefObject<HTMLDivElement>;
   onWheel: React.WheelEventHandler;
@@ -31,8 +31,9 @@ const ScrollableStyle = {
   overflow: 'hidden'
 };
 
-export default class Grid<Row extends object> extends React.Component<Props<Row>> {
-
+export default class Grid<Row extends object> extends React.Component<
+  Props<Row>
+> {
   private header = React.createRef<HTMLDivElement>();
 
   public getSnapshotBeforeUpdate() {
@@ -45,7 +46,11 @@ export default class Grid<Row extends object> extends React.Component<Props<Row>
     return null;
   }
 
-  public componentDidUpdate(_: Props<Row>, __: any, snapshot: { x: number; y: number; }) {
+  public componentDidUpdate(
+    _: Props<Row>,
+    __: any,
+    snapshot: { x: number; y: number }
+  ) {
     if (this.header.current && this.props.forwardedRef.current) {
       this.header.current.scrollLeft = snapshot.x;
       this.props.forwardedRef.current.scrollLeft = snapshot.x;
@@ -65,7 +70,11 @@ export default class Grid<Row extends object> extends React.Component<Props<Row>
           </div>
         </HeaderBox>
         <BodyBox>
-          <div style={ScrollableStyle} ref={this.props.forwardedRef} onWheel={this.onWheel}>
+          <div
+            style={ScrollableStyle}
+            ref={this.props.forwardedRef}
+            onWheel={this.onWheel}
+          >
             {this.rows()}
           </div>
         </BodyBox>
@@ -85,11 +94,15 @@ export default class Grid<Row extends object> extends React.Component<Props<Row>
   }
 
   private rows() {
-    const { BodyRow, BodyCell }= this.props.body;
+    const { BodyRow, BodyCell } = this.props.body;
     return this.props.rows.map(row => (
       <BodyRow key={`body-row-${row[this.props.keyName]}`} row={row}>
         {this.props.columns.map(column => (
-          <BodyCell key={`body-cell-${row[this.props.keyName]}-${column.key}`} column={column} row={row} />
+          <BodyCell
+            key={`body-cell-${row[this.props.keyName]}-${column.key}`}
+            column={column}
+            row={row}
+          />
         ))}
       </BodyRow>
     ));
@@ -101,6 +114,4 @@ export default class Grid<Row extends object> extends React.Component<Props<Row>
     }
     this.props.onWheel(e);
   };
-
 }
-

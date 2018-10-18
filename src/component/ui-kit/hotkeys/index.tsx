@@ -8,14 +8,15 @@ const SCOPE_NOTHING = 'nothing';
 
 hotkeys.filter = () => true;
 
-export type Props<Keymap extends { [name: string]: string[]; }> = {
+export type Props<Keymap extends { [name: string]: string[] }> = {
   scope?: string;
   keymap: Keymap;
-  listeners: { [K in keyof Keymap]: KeyHandler; };
+  listeners: { [K in keyof Keymap]: KeyHandler };
 };
 
-export default class Hotkeys<Keymap extends { [name: string]: string[]; }> extends React.Component<Props<Keymap>> {
-
+export default class Hotkeys<
+  Keymap extends { [name: string]: string[] }
+> extends React.Component<Props<Keymap>> {
   private static recentTarget: HTMLElement | null = null;
 
   public static setScope(scope: string, target: HTMLElement) {
@@ -66,11 +67,9 @@ export default class Hotkeys<Keymap extends { [name: string]: string[]; }> exten
         Hotkeys.setScope(this.id, e.target as HTMLElement);
       }
     }
-  }
+  };
 
   private onOutsideClick() {
     hotkeys.setScope(SCOPE_NOTHING);
   }
-
 }
-

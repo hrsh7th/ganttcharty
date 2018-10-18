@@ -34,19 +34,24 @@ export const tasks = memoize((tasks: Task[]) => {
     depth: number = 0
   ): TaskNode[] {
     const parent = getTask(tasks, parentId);
-    return tasks
-      .filter(task => task.parentId === parentId)
-      .reduce((nodes, task) => {
-        const children = !task.collapsed ? traverse(tasks, task.id, depth + 1) : [];
+    return tasks.filter(task => task.parentId === parentId).reduce(
+      (nodes, task) => {
+        const children = !task.collapsed
+          ? traverse(tasks, task.id, depth + 1)
+          : [];
         return nodes
-          .concat([{
-            ...task,
-            parent,
-            children,
-            depth
-          }])
+          .concat([
+            {
+              ...task,
+              parent,
+              children,
+              depth
+            }
+          ])
           .concat(children);
-      }, [] as TaskNode[]);
+      },
+      [] as TaskNode[]
+    );
   })(tasks);
 });
 
@@ -60,7 +65,11 @@ export const getTask = (tasks: Task[], taskId?: TaskId) => {
 /**
  * get children by id.
  */
-export const getChildren = (tasks: Task[], taskId?: TaskId, checkExpanded: boolean = true) => {
+export const getChildren = (
+  tasks: Task[],
+  taskId?: TaskId,
+  checkExpanded: boolean = true
+) => {
   const target = getTask(tasks, taskId)!;
   if (target && (target.collapsed && checkExpanded)) {
     return [];
@@ -150,10 +159,11 @@ export const getNext = (tasks: Task[], taskId: TaskId): Task | null => {
 };
 
 export const defaults = (tasks: Task[]) => {
-  return tasks.sort((a, b) => a.startedAt.getTime() - b.startedAt.getTime()).map(task => {
-    task.startedAt = startOfDay(task.startedAt);
-    task.finishedAt = startOfDay(task.finishedAt);
-    return task;
-  });
+  return tasks
+    .sort((a, b) => a.startedAt.getTime() - b.startedAt.getTime())
+    .map(task => {
+      task.startedAt = startOfDay(task.startedAt);
+      task.finishedAt = startOfDay(task.finishedAt);
+      return task;
+    });
 };
-

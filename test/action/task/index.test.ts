@@ -19,4 +19,3 @@ test('moveSelectedTask', () => {
   Action.Task.moveSelectedTask(-State.Option.DAY);
   expect(diff(state, State.get())).toMatchSnapshot();
 });
-

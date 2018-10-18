@@ -29,17 +29,47 @@ export default React.forwardRef(({ onWheel }: Props, ref: any) => (
         <HeaderBox height={state.axisHeight}>
           <Axis />
         </HeaderBox>
-        <Box height={state.viewportHeight - state.axisHeight} ref={ref} onWheel={onWheel}>
+        <Box
+          height={state.viewportHeight - state.axisHeight}
+          ref={ref}
+          onWheel={onWheel}
+        >
           <TaskListContentArea {...state}>
-            <TaskListBackground {...state} style={{
-              transform: `translateX(${-State.UI.rest(new Date(state.currentTime.getTime() - state.baseTime.getTime()), state.scale, state.columnWidth, 2)}px)`
-            }} />
-            <TaskListSeekArea {...state} style={{
-              transform: `translateX(${-State.UI.x(state.currentTime, state.baseTime, state.scale, state.columnWidth)}px)`
-            }}>
-              <Now {...state} style={{
-                transform: `translateX(${-State.UI.x(state.baseTime, state.nowDay, state.scale, state.columnWidth)}px)`
-              }} />
+            <TaskListBackground
+              {...state}
+              style={{
+                transform: `translateX(${-State.UI.rest(
+                  new Date(
+                    state.currentTime.getTime() - state.baseTime.getTime()
+                  ),
+                  state.scale,
+                  state.columnWidth,
+                  2
+                )}px)`
+              }}
+            />
+            <TaskListSeekArea
+              {...state}
+              style={{
+                transform: `translateX(${-State.UI.x(
+                  state.currentTime,
+                  state.baseTime,
+                  state.scale,
+                  state.columnWidth
+                )}px)`
+              }}
+            >
+              <Now
+                {...state}
+                style={{
+                  transform: `translateX(${-State.UI.x(
+                    state.baseTime,
+                    state.nowDay,
+                    state.scale,
+                    state.columnWidth
+                  )}px)`
+                }}
+              />
               <TaskList />
             </TaskListSeekArea>
           </TaskListContentArea>
@@ -49,12 +79,12 @@ export default React.forwardRef(({ onWheel }: Props, ref: any) => (
   </Consumer>
 ));
 
-const ChartArea = styled.div<{ width: number; }>`
+const ChartArea = styled.div<{ width: number }>`
   width: ${props => props.width}px;
   height: 100%;
 `;
 
-const Box = styled.div<{ height: number; }>`
+const Box = styled.div<{ height: number }>`
   width: 100%;
   height: ${props => props.height}px;
   position: relative;
@@ -71,7 +101,10 @@ const TaskListContentArea = styled.div`
   position: relative;
 `;
 
-const TaskListBackground = styled.div<{ columnWidth: number; rowHeight: number; }>`
+const TaskListBackground = styled.div<{
+  columnWidth: number;
+  rowHeight: number;
+}>`
   will-change: transform;
   position: absolute;
   top: 0;
@@ -79,18 +112,19 @@ const TaskListBackground = styled.div<{ columnWidth: number; rowHeight: number; 
   right: -${props => props.columnWidth * 2}px;
   bottom: 0;
   background-image: repeating-linear-gradient(
-    180deg,
-    transparent 0px,
-    transparent ${props => props.rowHeight - 1}px,
-    #f0f0f0 ${props => props.rowHeight - 1}px,
-    #f0f0f0 ${props => props.rowHeight}px
-  ), repeating-linear-gradient(
-    90deg,
-    #f8f8f8 0px,
-    #f8f8f8 ${props => props.columnWidth}px,
-    transparent ${props => props.columnWidth}px,
-    transparent ${props => props.columnWidth * 2}px
-  );
+      180deg,
+      transparent 0px,
+      transparent ${props => props.rowHeight - 1}px,
+      #f0f0f0 ${props => props.rowHeight - 1}px,
+      #f0f0f0 ${props => props.rowHeight}px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      #f8f8f8 0px,
+      #f8f8f8 ${props => props.columnWidth}px,
+      transparent ${props => props.columnWidth}px,
+      transparent ${props => props.columnWidth * 2}px
+    );
 `;
 
 const TaskListSeekArea = styled.div`
@@ -99,11 +133,10 @@ const TaskListSeekArea = styled.div`
   min-height: 100%;
 `;
 
-const Now = styled.div<{ columnWidth: number; }>`
+const Now = styled.div<{ columnWidth: number }>`
   position: absolute;
   top: 0;
   left: ${props => props.columnWidth / 2}px;
   height: 100%;
   border-left: 2px dashed #888;
 `;
-

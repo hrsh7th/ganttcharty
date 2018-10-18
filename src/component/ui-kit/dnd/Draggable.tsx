@@ -16,7 +16,6 @@ export type State = {
 };
 
 export default class Draggable extends React.Component<Props, State> {
-
   public state: State = {};
 
   public render() {
@@ -30,7 +29,11 @@ export default class Draggable extends React.Component<Props, State> {
     return (
       <>
         {this.state.isDragging && props.preview ? (
-          <Preview x={this.state.x!} y={this.state.y!} preview={props.preview!} />
+          <Preview
+            x={this.state.x!}
+            y={this.state.y!}
+            preview={props.preview!}
+          />
         ) : null}
         {React.cloneElement(React.Children.only(children), {
           ...props,
@@ -82,6 +85,4 @@ export default class Draggable extends React.Component<Props, State> {
   private onDragEnd = (e: MouseEvent) => {
     this.props.onDragEnd && this.props.onDragEnd(e);
   };
-
 }
-

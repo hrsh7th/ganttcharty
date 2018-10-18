@@ -7,14 +7,14 @@ export const fixture = () => {
 
   const option = State.Option.defaults() as State.Option.Option;
   const ui = State.UI.defaults(e, option, {}) as State.UI.UI;
-  const tasks = State.Task.defaults([
-    task(1),
-    task(2)
-  ]);
+  const tasks = State.Task.defaults([task(1), task(2)]);
   return { option, ui, tasks };
 };
 
-export const task = (id: State.Task.TaskId, task: Partial<State.Task.Task> = {}): State.Task.Task => {
+export const task = (
+  id: State.Task.TaskId,
+  task: Partial<State.Task.Task> = {}
+): State.Task.Task => {
   return {
     id: id,
     name: 'default task name',
@@ -24,4 +24,3 @@ export const task = (id: State.Task.TaskId, task: Partial<State.Task.Task> = {})
     ...task
   };
 };
-

@@ -9,27 +9,40 @@ const Consumer = State.select(state => ({
   columnWidth: state.option.columnWidth,
   dayLabel: state.option.dayLabel,
   viewportWidth: state.ui.viewportWidth,
-  currentTimestamp:  startOfWeek(state.ui.currentTime, { weekStartsOn: 1 }).getTime()
+  currentTimestamp: startOfWeek(state.ui.currentTime, {
+    weekStartsOn: 1
+  }).getTime()
 }));
 
 export default () => (
   <Consumer>
-    {state => (
-      State.UI.dayAxis(new Date(state.currentTimestamp), state.scale, state.columnWidth, state.viewportWidth).map(week => (
+    {state =>
+      State.UI.dayAxis(
+        new Date(state.currentTimestamp),
+        state.scale,
+        state.columnWidth,
+        state.viewportWidth
+      ).map(week => (
         <Week key={week.day.getTime()} columnWidth={state.columnWidth}>
           <WeekLabel>{format(week.day, 'YYYY/MM/DD')}</WeekLabel>
           <Days>
-          {week.days.map(day => (
-            <Day key={day.getTime()} title={format(day, 'YYYY/MM/DD')} columnWidth={state.columnWidth}>{state.dayLabel[day.getDay()]}</Day>
-          ))}
+            {week.days.map(day => (
+              <Day
+                key={day.getTime()}
+                title={format(day, 'YYYY/MM/DD')}
+                columnWidth={state.columnWidth}
+              >
+                {state.dayLabel[day.getDay()]}
+              </Day>
+            ))}
           </Days>
         </Week>
       ))
-    )}
+    }
   </Consumer>
 );
 
-const Week = styled.div<{ columnWidth: number; }>`
+const Week = styled.div<{ columnWidth: number }>`
   width: ${props => props.columnWidth * 7}px;
   height: 100%;
   display: flex;
@@ -50,9 +63,8 @@ const Days = styled.div`
   align-items: center;
 `;
 
-const Day = styled.div<{ columnWidth: number; }>`
+const Day = styled.div<{ columnWidth: number }>`
   width: ${props => props.columnWidth}px;
   text-align: center;
   overflow: hidden;
 `;
-

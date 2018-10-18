@@ -13,9 +13,16 @@ const Consumer = State.select(state => ({
 export default () => (
   <Consumer>
     {state => (
-      <Axis style={{
-        transform: `translateX(${State.UI.x(startOfWeek(state.currentTime, { weekStartsOn: 1 }), state.currentTime, state.scale, state.columnWidth)}px)`
-      }}>
+      <Axis
+        style={{
+          transform: `translateX(${State.UI.x(
+            startOfWeek(state.currentTime, { weekStartsOn: 1 }),
+            state.currentTime,
+            state.scale,
+            state.columnWidth
+          )}px)`
+        }}
+      >
         <DayAxis />
       </Axis>
     )}
@@ -30,4 +37,3 @@ const Axis = styled.div`
   display: flex;
   border-bottom: 1px solid #ddd;
 `;
-

@@ -17,9 +17,13 @@ export const width = (
   startTime: Date,
   finishTime: Date,
   scale: State.Option.Scale,
-  columnWidth: number,
+  columnWidth: number
 ) => {
-  return (finishTime.getTime() - startTime.getTime()) / State.Option.scaleTime(scale) * columnWidth;
+  return (
+    ((finishTime.getTime() - startTime.getTime()) /
+      State.Option.scaleTime(scale)) *
+    columnWidth
+  );
 };
 
 /**
@@ -31,9 +35,11 @@ export const x = (
   scale: State.Option.Scale,
   columnWidth: number
 ) => {
-  return Math.floor((
-    currentTime.getTime() - baseTime.getTime()
-  ) / State.Option.scaleTime(scale) * columnWidth);
+  return Math.floor(
+    ((currentTime.getTime() - baseTime.getTime()) /
+      State.Option.scaleTime(scale)) *
+      columnWidth
+  );
 };
 
 /**
@@ -46,7 +52,9 @@ export const rest = (
   multiple: number = 1
 ) => {
   const span = State.Option.scaleTime(scale) * multiple;
-  return Math.floor((time.getTime() % span) / State.Option.scaleTime(scale) * columnWidth);
+  return Math.floor(
+    ((time.getTime() % span) / State.Option.scaleTime(scale)) * columnWidth
+  );
 };
 
 /**
@@ -59,20 +67,26 @@ export const dayAxis = (
   viewportWidth: number
 ) => {
   const scaleTime = State.Option.scaleTime(scale);
-  const viewportTime = viewportWidth / columnWidth * scaleTime;
+  const viewportTime = (viewportWidth / columnWidth) * scaleTime;
   const startTime = startOfWeek(currentTime, { weekStartsOn: 1 });
-  const finishTime = endOfWeek(startTime.getTime() + viewportTime + State.Option.WEEK, { weekStartsOn: 1 });
-  return eachDay(startTime, finishTime).reduce((weeks, day) => {
-    if (day.getDay() === 1) {
-      weeks.push({
-        day: day,
-        days: [day]
-      });
+  const finishTime = endOfWeek(
+    startTime.getTime() + viewportTime + State.Option.WEEK,
+    { weekStartsOn: 1 }
+  );
+  return eachDay(startTime, finishTime).reduce(
+    (weeks, day) => {
+      if (day.getDay() === 1) {
+        weeks.push({
+          day: day,
+          days: [day]
+        });
+        return weeks;
+      }
+      weeks[weeks.length - 1].days.push(day);
       return weeks;
-    }
-    weeks[weeks.length - 1].days.push(day);
-    return weeks;
-  }, [] as { day: Date; days: Date[]; }[]);
+    },
+    [] as { day: Date; days: Date[] }[]
+  );
 };
 
 /**
@@ -88,4 +102,3 @@ export const defaults = (
   ui.currentTime = option.baseTime;
   return ui;
 };
-
