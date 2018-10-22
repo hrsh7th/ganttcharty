@@ -80,6 +80,21 @@ export const selectPrevTask = () => {
   });
 };
 
+export const moveNext = (
+  to: State.Task.TaskId,
+  targetId: State.Task.TaskId
+) => {
+  State.update(state => {
+    const targetIdx = state.tasks.findIndex(task => task.id === targetId);
+    state.tasks.splice(targetIdx, 1);
+    const toIdx = state.tasks.findIndex(task => task.id === to);
+    const target = State.Task.getTask(state.tasks, targetId)!;
+    state.tasks.splice(toIdx, 1, target);
+  });
+};
+
+export const movePrev = () => {};
+
 export const expand = (taskId: State.Task.TaskId) => {
   State.update(state => {
     const selected = State.Task.getTask(state.tasks, taskId)!;

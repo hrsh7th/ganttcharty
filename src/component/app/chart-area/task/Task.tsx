@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import startOfDay from 'date-fns/start_of_day';
-import { Draggable } from '../../../ui-kit/dnd';
+import Movable from '../../../ui-kit/movable';
 import * as Action from '../../../../action';
 import * as State from '../../../../state';
 
@@ -57,27 +57,27 @@ export default class Node extends React.Component<Props, State> {
         <TaskLabel rowHeight={this.props.rowHeight}>
           {this.props.node.name}
         </TaskLabel>
-        <Draggable
-          onDragStart={this.onDragStart}
-          onDragEnd={this.onDragEnd}
-          onDragging={this.onDragPrev}
+        <Movable
+          onMoveStart={this.onMoveStart}
+          onMoveEnd={this.onMoveEnd}
+          onMoving={this.onMovePrev}
         >
           <HandlePrev />
-        </Draggable>
-        <Draggable
-          onDragStart={this.onDragStart}
-          onDragEnd={this.onDragEnd}
-          onDragging={this.onDragSelf}
+        </Movable>
+        <Movable
+          onMoveStart={this.onMoveStart}
+          onMoveEnd={this.onMoveEnd}
+          onMoving={this.onMoveSelf}
         >
           <TaskLine title={this.props.node.name} {...this.props} />
-        </Draggable>
-        <Draggable
-          onDragStart={this.onDragStart}
-          onDragEnd={this.onDragEnd}
-          onDragging={this.onDragNext}
+        </Movable>
+        <Movable
+          onMoveStart={this.onMoveStart}
+          onMoveEnd={this.onMoveEnd}
+          onMoving={this.onMoveNext}
         >
           <HandleNext />
-        </Draggable>
+        </Movable>
       </Task>
     );
   };
@@ -92,7 +92,7 @@ export default class Node extends React.Component<Props, State> {
   /**
    * start drag.
    */
-  private onDragStart = (e: MouseEvent) => {
+  private onMoveStart = (e: MouseEvent) => {
     const { startedAt, finishedAt } = this.props.node;
     this.setState({
       dragging: {
@@ -107,7 +107,7 @@ export default class Node extends React.Component<Props, State> {
   /**
    * end drag.
    */
-  private onDragEnd = () => {
+  private onMoveEnd = () => {
     if (!this.state.dragging) return;
 
     Action.Task.updateTask(this.props.node.id, {
@@ -120,7 +120,7 @@ export default class Node extends React.Component<Props, State> {
   /**
    * drag self.
    */
-  private onDragSelf = (e: MouseEvent) => {
+  private onMoveSelf = (e: MouseEvent) => {
     if (!this.state.dragging) return;
 
     const { scale, columnWidth } = this.props;
@@ -144,7 +144,7 @@ export default class Node extends React.Component<Props, State> {
   /**
    * drag finishedAt.
    */
-  private onDragNext = (e: MouseEvent) => {
+  private onMoveNext = (e: MouseEvent) => {
     if (!this.state.dragging) return;
 
     const { scale, columnWidth } = this.props;
@@ -164,7 +164,7 @@ export default class Node extends React.Component<Props, State> {
   /**
    * drag startedAt.
    */
-  private onDragPrev = (e: MouseEvent) => {
+  private onMovePrev = (e: MouseEvent) => {
     if (!this.state.dragging) return;
 
     const { scale, columnWidth } = this.props;

@@ -20,6 +20,7 @@ export default class extends React.Component<Props> {
             left: 0,
             transform: `translate(${this.props.x - 5}px, ${this.props.y -
               5}px)`,
+            pointerEvents: 'none',
             zIndex: 100000
           }}
         >

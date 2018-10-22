@@ -1,88 +1,83 @@
 import React from 'react';
 import Preview from './Preview';
+import { DragDropContext } from './';
 
-export type Props = {
-  preview?: () => React.ReactNode;
+export type Props<T> = {
   onDragStart?: (e: MouseEvent) => void;
   onDragging?: (e: MouseEvent) => void;
   onDragEnd?: (e: MouseEvent) => void;
   children: React.ReactNode;
+  preview?: () => React.ReactNode;
+  payload?: T;
 };
 
 export type State = {
-  isDragging?: boolean;
-  x?: number;
-  y?: number;
+  dragging?: {
+    x: number;
+    y: number;
+  };
 };
 
-export default class Draggable extends React.Component<Props, State> {
-  public state: State = {};
+export function createDraggable<T>(context: DragDropContext<T>) {
+  return class Draggable extends React.Component<Props<T>, State> {
+    public state: State = {};
 
-  public render() {
-    const {
-      children,
-      onDragging: _,
-      onDragStart: __,
-      onDragEnd: ___,
-      ...props
-    } = this.props;
-    return (
-      <>
-        {this.state.isDragging && props.preview ? (
-          <Preview
-            x={this.state.x!}
-            y={this.state.y!}
-            preview={props.preview!}
-          />
-        ) : null}
-        {React.cloneElement(React.Children.only(children), {
-          ...props,
-          onMouseDown: this.onMouseDown
-        })}
-      </>
-    );
-  }
-
-  private onMouseDown = (e: MouseEvent) => {
-    e.preventDefault();
-    document.addEventListener('mousemove', this.onMouseMove);
-    document.addEventListener('mouseup', this.onMouseUp);
-  };
-
-  private onMouseMove = (e: MouseEvent) => {
-    if (this.state.isDragging) {
-      this.setState({
-        x: e.clientX,
-        y: e.clientY
-      });
-      this.onDragging(e);
-      return;
+    public render() {
+      const kid = React.Children.only(this.props.children);
+      return (
+        <>
+          {this.state.dragging && this.props.preview ? (
+            <Preview
+              x={this.state.dragging.x!}
+              y={this.state.dragging.y!}
+              preview={this.props.preview!}
+            />
+          ) : null}
+          {React.cloneElement(kid, {
+            onMouseDown: (e: React.MouseEvent<HTMLElement>) => {
+              kid.props.onMouseDown && kid.props.onMouseDown(e);
+              this.onMouseDown(e);
+            }
+          })}
+        </>
+      );
     }
 
-    this.setState({
-      isDragging: true as true,
-      x: e.clientX,
-      y: e.clientY
-    });
-    this.onDragStart(e);
-  };
+    private onMouseDown = (e: React.MouseEvent<HTMLElement>) => {
+      e.preventDefault();
+      document.addEventListener('mousemove', this.onMouseMove);
+      document.addEventListener('mouseup', this.onMouseUp);
+    };
 
-  private onMouseUp = (e: MouseEvent) => {
-    document.removeEventListener('mousemove', this.onMouseMove);
-    document.removeEventListener('mouseup', this.onMouseUp);
-    this.setState({ isDragging: false });
-    this.onDragEnd(e);
-  };
+    private onMouseMove = (e: MouseEvent) => {
+      if (this.state.dragging) {
+        this.setState({
+          dragging: {
+            x: e.clientX,
+            y: e.clientY
+          }
+        });
+        this.props.onDragging && this.props.onDragging(e);
+        return;
+      }
 
-  private onDragStart = (e: MouseEvent) => {
-    this.props.onDragStart && this.props.onDragStart(e);
-  };
+      context.dragging = true;
+      context.payload = this.props.payload;
+      this.setState({
+        dragging: {
+          x: e.clientX,
+          y: e.clientY
+        }
+      });
+      this.props.onDragStart && this.props.onDragStart(e);
+    };
 
-  private onDragging = (e: MouseEvent) => {
-    this.props.onDragging && this.props.onDragging(e);
-  };
-
-  private onDragEnd = (e: MouseEvent) => {
-    this.props.onDragEnd && this.props.onDragEnd(e);
+    private onMouseUp = (e: MouseEvent) => {
+      document.removeEventListener('mousemove', this.onMouseMove);
+      document.removeEventListener('mouseup', this.onMouseUp);
+      context.release();
+      this.setState({ dragging: undefined });
+      this.props.onDragEnd && this.props.onDragEnd(e);
+    };
   };
 }
