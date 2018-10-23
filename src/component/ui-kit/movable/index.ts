@@ -38,6 +38,8 @@ export class Movable extends React.Component<Props> {
 
   private onMouseUp = (e: MouseEvent) => {
     this.isMoving = false;
+    document.removeEventListener('mousemove', this.onMouseMove);
+    document.removeEventListener('mouseup', this.onMouseUp);
     this.props.onMoveEnd && this.props.onMoveEnd(e);
   };
 }

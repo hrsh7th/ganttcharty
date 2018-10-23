@@ -138,6 +138,7 @@ const Self = styled.div<{
   border-bottom: 1px solid #ddd;
   border-right: 1px solid #ddd;
   font-size: 8px; /* TODO */
+  background: #fff;
 
   & + & {
     border-left: none;

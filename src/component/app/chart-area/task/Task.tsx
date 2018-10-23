@@ -230,6 +230,7 @@ const HandleNext = styled(Handle).attrs({
   left: '100%',
   cursor: 'e-resize'
 })``;
+
 const HandlePrev = styled(Handle).attrs({
   x: '0%',
   left: '0',
