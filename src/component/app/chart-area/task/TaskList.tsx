@@ -1,6 +1,6 @@
 import React from 'react';
 import * as State from '../../../../state';
-import Task from './Task';
+import { Task } from './Task';
 
 const Consumer = State.select(state => ({
   tasks: state.tasks,
@@ -12,7 +12,7 @@ const Consumer = State.select(state => ({
   selectedTaskId: state.ui.selectedTaskId
 }));
 
-export default () => (
+export const TaskList = () => (
   <Consumer>
     {state =>
       State.Task.tasks(state.tasks).map(node => (

@@ -8,6 +8,8 @@ export const WEEK = DAY * 7;
 
 export type Column = Column<State.Task.TaskNode>;
 
+export type Scale = 'day' | 'week';
+
 export type Option = {
   headerWidth: number;
   rowHeight: number;
@@ -20,8 +22,6 @@ export type Option = {
   dayLabel: string[];
   columns: Column<State.Task.TaskNode>[];
 };
-
-export type Scale = 'day' | 'week';
 
 /**
  * create scale time.

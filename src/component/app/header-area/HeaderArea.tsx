@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import * as State from '../../../state';
-import Grid from '../../ui-kit/grid';
-import Task from './task/Task';
+import { Grid } from '../../ui-kit/grid';
+import { BodyRow, BodyCell } from './body';
 
 const Consumer = State.select(state => ({
   viewportHeight: state.ui.viewportHeight,
@@ -18,10 +18,10 @@ export type Props = {
   onWheel: React.WheelEventHandler;
 };
 
-export default React.forwardRef(({ onWheel }: Props, ref: any) => (
+export const HeaderArea = React.forwardRef(({ onWheel }: Props, ref: any) => (
   <Consumer>
     {state => (
-      <HeaderArea headerWidth={state.headerWidth}>
+      <Self headerWidth={state.headerWidth}>
         <Grid<State.Task.TaskNode>
           keyName="id"
           columns={state.columns}
@@ -49,10 +49,12 @@ export default React.forwardRef(({ onWheel }: Props, ref: any) => (
               </Box>
             ),
             BodyRow: props => (
-              <BodyRow height={state.rowHeight}>{props.children}</BodyRow>
+              <BodyRow rowHeight={state.rowHeight} row={props.row}>
+                {props.children}
+              </BodyRow>
             ),
             BodyCell: props => (
-              <Task
+              <BodyCell
                 row={props.row}
                 column={props.column}
                 indentWidth={state.indentWidth}
@@ -63,12 +65,12 @@ export default React.forwardRef(({ onWheel }: Props, ref: any) => (
           forwardedRef={ref}
           onWheel={onWheel}
         />
-      </HeaderArea>
+      </Self>
     )}
   </Consumer>
 ));
 
-const HeaderArea = styled.div<{ headerWidth: number }>`
+const Self = styled.div<{ headerWidth: number }>`
   width: ${props => props.headerWidth}px;
   height: 100%;
   z-index: 2;
@@ -102,9 +104,4 @@ const HeaderCell = styled.div<{ width: number; height: number }>`
   & + & {
     border-left: none;
   }
-`;
-
-const BodyRow = styled.div<{ height: number }>`
-  display: flex;
-  height: ${props => props.height}px;
 `;

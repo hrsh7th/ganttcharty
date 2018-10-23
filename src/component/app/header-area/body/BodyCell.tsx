@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { MdKeyboardArrowRight, MdKeyboardArrowDown } from 'react-icons/md';
 import * as Action from '../../../../action';
 import * as State from '../../../../state';
-import InlineEdit from '../../../ui-kit/inline-edit';
-import { Draggable, Droppable } from '../../dnd/task';
+import { InlineEdit } from '../../../ui-kit/inline-edit';
+import { Draggable } from '../../dnd/task';
 
 export type Props = {
   row: State.Task.TaskNode;
@@ -13,41 +13,26 @@ export type Props = {
   rowHeight: number;
 };
 
-export type State = {
-  droppable?: {
-    y: number;
-  };
-};
-
-export default class Self extends React.Component<Props, State> {
-  public state: State = {};
-
+export default class BodyCell extends React.Component<Props> {
   public render() {
     return (
-      <Droppable
-        onDroppableEnter={this.onDroppableEnter}
-        onDroppableLeave={this.onDroppableLeave}
-        onDrop={this.onDrop}
+      <Self
+        width={this.props.column.width}
+        height={this.props.rowHeight}
+        onClick={this.onTaskClick}
       >
-        <Task
-          width={this.props.column.width}
-          height={this.props.rowHeight}
-          isDroppable={!!this.state.droppable}
-          onClick={this.onTaskClick}
-        >
-          {(() => {
-            switch (this.props.column.key) {
-              case 'startedAt':
-                return this.startedAt();
-              case 'finishedAt':
-                return this.finishedAt();
-              case 'name':
-                return this.name();
-            }
-            return null;
-          })()}
-        </Task>
-      </Droppable>
+        {(() => {
+          switch (this.props.column.key) {
+            case 'startedAt':
+              return this.startedAt();
+            case 'finishedAt':
+              return this.finishedAt();
+            case 'name':
+              return this.name();
+          }
+          return null;
+        })()}
+      </Self>
     );
   }
 
@@ -76,7 +61,7 @@ export default class Self extends React.Component<Props, State> {
       <>
         <Draggable
           payload={this.props.row}
-          preview={() => <Self {...this.props} />}
+          preview={() => <BodyCell {...this.props} />}
         >
           <DragHandle />
         </Draggable>
@@ -123,7 +108,7 @@ export default class Self extends React.Component<Props, State> {
   };
 
   private onExpandClick = () => {
-    const task = State.Task.getTask(State.get()!.tasks, this.props.row.id)!;
+    const task = State.Task.get(State.get()!.tasks, this.props.row.id)!;
     if (task.collapsed) {
       Action.Task.expand(task.id);
     } else {
@@ -132,37 +117,17 @@ export default class Self extends React.Component<Props, State> {
   };
 
   private onInlineChange = (value: any) => {
-    Action.Task.updateTask(this.props.row.id, {
+    Action.Task.update(this.props.row.id, {
       [this.props.column.key]: value
-    });
-  };
-
-  private onDroppableEnter = (_: React.MouseEvent<HTMLElement>) => {
-    this.setState({
-      droppable: {
-        y: 0.8
-      }
-    });
-  };
-
-  private onDroppableLeave = (_: React.MouseEvent<HTMLElement>) => {
-    this.setState({
-      droppable: undefined
-    });
-  };
-
-  private onDrop = (_: React.MouseEvent<HTMLElement>) => {
-    this.setState({
-      droppable: undefined
     });
   };
 }
 
-const Task = styled.div<{
+const Self = styled.div<{
   width: number;
   height: number;
-  isDroppable: boolean;
 }>`
+  position: relative;
   padding: 0 8px;
   min-width: ${props => props.width}px;
   height: ${props => props.height}px;
@@ -172,7 +137,6 @@ const Task = styled.div<{
   white-space: nowrap;
   border-bottom: 1px solid #ddd;
   border-right: 1px solid #ddd;
-  background: ${props => (props.isDroppable ? '#fdd' : '#fff')};
   font-size: 8px; /* TODO */
 
   & + & {

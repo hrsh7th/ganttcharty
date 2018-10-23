@@ -9,7 +9,7 @@ export const keyMap = {
   'move left': ['h', 'left'],
   'move right': ['l', 'right'],
   'add task': ['enter'],
-  'delete task': ['backspace'],
+  'remove task': ['backspace'],
   'expand task': ['shift+right'],
   'collapse task': ['shift+left']
 };
@@ -17,26 +17,26 @@ export const keyMap = {
 export const handlers = {
   'selected up': (e: KeyboardEvent) => {
     e.preventDefault();
-    Action.Task.selectPrevTask();
+    Action.UI.selectPrevTask();
   },
   'selected down': (e: KeyboardEvent) => {
     e.preventDefault();
-    Action.Task.selectNextTask();
+    Action.UI.selectNextTask();
   },
   'move left': throttle(() => {
     const state = State.get()!;
-    Action.Task.moveSelectedTask(-State.Option.scaleTime(state.option.scale));
+    Action.UI.moveSelectedTask(-State.Option.scaleTime(state.option.scale));
   }, 60),
   'move right': throttle(() => {
     const state = State.get()!;
-    Action.Task.moveSelectedTask(State.Option.scaleTime(state.option.scale));
+    Action.UI.moveSelectedTask(State.Option.scaleTime(state.option.scale));
   }, 60),
   'add task': (e: KeyboardEvent) => {
     e.preventDefault();
     Action.Task.add();
   },
-  'delete task': () => {
-    Action.Task.deleteSelectedTask();
+  'remove task': () => {
+    Action.Task.remove();
   },
   'expand task': () => {
     const state = State.get()!;

@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import closest from 'closest-element';
 import hotkeys, { KeyHandler, HotkeysEvent } from 'hotkeys-js';
-import Outside from '../outside';
+import { Outside } from '../outside';
 
 const SCOPE_NOTHING = 'nothing';
 
@@ -14,7 +14,7 @@ export type Props<Keymap extends { [name: string]: string[] }> = {
   listeners: { [K in keyof Keymap]: KeyHandler };
 };
 
-export default class Hotkeys<
+export class Hotkeys<
   Keymap extends { [name: string]: string[] }
 > extends React.Component<Props<Keymap>> {
   private static recentTarget: HTMLElement | null = null;

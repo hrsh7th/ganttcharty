@@ -33,7 +33,7 @@ export const tasks = memoize((tasks: Task[]) => {
     parentId?: TaskId,
     depth: number = 0
   ): TaskNode[] {
-    const parent = getTask(tasks, parentId);
+    const parent = get(tasks, parentId);
     return tasks.filter(task => task.parentId === parentId).reduce(
       (nodes, task) => {
         const children = !task.collapsed
@@ -58,7 +58,7 @@ export const tasks = memoize((tasks: Task[]) => {
 /**
  * get task by id.
  */
-export const getTask = (tasks: Task[], taskId?: TaskId) => {
+export const get = (tasks: Task[], taskId?: TaskId) => {
   return tasks.find(task => String(task.id) === String(taskId));
 };
 
@@ -70,7 +70,7 @@ export const getChildren = (
   taskId?: TaskId,
   checkExpanded: boolean = true
 ) => {
-  const target = getTask(tasks, taskId)!;
+  const target = get(tasks, taskId)!;
   if (target && (target.collapsed && checkExpanded)) {
     return [];
   }
@@ -81,8 +81,8 @@ export const getChildren = (
  * get siblings by id.
  */
 export const getSiblings = (tasks: Task[], taskId: TaskId) => {
-  const target = getTask(tasks, taskId)!;
-  const parent = getTask(tasks, target.parentId);
+  const target = get(tasks, taskId)!;
+  const parent = get(tasks, target.parentId);
   return getChildren(tasks, parent ? parent.id : undefined);
 };
 
@@ -90,7 +90,7 @@ export const getSiblings = (tasks: Task[], taskId: TaskId) => {
  * get siblings prev by id.
  */
 export const getSiblingPrev = (tasks: Task[], taskId: TaskId): Task | null => {
-  const target = getTask(tasks, taskId)!;
+  const target = get(tasks, taskId)!;
   const siblings = getSiblings(tasks, target.id);
   const index = siblings.indexOf(target);
   if (siblings[index - 1]) {
@@ -103,7 +103,7 @@ export const getSiblingPrev = (tasks: Task[], taskId: TaskId): Task | null => {
  * get siblings next by id.
  */
 export const getSiblingNext = (tasks: Task[], taskId: TaskId): Task | null => {
-  const target = getTask(tasks, taskId)!;
+  const target = get(tasks, taskId)!;
   const siblings = getSiblings(tasks, target.id);
   const index = siblings.indexOf(target);
   if (siblings[index + 1]) {
@@ -125,8 +125,8 @@ export const getPrev = (tasks: Task[], taskId: TaskId): Task | null => {
     return prev;
   }
 
-  const target = getTask(tasks, taskId)!;
-  const parent = getTask(tasks, target.parentId);
+  const target = get(tasks, taskId)!;
+  const parent = get(tasks, target.parentId);
   if (parent) {
     return parent;
   }
@@ -147,8 +147,8 @@ export const getNext = (tasks: Task[], taskId: TaskId): Task | null => {
     return next;
   }
 
-  const target = getTask(tasks, taskId)!;
-  const parent = getTask(tasks, target.parentId);
+  const target = get(tasks, taskId)!;
+  const parent = get(tasks, target.parentId);
   if (parent) {
     const next = getSiblingNext(tasks, parent.id);
     if (next) {

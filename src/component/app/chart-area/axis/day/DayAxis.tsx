@@ -14,7 +14,7 @@ const Consumer = State.select(state => ({
   }).getTime()
 }));
 
-export default () => (
+export const DayAxis = () => (
   <Consumer>
     {state =>
       State.UI.dayAxis(

@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import startOfDay from 'date-fns/start_of_day';
-import Movable from '../../../ui-kit/movable';
 import * as Action from '../../../../action';
 import * as State from '../../../../state';
+import { Movable } from '../../../ui-kit/movable';
 
 export type Props = {
   node: State.Task.TaskNode;
@@ -24,7 +24,7 @@ export type State = {
   };
 };
 
-export default class Node extends React.Component<Props, State> {
+export class Task extends React.Component<Props, State> {
   public state: State = {};
 
   public render = () => {
@@ -36,7 +36,7 @@ export default class Node extends React.Component<Props, State> {
       node.finishedAt;
 
     return (
-      <Task
+      <Self
         {...this.props}
         onClick={this.onClick}
         style={{
@@ -78,7 +78,7 @@ export default class Node extends React.Component<Props, State> {
         >
           <HandleNext />
         </Movable>
-      </Task>
+      </Self>
     );
   };
 
@@ -110,7 +110,7 @@ export default class Node extends React.Component<Props, State> {
   private onMoveEnd = () => {
     if (!this.state.dragging) return;
 
-    Action.Task.updateTask(this.props.node.id, {
+    Action.Task.update(this.props.node.id, {
       startedAt: this.state.dragging.startedAt || this.props.node.startedAt,
       finishedAt: this.state.dragging.finishedAt || this.props.node.finishedAt
     });
@@ -182,7 +182,7 @@ export default class Node extends React.Component<Props, State> {
   };
 }
 
-const Task = styled.div<{ rowHeight: number; barHeight: number }>`
+const Self = styled.div<{ rowHeight: number; barHeight: number }>`
   position: relative;
   height: ${props => props.rowHeight}px;
   padding: ${props => (props.rowHeight - props.barHeight) / 2}px 0;

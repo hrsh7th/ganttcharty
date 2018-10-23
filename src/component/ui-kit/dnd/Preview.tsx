@@ -8,7 +8,7 @@ type Props = {
   y: number;
 };
 
-export default class extends React.Component<Props> {
+export class Preview extends React.Component<Props> {
   public render() {
     return ReactDOM.createPortal(
       <>

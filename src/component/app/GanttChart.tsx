@@ -1,9 +1,9 @@
 import React from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import ResizeDetector from 'react-resize-detector';
-import Hotkeys from '../ui-kit/hotkeys';
-import HeaderArea from './header-area/HeaderArea';
-import ChartArea from './chart-area/ChartArea';
+import { Hotkeys } from '../ui-kit/hotkeys';
+import { HeaderArea } from './header-area/HeaderArea';
+import { ChartArea } from './chart-area/ChartArea';
 import * as Action from '../../action';
 
 const GlobalStyle = createGlobalStyle`
@@ -14,7 +14,7 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-export default class extends React.Component {
+export class GanttChart extends React.Component {
   private header = React.createRef<HTMLDivElement>();
   private chart = React.createRef<HTMLDivElement>();
 
@@ -27,10 +27,10 @@ export default class extends React.Component {
           keymap={Action.Hotkey.keyMap}
           listeners={Action.Hotkey.handlers}
         >
-          <GanttChart className="GanttChart">
+          <Self className="GanttChart">
             <HeaderArea ref={this.header} onWheel={this.onHeaderAreaWheel} />
             <ChartArea ref={this.chart} onWheel={this.onChartAreaWheel} />
-          </GanttChart>
+          </Self>
         </Hotkeys>
         <GlobalStyle />
       </>
@@ -67,7 +67,7 @@ export default class extends React.Component {
   };
 }
 
-const GanttChart = styled.div`
+const Self = styled.div`
   width: 100%;
   height: 100%;
   display: flex;

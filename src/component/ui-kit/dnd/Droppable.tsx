@@ -41,8 +41,13 @@ export function createDroppable<T>(context: DragDropContext<T>) {
     };
 
     private onMouseUp = (e: React.MouseEvent<HTMLElement>) => {
-      if (context.dragging && context.payload) {
-        this.props.onDrop(e, context.payload);
+      e.persist();
+
+      const payload = context.payload;
+      if (context.dragging && payload) {
+        requestAnimationFrame(() => {
+          this.props.onDrop(e, payload);
+        });
       }
     };
   };

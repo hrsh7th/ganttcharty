@@ -16,7 +16,7 @@ export const updateViewport = (rect: { width: number; height: number }) => {
   });
 };
 
-export const selectTask = (taskId: State.Task.TaskId | undefined) => {
+export const selectTask = (taskId?: State.Task.TaskId) => {
   State.update(state => {
     state.ui.selectedTaskId = taskId;
   });
@@ -27,7 +27,7 @@ export const moveToSelectedTask = () => {
   State.update(state => {
     if (!state.ui.selectedTaskId) return;
 
-    const target = State.Task.getTask(state.tasks, state.ui.selectedTaskId)!;
+    const target = State.Task.get(state.tasks, state.ui.selectedTaskId)!;
     const { scale, columnWidth } = state.option;
     const { currentTime, viewportWidth } = state.ui;
     const startTime = currentTime;
@@ -44,6 +44,38 @@ export const moveToSelectedTask = () => {
       state.ui.currentTime = new Date(
         target.startedAt.getTime() - State.Option.scaleTime(scale) * 14
       );
+    }
+  });
+};
+
+export const moveSelectedTask = (adder: number) => {
+  State.update(state => {
+    if (!state.ui.selectedTaskId) return;
+
+    const target = State.Task.get(state.tasks, state.ui.selectedTaskId)!;
+    target.startedAt = new Date(target.startedAt.getTime() + adder);
+    target.finishedAt = new Date(target.finishedAt.getTime() + adder);
+  });
+};
+
+export const selectNextTask = () => {
+  State.update(state => {
+    if (!state.ui.selectedTaskId) return;
+
+    const next = State.Task.getNext(state.tasks, state.ui.selectedTaskId);
+    if (next) {
+      state.ui.selectedTaskId = next.id;
+    }
+  });
+};
+
+export const selectPrevTask = () => {
+  State.update(state => {
+    if (!state.ui.selectedTaskId) return;
+
+    const prev = State.Task.getPrev(state.tasks, state.ui.selectedTaskId);
+    if (prev) {
+      state.ui.selectedTaskId = prev.id;
     }
   });
 };

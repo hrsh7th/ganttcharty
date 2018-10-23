@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import startOfWeek from 'date-fns/start_of_week';
 import * as State from '../../../../state';
-import DayAxis from './day/DayAxis';
+import { DayAxis } from './day/DayAxis';
 
 const Consumer = State.select(state => ({
   scale: state.option.scale,
@@ -10,10 +10,10 @@ const Consumer = State.select(state => ({
   currentTime: state.ui.currentTime
 }));
 
-export default () => (
+export const Axis = () => (
   <Consumer>
     {state => (
-      <Axis
+      <Self
         style={{
           transform: `translateX(${State.UI.x(
             startOfWeek(state.currentTime, { weekStartsOn: 1 }),
@@ -24,12 +24,12 @@ export default () => (
         }}
       >
         <DayAxis />
-      </Axis>
+      </Self>
     )}
   </Consumer>
 );
 
-const Axis = styled.div`
+const Self = styled.div`
   will-change: transform;
   position: absolute;
   width; 100%;

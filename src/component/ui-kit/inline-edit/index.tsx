@@ -1,8 +1,8 @@
 import React from 'react';
 import format from 'date-fns/format';
 import parse from 'date-fns/parse';
-import Hotkeys from '../hotkeys';
-import Outside from '../outside';
+import { Hotkeys } from '../hotkeys';
+import { Outside } from '../outside';
 
 export type Props<T extends Date | string | number> = {
   value: T;
@@ -25,7 +25,7 @@ const InlineStyle = {
   height: '100%'
 };
 
-export default class InlineEdit<
+export class InlineEdit<
   T extends Date | string | number
 > extends React.Component<Props<T>, State<T>> {
   private editing: React.RefObject<HTMLInputElement> = React.createRef();

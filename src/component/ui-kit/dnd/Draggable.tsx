@@ -1,5 +1,5 @@
 import React from 'react';
-import Preview from './Preview';
+import { Preview } from './Preview';
 import { DragDropContext } from './';
 
 export type Props<T> = {
@@ -51,33 +51,33 @@ export function createDraggable<T>(context: DragDropContext<T>) {
 
     private onMouseMove = (e: MouseEvent) => {
       if (this.state.dragging) {
+        this.props.onDragging && this.props.onDragging(e);
         this.setState({
           dragging: {
             x: e.clientX,
             y: e.clientY
           }
         });
-        this.props.onDragging && this.props.onDragging(e);
         return;
       }
 
       context.dragging = true;
       context.payload = this.props.payload;
+      this.props.onDragStart && this.props.onDragStart(e);
       this.setState({
         dragging: {
           x: e.clientX,
           y: e.clientY
         }
       });
-      this.props.onDragStart && this.props.onDragStart(e);
     };
 
     private onMouseUp = (e: MouseEvent) => {
       document.removeEventListener('mousemove', this.onMouseMove);
       document.removeEventListener('mouseup', this.onMouseUp);
       context.release();
-      this.setState({ dragging: undefined });
       this.props.onDragEnd && this.props.onDragEnd(e);
+      this.setState({ dragging: undefined });
     };
   };
 }

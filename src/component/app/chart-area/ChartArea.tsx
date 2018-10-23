@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import startOfDay from 'date-fns/start_of_day';
 import * as State from '../../../state';
-import TaskList from './task/TaskList';
-import Axis from './axis/Axis';
+import { TaskList } from './task/TaskList';
+import { Axis } from './axis/Axis';
 
 const Consumer = State.select(state => ({
   viewportWidth: state.ui.viewportWidth,
@@ -22,10 +22,10 @@ export type Props = {
   onWheel: React.WheelEventHandler<HTMLDivElement>;
 };
 
-export default React.forwardRef(({ onWheel }: Props, ref: any) => (
+export const ChartArea = React.forwardRef(({ onWheel }: Props, ref: any) => (
   <Consumer>
     {state => (
-      <ChartArea width={state.viewportWidth - state.headerWidth}>
+      <Self width={state.viewportWidth - state.headerWidth}>
         <HeaderBox height={state.axisHeight}>
           <Axis />
         </HeaderBox>
@@ -74,12 +74,12 @@ export default React.forwardRef(({ onWheel }: Props, ref: any) => (
             </TaskListSeekArea>
           </TaskListContentArea>
         </Box>
-      </ChartArea>
+      </Self>
     )}
   </Consumer>
 ));
 
-const ChartArea = styled.div<{ width: number }>`
+const Self = styled.div<{ width: number }>`
   width: ${props => props.width}px;
   height: 100%;
 `;

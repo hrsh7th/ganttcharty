@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import GanttChart from './component/app/GanttChart';
 import * as State from './state';
+import { GanttChart } from './component/app/GanttChart';
 
 type Input = {
   option?: Partial<State.Option.Option>;

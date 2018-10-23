@@ -1,13 +1,12 @@
 import * as State from '../src/state';
 
-export const fixture = () => {
+export const fixture = (tasks: State.Task.Task[]) => {
   const e = document.createElement('div');
   e.style.width = '100px';
   e.style.height = '100px';
 
   const option = State.Option.defaults() as State.Option.Option;
   const ui = State.UI.defaults(e, option, {}) as State.UI.UI;
-  const tasks = State.Task.defaults([task(1), task(2)]);
   return { option, ui, tasks };
 };
 

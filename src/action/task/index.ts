@@ -1,35 +1,85 @@
 import { v4 as uuid } from 'uuid';
 import * as State from '../../state';
 
-export const updateTask = (
-  taskId: State.Task.TaskId,
-  attrs: Partial<State.Task.Task>
+export const insertPrev = (
+  targetTaskId: State.Task.TaskId,
+  insertTaskId: State.Task.TaskId
 ) => {
   State.update(state => {
-    const task = State.Task.getTask(state.tasks, taskId);
-    Object.keys(attrs).forEach(key => {
-      // @ts-ignore
-      task[key] = attrs[key];
-    });
+    const targetTask =
+      State.Task.getPrev(state.tasks, targetTaskId)! ||
+      State.Task.get(state.tasks, targetTaskId);
+    const insertTask = State.Task.get(state.tasks, insertTaskId)!;
+
+    insertTask.parentId = targetTask.parentId;
+    state.tasks.splice(state.tasks.indexOf(insertTask), 1);
+    state.tasks.splice(state.tasks.indexOf(targetTask), 0, insertTask);
   });
 };
 
-export const moveSelectedTask = (adder: number) => {
+export const insertNext = (
+  targetTaskId: State.Task.TaskId,
+  insertTaskId: State.Task.TaskId
+) => {
+  State.update(state => {
+    const targetTask = State.Task.getNext(state.tasks, targetTaskId)!;
+    const insertTask = State.Task.get(state.tasks, insertTaskId)!;
+
+    insertTask.parentId = targetTask.parentId;
+    state.tasks.splice(state.tasks.indexOf(insertTask), 1);
+    state.tasks.splice(state.tasks.indexOf(targetTask), 0, insertTask);
+  });
+};
+
+export const expand = (taskId: State.Task.TaskId) => {
+  State.update(state => {
+    const target = State.Task.get(state.tasks, taskId)!;
+    const children = State.Task.getChildren(state.tasks, target.id, false);
+    if (target && children.length && target.collapsed) {
+      target.collapsed = false;
+    }
+  });
+};
+
+export const collapse = (taskId: State.Task.TaskId) => {
+  State.update(state => {
+    const target = State.Task.get(state.tasks, taskId)!;
+    const children = State.Task.getChildren(state.tasks, target.id, false);
+    if (target && children.length && !target.collapsed) {
+      target.collapsed = true;
+    }
+  });
+};
+
+export const add = (extendTaskId?: State.Task.TaskId) => {
   State.update(state => {
     if (!state.ui.selectedTaskId) return;
 
-    const target = State.Task.getTask(state.tasks, state.ui.selectedTaskId)!;
-    target.startedAt = new Date(target.startedAt.getTime() + adder);
-    target.finishedAt = new Date(target.finishedAt.getTime() + adder);
+    // create newTask and extends selected task.
+    const extend = State.Task.get(state.tasks, extendTaskId)!;
+    const newTask: State.Task.Task = {
+      id: uuid(),
+      name: `new task ${state.tasks.length}`,
+      description: '',
+      startedAt: new Date(extend.startedAt.getTime()),
+      finishedAt: new Date(extend.finishedAt.getTime()),
+      parentId: extend.parentId
+    };
+
+    // insert newTask to next to selected task.
+    state.tasks.splice(state.tasks.indexOf(extend) + 1, 0, newTask);
+
+    // select newTask.
+    state.ui.selectedTaskId = newTask.id;
   });
 };
 
-export const deleteSelectedTask = () => {
+export const remove = () => {
   State.update(state => {
     if (!state.ui.selectedTaskId) return;
 
     // remove selected task.
-    const target = State.Task.getTask(state.tasks, state.ui.selectedTaskId)!;
+    const target = State.Task.get(state.tasks, state.ui.selectedTaskId)!;
 
     // remove children.
     const children = State.Task.getChildren(state.tasks, target.id);
@@ -58,82 +108,15 @@ export const deleteSelectedTask = () => {
   });
 };
 
-export const selectNextTask = () => {
-  State.update(state => {
-    if (!state.ui.selectedTaskId) return;
-
-    const next = State.Task.getNext(state.tasks, state.ui.selectedTaskId);
-    if (next) {
-      state.ui.selectedTaskId = next.id;
-    }
-  });
-};
-
-export const selectPrevTask = () => {
-  State.update(state => {
-    if (!state.ui.selectedTaskId) return;
-
-    const prev = State.Task.getPrev(state.tasks, state.ui.selectedTaskId);
-    if (prev) {
-      state.ui.selectedTaskId = prev.id;
-    }
-  });
-};
-
-export const moveNext = (
-  to: State.Task.TaskId,
-  targetId: State.Task.TaskId
+export const update = (
+  taskId: State.Task.TaskId,
+  attrs: Partial<State.Task.Task>
 ) => {
   State.update(state => {
-    const targetIdx = state.tasks.findIndex(task => task.id === targetId);
-    state.tasks.splice(targetIdx, 1);
-    const toIdx = state.tasks.findIndex(task => task.id === to);
-    const target = State.Task.getTask(state.tasks, targetId)!;
-    state.tasks.splice(toIdx, 1, target);
-  });
-};
-
-export const movePrev = () => {};
-
-export const expand = (taskId: State.Task.TaskId) => {
-  State.update(state => {
-    const selected = State.Task.getTask(state.tasks, taskId)!;
-    const children = State.Task.getChildren(state.tasks, selected.id, false);
-    if (selected && children.length && selected.collapsed) {
-      selected.collapsed = false;
-    }
-  });
-};
-
-export const collapse = (taskId: State.Task.TaskId) => {
-  State.update(state => {
-    const selected = State.Task.getTask(state.tasks, taskId)!;
-    const children = State.Task.getChildren(state.tasks, selected.id, false);
-    if (selected && children.length && !selected.collapsed) {
-      selected.collapsed = true;
-    }
-  });
-};
-
-export const add = () => {
-  State.update(state => {
-    if (!state.ui.selectedTaskId) return;
-
-    // create newTask and extends selected task.
-    const selected = State.Task.getTask(state.tasks, state.ui.selectedTaskId)!;
-    const newTask: State.Task.Task = {
-      id: uuid(),
-      name: `new task ${state.tasks.length}`,
-      description: '',
-      startedAt: new Date(selected.startedAt.getTime()),
-      finishedAt: new Date(selected.finishedAt.getTime()),
-      parentId: selected.parentId
-    };
-
-    // insert newTask to next to selected task.
-    state.tasks.splice(state.tasks.indexOf(selected) + 1, 0, newTask);
-
-    // select newTask.
-    state.ui.selectedTaskId = newTask.id;
+    const task = State.Task.get(state.tasks, taskId);
+    Object.keys(attrs).forEach(key => {
+      // @ts-ignore
+      task[key] = attrs[key];
+    });
   });
 };

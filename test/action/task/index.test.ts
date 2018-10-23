@@ -1,21 +1,54 @@
 import diff from 'snapshot-diff';
-import { fixture } from '../../';
+import { fixture, task } from '../../';
 import * as State from '../../../src/state';
 import * as Action from '../../../src/action';
 
-beforeEach(() => {
-  State.set(fixture());
-});
+describe('Action.Task', () => {
+  describe('#insertPrev', () => {
+    test('insert to children 1', () => {
+      State.set(
+        fixture([
+          task('1', {}),
+          task('2', {}),
+          task('3', { parentId: '2' }),
+          task('4', { parentId: '2' }),
+          task('5', {})
+        ])
+      );
 
-let state: State.State;
+      const state = State.get()!;
+      Action.Task.insertNext('2', '4');
+      expect(diff(state, State.get())).toMatchSnapshot();
+    });
+    test('insert to children 2', () => {
+      State.set(
+        fixture([
+          task('1', {}),
+          task('2', {}),
+          task('3', { parentId: '2' }),
+          task('4', { parentId: '2' }),
+          task('5', {})
+        ])
+      );
 
-test('moveSelectedTask', () => {
-  Action.UI.selectTask(1);
+      const state = State.get()!;
+      Action.Task.insertNext('2', '1');
+      expect(diff(state, State.get())).toMatchSnapshot();
+    });
+    test('insert to children 2', () => {
+      State.set(
+        fixture([
+          task('1', {}),
+          task('2', {}),
+          task('3', { parentId: '2' }),
+          task('4', { parentId: '2' }),
+          task('5', {})
+        ])
+      );
 
-  state = State.get()!;
-  Action.Task.moveSelectedTask(State.Option.DAY);
-  expect(diff(state, State.get())).toMatchSnapshot();
-  state = State.get()!;
-  Action.Task.moveSelectedTask(-State.Option.DAY);
-  expect(diff(state, State.get())).toMatchSnapshot();
+      const state = State.get()!;
+      Action.Task.insertNext('4', '1');
+      expect(diff(state, State.get())).toMatchSnapshot();
+    });
+  });
 });
