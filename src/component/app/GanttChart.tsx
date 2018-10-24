@@ -4,6 +4,7 @@ import ResizeDetector from 'react-resize-detector';
 import { Hotkeys } from '../ui-kit/hotkeys';
 import { HeaderArea } from './header-area/HeaderArea';
 import { ChartArea } from './chart-area/ChartArea';
+import { Export } from './export/Export';
 import * as Action from '../../action';
 
 const GlobalStyle = createGlobalStyle`
@@ -30,6 +31,7 @@ export class GanttChart extends React.PureComponent {
           <Self className="GanttChart">
             <HeaderArea ref={this.header} onWheel={this.onHeaderAreaWheel} />
             <ChartArea ref={this.chart} onWheel={this.onChartAreaWheel} />
+            <Export />
           </Self>
         </Hotkeys>
         <GlobalStyle />

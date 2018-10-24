@@ -1,63 +1,62 @@
 import * as State from '../src/state';
 import { render } from '../src/index';
 
-const DAY = 24 * 60 * 60 * 1000;
-
 (window as any).State = State;
-
 (window as any).chart = render('app', {
-  option: {},
+  option: {
+    headerWidth: 240,
+    rowHeight: 24,
+    columnWidth: 18,
+    scale: 'day',
+    barHeight: 4,
+    axisHeight: 32,
+    indentWidth: 12,
+    baseTime: '2018-10-17T15:00:00.000Z',
+    dayLabel: ['日', '月', '火', '水', '木', '金', '土'],
+    columns: [
+      { key: 'name', name: 'タスク', width: 200 },
+      { key: 'startedAt', name: '開始日', width: 120 },
+      { key: 'finishedAt', name: '終了日', width: 120 }
+    ]
+  },
   tasks: [
-    task(1, 'task1', ''),
-    task(2, 'task1-1', '', 1),
-    task(3, 'task1-2', '', 1),
-    task(4, 'task1-3', '', 1),
-    task(5, 'task1-4', '', 1),
-    task(6, 'task1-5', '', 1),
-    task(7, 'task1-6', '', 1),
-    task(8, 'task1-7', '', 1),
-    task(9, 'task1-8', '', 1),
-    task(10, 'task1-9', '', 1),
-    task(11, 'task1-10', '', 1),
-    task(12, 'task1-11', '', 1),
-    task(13, 'task1-12', '', 1),
-    task(14, 'task2', ''),
-    task(15, 'task2-1', '', 14),
-    task(16, 'task2-2', '', 14),
-    task(17, 'task2-3', '', 14),
-    task(18, 'task2-4', '', 14),
-    task(19, 'task2-5', '', 14),
-    task(20, 'task2-6', '', 14),
-    task(21, 'task2-7', '', 14),
-    task(22, 'task2-8', '', 14),
-    task(23, 'task1-5-1', '', 6),
-    task(24, 'task1-5-2', '', 6),
-    task(25, 'task1-5-3', '', 6),
-    task(26, 'task1-5-4', '', 6),
-    task(27, 'task1-5-5', '', 6),
-    task(28, 'task1-5-6', '', 6),
-    task(29, 'task1-5-7', '', 6),
-    task(30, 'task1-5-8', '', 6)
+    {
+      id: '1841471c-4d7b-4952-a8bf-31ae37c3bfac',
+      name: 'Support nested updater call.',
+      description: '',
+      startedAt: '2018-10-26T15:00:00.000Z',
+      finishedAt: '2018-10-29T15:00:00.000Z',
+      parentId: '14'
+    },
+    {
+      id: 'b00563f1-c354-40a4-944f-2541db84b6f9',
+      name: "Support immer's patch feature.",
+      description: '',
+      startedAt: '2018-11-01T15:00:00.000Z',
+      finishedAt: '2018-11-08T15:00:00.000Z',
+      parentId: '14'
+    },
+    {
+      id: 'b364ac9c-d396-4da9-a6dc-05695770337c',
+      name: 'Fix drag&drop bug',
+      description: '',
+      startedAt: '2018-10-29T15:00:00.000Z',
+      finishedAt: '2018-11-02T15:00:00.000Z',
+      parentId: '4c752606-11c1-40fc-bc1b-0a01c333e9d0'
+    },
+    {
+      id: '4c752606-11c1-40fc-bc1b-0a01c333e9d0',
+      name: 'GanttCharty',
+      description: '',
+      startedAt: '2018-10-24T15:00:00.000Z',
+      finishedAt: '2018-11-14T15:00:00.000Z'
+    },
+    {
+      id: '14',
+      startedAt: '2018-10-24T15:00:00.000Z',
+      finishedAt: '2018-11-14T15:00:00.000Z',
+      name: 'Srimmer',
+      description: ''
+    }
   ]
 });
-
-function task(
-  id: number,
-  name: string,
-  description: string,
-  parentId?: number
-) {
-  const startedAt = new Date(
-    Date.now() + DAY * 10 - DAY * Math.floor(Math.random() * 10)
-  );
-  return {
-    id: String(id),
-    startedAt: startedAt,
-    finishedAt: new Date(
-      startedAt.getTime() + DAY * Math.floor(Math.random() * 30)
-    ),
-    name: name,
-    description: description,
-    parentId: parentId ? String(parentId) : undefined
-  };
-}

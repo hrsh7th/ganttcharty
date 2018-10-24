@@ -16,6 +16,12 @@ export const updateViewport = (rect: { width: number; height: number }) => {
   });
 };
 
+export const toggleExportView = (toggle: boolean) => {
+  State.update(state => {
+    state.ui.exporting = toggle;
+  });
+};
+
 export const select = (taskId?: State.Task.TaskId) => {
   State.update(state => {
     state.ui.selectedTaskId = taskId;

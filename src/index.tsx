@@ -4,9 +4,8 @@ import * as State from './state';
 import { GanttChart } from './component/app/GanttChart';
 
 type Input = {
-  option?: Partial<State.Option.Option>;
-  ui?: Partial<State.UI.UI>;
-  tasks: State.Task.Task[];
+  option?: any;
+  tasks: (State.Task.Task | { startedAt: string; finishedAt: string })[];
 };
 
 export { State };
@@ -24,9 +23,10 @@ export function render(id: string, state: Input) {
   };
 }
 
-const defaults = (element: HTMLElement, state: Input): State.State => {
-  state.option = State.Option.defaults(state.option || {});
-  state.ui = State.UI.defaults(element, state.option, state.ui || {});
-  state.tasks = State.Task.defaults(state.tasks || []);
+const defaults = (element: HTMLElement, input: Input): State.State => {
+  const state = {} as any;
+  state.option = State.Option.defaults(input.option || {});
+  state.ui = State.UI.defaults(element, input.option);
+  state.tasks = State.Task.defaults(input.tasks || []);
   return state as State.State;
 };

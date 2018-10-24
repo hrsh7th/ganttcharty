@@ -164,12 +164,16 @@ export const getNext = (tasks: Task[], taskId: TaskId): Task | null => {
   return null;
 };
 
-export const defaults = (tasks: Task[]) => {
+export const defaults = (
+  tasks: (Task | { startedAt: string; finishedAt: string })[]
+) => {
   return tasks
-    .sort((a, b) => a.startedAt.getTime() - b.startedAt.getTime())
     .map(task => {
       task.startedAt = startOfDay(task.startedAt);
       task.finishedAt = startOfDay(task.finishedAt);
       return task;
-    });
+    })
+    .sort(
+      (a, b) => (a as any).startedAt.getTime() - (b as any).startedAt.getTime()
+    );
 };

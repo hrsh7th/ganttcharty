@@ -10,7 +10,8 @@ export const keyMap = {
   'add task': ['enter'],
   'remove task': ['backspace'],
   'expand task': ['shift+right'],
-  'collapse task': ['shift+left']
+  'collapse task': ['shift+left'],
+  'toggle export': ['shift+e']
 };
 
 export const handlers = {
@@ -37,7 +38,10 @@ export const handlers = {
     Action.Task.add(State.get()!.ui.selectedTaskId);
   },
   'remove task': () => {
-    Action.Task.remove();
+    const state = State.get()!;
+    if (state.ui.selectedTaskId) {
+      Action.Task.remove(state.ui.selectedTaskId);
+    }
   },
   'expand task': () => {
     const state = State.get()!;
@@ -50,6 +54,9 @@ export const handlers = {
     if (state.ui.selectedTaskId) {
       Action.Task.collapse(state.ui.selectedTaskId);
     }
+  },
+  'toggle export': () => {
+    Action.UI.toggleExportView(!State.get()!.ui.exporting);
   }
 } as {
   [key in keyof typeof keyMap]: (ke: KeyboardEvent, he: HotkeysEvent) => void

@@ -81,22 +81,18 @@ export const add = (extendTaskId?: State.Task.TaskId) => {
   });
 };
 
-export const remove = () => {
+export const remove = (id: State.Task.TaskId) => {
   State.update(state => {
-    if (!state.ui.selectedTaskId) return;
-
     // remove selected task.
-    const target = State.Task.get(state.tasks, state.ui.selectedTaskId)!;
+    const target = State.Task.get(state.tasks, id)!;
 
     // remove children.
-    const children = State.Task.getChildren(state.tasks, target.id);
-    children.forEach(child =>
-      state.tasks.splice(state.tasks.indexOf(child), 1)
-    );
+    const children = State.Task.getChildren(state.tasks, target.id, false);
+    children.forEach(child => remove(child.id));
 
     // memory target to move.
-    const prev = State.Task.getPrev(state.tasks, state.ui.selectedTaskId);
-    const next = State.Task.getNext(state.tasks, state.ui.selectedTaskId);
+    const prev = State.Task.getPrev(state.tasks, id);
+    const next = State.Task.getNext(state.tasks, id);
 
     // remove target task.
     state.tasks.splice(state.tasks.indexOf(target), 1);

@@ -8,6 +8,7 @@ export type UI = {
   viewportHeight: number;
   currentTime: Date;
   selectedTaskId?: State.Task.TaskId;
+  exporting: boolean;
 };
 
 /**
@@ -105,11 +106,12 @@ export const dayAxis = (
  */
 export const defaults = (
   element: HTMLElement,
-  option: Partial<State.Option.Option>,
-  ui: Partial<UI>
+  option: Partial<State.Option.Option>
 ) => {
+  const ui = {} as any;
   ui.viewportWidth = element.offsetWidth;
   ui.viewportHeight = element.offsetHeight;
   ui.currentTime = option.baseTime;
+  ui.exporting = false;
   return ui;
 };
