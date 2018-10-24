@@ -82,7 +82,10 @@ export default class BodyRow extends React.PureComponent<Props, State> {
 
   private onClick = () => {
     if (this.state.droppable) return;
-    Action.UI.select(this.props.row.id);
+    // Patch for avoid conflicting click outside.
+    requestAnimationFrame(() => {
+      Action.UI.select(this.props.row.id);
+    });
   };
 }
 
