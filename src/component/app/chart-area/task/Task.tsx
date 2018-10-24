@@ -12,7 +12,7 @@ export type Props = {
   barHeight: number;
   columnWidth: number;
   baseTime: Date;
-  selectedTaskId?: State.Task.TaskId;
+  selected: boolean;
 };
 
 export type State = {
@@ -181,14 +181,13 @@ const Self = styled.div<{ rowHeight: number; barHeight: number }>`
 `;
 
 const TaskLine = styled.div<{
-  selectedTaskId?: State.Task.TaskId;
+  selected: boolean;
   node: State.Task.TaskNode;
 }>`
   width: 100%;
   height: 100%;
   border-radius: 2px;
-  background: ${props =>
-    props.selectedTaskId === props.node.id ? '#484' : '#448'};
+  background: ${props => (props.selected ? '#484' : '#448')};
   cursor: move;
 `;
 

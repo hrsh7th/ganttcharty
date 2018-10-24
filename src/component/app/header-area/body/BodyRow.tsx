@@ -26,11 +26,14 @@ export default class BodyRow extends React.PureComponent<Props, State> {
         onDroppableLeave={this.onDroppableLeave}
         onDrop={this.onDrop}
       >
-        <Self rowHeight={this.props.rowHeight} onMouseDown={this.onMouseDown}>
+        <Self rowHeight={this.props.rowHeight}>
           {this.state.droppable && (
             <>
               <PrevDropArea data-dir="prev" />
-              <NextDropArea data-dir="next" />
+              <NextDropArea data-dir="next" full={this.isParent()} />
+              {!this.isParent() ? (
+                <NextToChildDropArea data-dir="next-to-child" />
+              ) : null}
             </>
           )}
           {this.props.children}
@@ -38,6 +41,10 @@ export default class BodyRow extends React.PureComponent<Props, State> {
       </Droppable>
     );
   }
+
+  private isParent = () => {
+    return !!this.props.row.children.length || !!this.props.row.collapsed;
+  };
 
   private onDroppableEnter = () => {
     this.setState({
@@ -63,15 +70,14 @@ export default class BodyRow extends React.PureComponent<Props, State> {
         const dir = (e.target as any).getAttribute('data-dir');
         if (dir === 'next') {
           Action.Task.insertNext(this.props.row.id, payload.id);
+        } else if (dir === 'next-to-child') {
+          Action.Task.insertNext(this.props.row.id, payload.id, true);
         } else {
           Action.Task.insertPrev(this.props.row.id, payload.id);
         }
+        Action.UI.select(payload.id);
       }
     );
-  };
-
-  private onMouseDown = () => {
-    Action.UI.select(this.props.row.id);
   };
 }
 
@@ -86,7 +92,6 @@ const PrevDropArea = styled.div`
   top: 0;
   left: 0;
   right: 0;
-  width: 100%;
   height: 50%;
   background: linear-gradient(180deg, #ddd 0, transparent 100%);
   z-index: 2;
@@ -97,12 +102,27 @@ const PrevDropArea = styled.div`
   }
 `;
 
-const NextDropArea = styled.div`
+const NextDropArea = styled.div<{ full: boolean }>`
   position: absolute;
   left: 0;
+  right: ${props => (props.full ? '0' : '30%')};
+  bottom: 0;
+  height: 50%;
+  background: linear-gradient(180deg, #ddd 0, transparent 100%);
+  transform: rotate(180deg);
+  z-index: 2;
+  opacity: 0;
+
+  &:hover {
+    opacity: 1;
+  }
+`;
+
+const NextToChildDropArea = styled.div`
+  position: absolute;
+  left: 70%;
   right: 0;
   bottom: 0;
-  width: 100%;
   height: 50%;
   background: linear-gradient(180deg, #ddd 0, transparent 100%);
   transform: rotate(180deg);

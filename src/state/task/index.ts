@@ -1,6 +1,8 @@
 import memoize from 'memoize-one';
 import startOfDay from 'date-fns/start_of_day';
 
+const nodeMap = new Map<TaskId, TaskNode>();
+
 /**
  * task types.
  */
@@ -40,17 +42,19 @@ export const tasks = memoize((tasks: Task[]) => {
         const children = !task.collapsed
           ? traverse(tasks, task.id, depth + 1)
           : [];
-        return nodes
-          .concat([
-            {
-              ...task,
-              task,
-              parent,
-              children,
-              depth
-            }
-          ])
-          .concat(children);
+
+        const node = nodeMap.get(task.id);
+        if (!node || node.task !== task) {
+          nodeMap.delete(task.id);
+          nodeMap.set(task.id, {
+            ...task,
+            task,
+            parent,
+            children,
+            depth
+          });
+        }
+        return nodes.concat([nodeMap.get(task.id)!]).concat(children);
       },
       [] as TaskNode[]
     );

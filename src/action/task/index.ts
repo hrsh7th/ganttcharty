@@ -6,9 +6,7 @@ export const insertPrev = (
   insertTaskId: State.Task.TaskId
 ) => {
   State.update(state => {
-    const targetTask =
-      State.Task.getPrev(state.tasks, targetTaskId)! ||
-      State.Task.get(state.tasks, targetTaskId);
+    const targetTask = State.Task.get(state.tasks, targetTaskId)!;
     const insertTask = State.Task.get(state.tasks, insertTaskId)!;
 
     insertTask.parentId = targetTask.parentId;
@@ -19,15 +17,22 @@ export const insertPrev = (
 
 export const insertNext = (
   targetTaskId: State.Task.TaskId,
-  insertTaskId: State.Task.TaskId
+  insertTaskId: State.Task.TaskId,
+  toChild?: boolean
 ) => {
   State.update(state => {
-    const targetTask = State.Task.getNext(state.tasks, targetTaskId)!;
     const insertTask = State.Task.get(state.tasks, insertTaskId)!;
-
-    insertTask.parentId = targetTask.parentId;
     state.tasks.splice(state.tasks.indexOf(insertTask), 1);
-    state.tasks.splice(state.tasks.indexOf(targetTask), 0, insertTask);
+
+    const nextTask = State.Task.getNext(state.tasks, targetTaskId);
+    if (nextTask) {
+      insertTask.parentId = toChild ? nextTask.id : nextTask.parentId;
+      state.tasks.splice(state.tasks.indexOf(nextTask), 0, insertTask);
+    } else {
+      const targetTask = State.Task.get(state.tasks, targetTaskId)!;
+      insertTask.parentId = toChild ? targetTask.id : targetTask.parentId;
+      state.tasks.splice(state.tasks.indexOf(targetTask) + 1, 0, insertTask);
+    }
   });
 };
 

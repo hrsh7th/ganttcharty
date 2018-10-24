@@ -8,6 +8,8 @@ type Props = {
   y: number;
 };
 
+const OFFSET = 10;
+
 export class Preview extends React.PureComponent<Props> {
   public render() {
     return ReactDOM.createPortal(
@@ -18,8 +20,8 @@ export class Preview extends React.PureComponent<Props> {
             position: 'fixed',
             top: 0,
             left: 0,
-            transform: `translate(${this.props.x - 5}px, ${this.props.y -
-              5}px)`,
+            transform: `translate(${this.props.x + OFFSET}px, ${this.props.y +
+              OFFSET}px)`,
             pointerEvents: 'none',
             zIndex: 100000
           }}

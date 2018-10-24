@@ -24,7 +24,7 @@ export const TaskList = () => (
           barHeight={state.barHeight}
           columnWidth={state.columnWidth}
           baseTime={state.baseTime}
-          selectedTaskId={state.selectedTaskId}
+          selected={node.id === state.selectedTaskId}
         />
       ))
     }
