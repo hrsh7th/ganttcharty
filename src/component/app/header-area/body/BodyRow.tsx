@@ -26,7 +26,7 @@ export default class BodyRow extends React.PureComponent<Props, State> {
         onDroppableLeave={this.onDroppableLeave}
         onDrop={this.onDrop}
       >
-        <Self rowHeight={this.props.rowHeight}>
+        <Self rowHeight={this.props.rowHeight} onClick={this.onClick}>
           {this.state.droppable && (
             <>
               <PrevDropArea data-dir="prev" />
@@ -78,6 +78,11 @@ export default class BodyRow extends React.PureComponent<Props, State> {
         Action.UI.select(payload.id);
       }
     );
+  };
+
+  private onClick = () => {
+    if (this.state.droppable) return;
+    Action.UI.select(this.props.row.id);
   };
 }
 
