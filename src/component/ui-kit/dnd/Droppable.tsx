@@ -9,7 +9,7 @@ export type Props<T> = {
 };
 
 export function createDroppable<T>(context: DragDropContext<T>) {
-  return class Droppable extends React.Component<Props<T>> {
+  return class Droppable extends React.PureComponent<Props<T>> {
     public render() {
       const kid = React.Children.only(this.props.children);
       return React.cloneElement(kid, {

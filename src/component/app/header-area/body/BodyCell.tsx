@@ -8,18 +8,19 @@ import { Draggable } from '../../dnd/task';
 
 export type Props = {
   row: State.Task.TaskNode;
+  selected: boolean;
   column: State.Option.Column;
   indentWidth: number;
   rowHeight: number;
 };
 
-export default class BodyCell extends React.Component<Props> {
+export default class BodyCell extends React.PureComponent<Props> {
   public render() {
     return (
       <Self
         width={this.props.column.width}
         height={this.props.rowHeight}
-        onClick={this.onTaskClick}
+        selected={this.props.selected}
       >
         {(() => {
           switch (this.props.column.key) {
@@ -103,10 +104,6 @@ export default class BodyCell extends React.Component<Props> {
     return this.props.row.children.length || this.props.row.collapsed;
   }
 
-  private onTaskClick = () => {
-    Action.UI.selectTask(this.props.row.id);
-  };
-
   private onExpandClick = () => {
     const task = State.Task.get(State.get()!.tasks, this.props.row.id)!;
     if (task.collapsed) {
@@ -126,6 +123,7 @@ export default class BodyCell extends React.Component<Props> {
 const Self = styled.div<{
   width: number;
   height: number;
+  selected: boolean;
 }>`
   position: relative;
   padding: 0 8px;
@@ -138,7 +136,7 @@ const Self = styled.div<{
   border-bottom: 1px solid #ddd;
   border-right: 1px solid #ddd;
   font-size: 8px; /* TODO */
-  background: #fff;
+  background: ${props => (props.selected ? '#dfd' : '#fff')};
 
   & + & {
     border-left: none;

@@ -7,7 +7,7 @@ export type Props = {
   children: React.ReactNode;
 };
 
-export class Outside extends React.Component<Props> {
+export class Outside extends React.PureComponent<Props> {
   public componentDidMount() {
     document.addEventListener('click', this.onClick);
   }

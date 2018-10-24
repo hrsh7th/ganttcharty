@@ -31,7 +31,7 @@ const ScrollableStyle = {
   overflow: 'hidden'
 };
 
-export class Grid<Row extends object> extends React.Component<Props<Row>> {
+export class Grid<Row extends object> extends React.PureComponent<Props<Row>> {
   private header = React.createRef<HTMLDivElement>();
 
   public getSnapshotBeforeUpdate() {

@@ -14,7 +14,7 @@ export type State = {
   droppable: boolean;
 };
 
-export default class BodyRow extends React.Component<Props, State> {
+export default class BodyRow extends React.PureComponent<Props, State> {
   public state: State = {
     droppable: false
   };
@@ -26,7 +26,7 @@ export default class BodyRow extends React.Component<Props, State> {
         onDroppableLeave={this.onDroppableLeave}
         onDrop={this.onDrop}
       >
-        <Self rowHeight={this.props.rowHeight}>
+        <Self rowHeight={this.props.rowHeight} onMouseDown={this.onMouseDown}>
           {this.state.droppable && (
             <>
               <PrevDropArea data-dir="prev" />
@@ -61,7 +61,6 @@ export default class BodyRow extends React.Component<Props, State> {
       },
       () => {
         const dir = (e.target as any).getAttribute('data-dir');
-        console.log(dir);
         if (dir === 'next') {
           Action.Task.insertNext(this.props.row.id, payload.id);
         } else {
@@ -69,6 +68,10 @@ export default class BodyRow extends React.Component<Props, State> {
         }
       }
     );
+  };
+
+  private onMouseDown = () => {
+    Action.UI.select(this.props.row.id);
   };
 }
 

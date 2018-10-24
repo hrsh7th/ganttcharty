@@ -14,7 +14,7 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-export class GanttChart extends React.Component {
+export class GanttChart extends React.PureComponent {
   private header = React.createRef<HTMLDivElement>();
   private chart = React.createRef<HTMLDivElement>();
 

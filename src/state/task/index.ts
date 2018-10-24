@@ -19,6 +19,7 @@ export type Task = {
  * task tree types.
  */
 export type TaskNode = Task & {
+  task: Task;
   parent?: Task;
   children: TaskNode[];
   depth: number;
@@ -43,6 +44,7 @@ export const tasks = memoize((tasks: Task[]) => {
           .concat([
             {
               ...task,
+              task,
               parent,
               children,
               depth

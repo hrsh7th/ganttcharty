@@ -27,7 +27,7 @@ const InlineStyle = {
 
 export class InlineEdit<
   T extends Date | string | number
-> extends React.Component<Props<T>, State<T>> {
+> extends React.PureComponent<Props<T>, State<T>> {
   private editing: React.RefObject<HTMLInputElement> = React.createRef();
 
   private keymap = {

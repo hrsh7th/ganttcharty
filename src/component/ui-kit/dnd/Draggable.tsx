@@ -19,7 +19,7 @@ export type State = {
 };
 
 export function createDraggable<T>(context: DragDropContext<T>) {
-  return class Draggable extends React.Component<Props<T>, State> {
+  return class Draggable extends React.PureComponent<Props<T>, State> {
     public state: State = {};
 
     public render() {

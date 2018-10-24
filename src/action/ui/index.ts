@@ -16,7 +16,7 @@ export const updateViewport = (rect: { width: number; height: number }) => {
   });
 };
 
-export const selectTask = (taskId?: State.Task.TaskId) => {
+export const select = (taskId?: State.Task.TaskId) => {
   State.update(state => {
     state.ui.selectedTaskId = taskId;
   });

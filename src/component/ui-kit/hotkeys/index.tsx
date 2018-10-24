@@ -16,7 +16,7 @@ export type Props<Keymap extends { [name: string]: string[] }> = {
 
 export class Hotkeys<
   Keymap extends { [name: string]: string[] }
-> extends React.Component<Props<Keymap>> {
+> extends React.PureComponent<Props<Keymap>> {
   private static recentTarget: HTMLElement | null = null;
 
   public static setScope(scope: string, target: HTMLElement) {

@@ -5,7 +5,7 @@ export type Props = {
   style?: React.CSSProperties;
 };
 
-export default class Body extends React.Component<Props> {
+export default class Body extends React.PureComponent<Props> {
   public static defaultProps = {
     className: '',
     style: {}

@@ -6,6 +6,7 @@ import { BodyRow, BodyCell } from './body';
 
 const Consumer = State.select(state => ({
   viewportHeight: state.ui.viewportHeight,
+  selectedTaskId: state.ui.selectedTaskId,
   axisHeight: state.option.axisHeight,
   headerWidth: state.option.headerWidth,
   rowHeight: state.option.rowHeight,
@@ -56,6 +57,7 @@ export const HeaderArea = React.forwardRef(({ onWheel }: Props, ref: any) => (
             BodyCell: props => (
               <BodyCell
                 row={props.row}
+                selected={props.row.id === state.selectedTaskId}
                 column={props.column}
                 indentWidth={state.indentWidth}
                 rowHeight={state.rowHeight}

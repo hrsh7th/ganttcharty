@@ -24,7 +24,7 @@ export type State = {
   };
 };
 
-export class Task extends React.Component<Props, State> {
+export class Task extends React.PureComponent<Props, State> {
   public state: State = {};
 
   public render = () => {
@@ -86,7 +86,7 @@ export class Task extends React.Component<Props, State> {
    * click task.
    */
   private onClick = () => {
-    Action.UI.selectTask(this.props.node.id);
+    Action.UI.select(this.props.node.id);
   };
 
   /**

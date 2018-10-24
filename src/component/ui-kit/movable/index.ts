@@ -7,7 +7,7 @@ export type Props = {
   children: React.ReactNode;
 };
 
-export class Movable extends React.Component<Props> {
+export class Movable extends React.PureComponent<Props> {
   private isMoving = false;
 
   public render() {
