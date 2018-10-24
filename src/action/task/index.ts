@@ -53,21 +53,23 @@ export const collapse = (taskId: State.Task.TaskId) => {
 
 export const add = (extendTaskId?: State.Task.TaskId) => {
   State.update(state => {
-    if (!state.ui.selectedTaskId) return;
-
     // create newTask and extends selected task.
-    const extend = State.Task.get(state.tasks, extendTaskId)!;
+    const extend = State.Task.get(state.tasks, extendTaskId);
     const newTask: State.Task.Task = {
       id: uuid(),
       name: `new task ${state.tasks.length}`,
       description: '',
-      startedAt: new Date(extend.startedAt.getTime()),
-      finishedAt: new Date(extend.finishedAt.getTime()),
-      parentId: extend.parentId
+      startedAt: new Date(extend ? extend.startedAt.getTime() : Date.now()),
+      finishedAt: new Date(extend ? extend.finishedAt.getTime() : Date.now()),
+      parentId: extend ? extend.parentId : undefined
     };
 
     // insert newTask to next to selected task.
-    state.tasks.splice(state.tasks.indexOf(extend) + 1, 0, newTask);
+    state.tasks.splice(
+      extend ? state.tasks.indexOf(extend) + 1 : 0,
+      0,
+      newTask
+    );
 
     // select newTask.
     state.ui.selectedTaskId = newTask.id;

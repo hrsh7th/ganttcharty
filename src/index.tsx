@@ -9,6 +9,8 @@ type Input = {
   tasks: State.Task.Task[];
 };
 
+export { State };
+
 export function render(id: string, state: Input) {
   const element = document.getElementById(id)!;
   ReactDOM.render(

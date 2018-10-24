@@ -1,4 +1,5 @@
 import React from 'react';
+import equals from 'shallowequal';
 import styled from 'styled-components';
 import startOfDay from 'date-fns/start_of_day';
 import * as Action from '../../../../action';

@@ -33,7 +33,7 @@ export const handlers = {
   }, 60),
   'add task': (e: KeyboardEvent) => {
     e.preventDefault();
-    Action.Task.add();
+    Action.Task.add(State.get()!.ui.selectedTaskId);
   },
   'remove task': () => {
     Action.Task.remove();
