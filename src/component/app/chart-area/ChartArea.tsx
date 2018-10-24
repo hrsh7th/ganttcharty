@@ -38,7 +38,7 @@ export const ChartArea = React.forwardRef(({ onWheel }: Props, ref: any) => (
             <TaskListBackground
               {...state}
               style={{
-                transform: `translateX(${-State.UI.rest(
+                transform: `translateX(${-State.UI.restWidth(
                   new Date(
                     state.currentTime.getTime() - state.baseTime.getTime()
                   ),

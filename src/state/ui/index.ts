@@ -43,9 +43,20 @@ export const x = (
 };
 
 /**
+ * x2time.
+ */
+export const x2time = (
+  x: number,
+  columnWidth: number,
+  scale: State.Option.Scale
+) => {
+  return Math.floor(x / columnWidth) * State.Option.scaleTime(scale);
+};
+
+/**
  * create view rest width.
  */
-export const rest = (
+export const restWidth = (
   time: Date,
   scale: State.Option.Scale,
   columnWidth: number,

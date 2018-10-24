@@ -1,5 +1,4 @@
 import React from 'react';
-import equals from 'shallowequal';
 import styled from 'styled-components';
 import startOfDay from 'date-fns/start_of_day';
 import * as Action from '../../../../action';
@@ -127,17 +126,13 @@ export class Task extends React.Component<Props, State> {
     const { scale, columnWidth } = this.props;
     const { startedAt, finishedAt } = this.props.node;
     const diffX = e.clientX - this.state.dragging.x;
-    const nextStartedAt =
-      startedAt.getTime() +
-      Math.floor((diffX / columnWidth) * State.Option.scaleTime(scale));
-    const nextFinishedAt =
-      finishedAt.getTime() +
-      Math.floor((diffX / columnWidth) * State.Option.scaleTime(scale));
+    const startedAtDiff = State.UI.x2time(diffX, columnWidth, scale);
+    const finishedAtDiff = State.UI.x2time(diffX, columnWidth, scale);
     this.setState({
       dragging: {
         ...this.state.dragging,
-        startedAt: startOfDay(nextStartedAt),
-        finishedAt: startOfDay(nextFinishedAt)
+        startedAt: startOfDay(startedAt.getTime() + startedAtDiff),
+        finishedAt: startOfDay(finishedAt.getTime() + finishedAtDiff)
       }
     });
   };
@@ -151,13 +146,11 @@ export class Task extends React.Component<Props, State> {
     const { scale, columnWidth } = this.props;
     const finishedAt = this.props.node.finishedAt;
     const diffX = e.clientX - this.state.dragging.x;
-    const nextTime =
-      finishedAt.getTime() +
-      Math.floor((diffX / columnWidth) * State.Option.scaleTime(scale));
+    const diffTime = State.UI.x2time(diffX, columnWidth, scale);
     this.setState({
       dragging: {
         ...this.state.dragging,
-        finishedAt: startOfDay(nextTime)
+        finishedAt: startOfDay(finishedAt.getTime() + diffTime)
       }
     });
   };
@@ -171,13 +164,11 @@ export class Task extends React.Component<Props, State> {
     const { scale, columnWidth } = this.props;
     const startedAt = this.props.node.startedAt;
     const diffX = e.clientX - this.state.dragging.x;
-    const nextTime =
-      startedAt.getTime() +
-      Math.floor((diffX / columnWidth) * State.Option.scaleTime(scale));
+    const diffTime = State.UI.x2time(diffX, columnWidth, scale);
     this.setState({
       dragging: {
         ...this.state.dragging,
-        startedAt: startOfDay(nextTime)
+        startedAt: startOfDay(startedAt.getTime() + diffTime)
       }
     });
   };
