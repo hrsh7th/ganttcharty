@@ -1,7 +1,4 @@
-import memoize from 'memoize-one';
 import startOfDay from 'date-fns/start_of_day';
-
-const nodeMap = new Map<TaskId, TaskNode>();
 
 /**
  * task types.
@@ -30,36 +27,37 @@ export type TaskNode = Task & {
 /**
  * create tasks.
  */
-export const tasks = memoize((tasks: Task[]) => {
+export const tasks = (allTasks: Task[]) => {
   return (function traverse(
     tasks: Task[],
     parentId?: TaskId,
     depth: number = 0
   ): TaskNode[] {
     const parent = get(tasks, parentId);
-    return tasks.filter(task => task.parentId === parentId).reduce(
+    return allTasks.filter(task => task.parentId === parentId).reduce(
       (nodes, task) => {
         const children = !task.collapsed
-          ? traverse(tasks, task.id, depth + 1)
+          ? traverse(allTasks, task.id, depth + 1)
           : [];
 
-        const node = nodeMap.get(task.id);
-        if (!node || node.task !== task) {
-          nodeMap.delete(task.id);
-          nodeMap.set(task.id, {
-            ...task,
-            task,
-            parent,
-            children,
-            depth
-          });
-        }
-        return nodes.concat([nodeMap.get(task.id)!]).concat(children);
+        return nodes
+          .concat([
+            {
+              ...task,
+              task,
+              parent,
+              startedAt: startedAt(allTasks, task.id),
+              finishedAt: finishedAt(allTasks, task.id),
+              children,
+              depth
+            }
+          ])
+          .concat(children);
       },
       [] as TaskNode[]
     );
-  })(tasks);
-});
+  })(allTasks, undefined);
+};
 
 /**
  * get task by id.
@@ -81,6 +79,36 @@ export const getChildren = (
     return [];
   }
   return tasks.filter(task => task.parentId === taskId);
+};
+
+/**
+ * startedAt.
+ */
+export const startedAt = (tasks: Task[], taskId: TaskId) => {
+  const children = getChildren(tasks, taskId, false).sort((a, b) => {
+    return startedAt(tasks, a.id).getTime() - startedAt(tasks, b.id).getTime();
+  });
+  if (children.length) {
+    return children[0].startedAt;
+  }
+
+  return get(tasks, taskId)!.startedAt;
+};
+
+/**
+ * finishedAt.
+ */
+export const finishedAt = (tasks: Task[], taskId: TaskId) => {
+  const children = getChildren(tasks, taskId, false).sort((a, b) => {
+    return (
+      finishedAt(tasks, b.id).getTime() - finishedAt(tasks, a.id).getTime()
+    );
+  });
+  if (children.length) {
+    return children[0].finishedAt;
+  }
+
+  return get(tasks, taskId)!.finishedAt;
 };
 
 /**
@@ -164,9 +192,7 @@ export const getNext = (tasks: Task[], taskId: TaskId): Task | null => {
   return null;
 };
 
-export const defaults = (
-  tasks: (Task | { startedAt: string; finishedAt: string })[]
-) => {
+export const defaults = (tasks: any[]) => {
   return tasks
     .map(task => {
       task.startedAt = startOfDay(task.startedAt);

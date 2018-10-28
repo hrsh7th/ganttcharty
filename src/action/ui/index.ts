@@ -54,16 +54,6 @@ export const moveToSelectedTask = () => {
   });
 };
 
-export const moveSelectedTask = (adder: number) => {
-  State.update(state => {
-    if (!state.ui.selectedTaskId) return;
-
-    const target = State.Task.get(state.tasks, state.ui.selectedTaskId)!;
-    target.startedAt = new Date(target.startedAt.getTime() + adder);
-    target.finishedAt = new Date(target.finishedAt.getTime() + adder);
-  });
-};
-
 export const selectNextTask = () => {
   State.update(state => {
     if (!state.ui.selectedTaskId) return;

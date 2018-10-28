@@ -28,12 +28,14 @@ export class Task extends React.PureComponent<Props, State> {
   public state: State = {};
 
   public render = () => {
-    const { node, baseTime, scale, columnWidth } = this.props;
+    const { baseTime, scale, columnWidth } = this.props;
+    const isParent = !!this.props.node.children.length;
     const startedAt =
-      (this.state.dragging && this.state.dragging.startedAt) || node.startedAt;
+      (this.state.dragging && this.state.dragging.startedAt) ||
+      this.props.node.startedAt;
     const finishedAt =
       (this.state.dragging && this.state.dragging.finishedAt) ||
-      node.finishedAt;
+      this.props.node.finishedAt;
 
     return (
       <Self
@@ -57,120 +59,116 @@ export class Task extends React.PureComponent<Props, State> {
         <TaskLabel rowHeight={this.props.rowHeight}>
           {this.props.node.name}
         </TaskLabel>
-        <Movable
-          onMoveStart={this.onMoveStart}
-          onMoveEnd={this.onMoveEnd}
-          onMoving={this.onMovePrev}
-        >
-          <HandlePrev />
-        </Movable>
+        {!isParent ? (
+          <Movable
+            onMoveStart={this.onMoveStart}
+            onMoveEnd={this.onMoveEnd}
+            onMoving={this.onMovePrev}
+          >
+            <HandlePrev />
+          </Movable>
+        ) : null}
         <Movable
           onMoveStart={this.onMoveStart}
           onMoveEnd={this.onMoveEnd}
           onMoving={this.onMoveSelf}
         >
-          <TaskLine title={this.props.node.name} {...this.props} />
+          <TaskLine title={this.props.node.name} {...this.props}>
+            {isParent ? (
+              <>
+                <Arrow dir="left" />
+                <Arrow dir="right" />
+              </>
+            ) : null}
+          </TaskLine>
         </Movable>
-        <Movable
-          onMoveStart={this.onMoveStart}
-          onMoveEnd={this.onMoveEnd}
-          onMoving={this.onMoveNext}
-        >
-          <HandleNext />
-        </Movable>
+        {!isParent ? (
+          <Movable
+            onMoveStart={this.onMoveStart}
+            onMoveEnd={this.onMoveEnd}
+            onMoving={this.onMoveNext}
+          >
+            <HandleNext />
+          </Movable>
+        ) : null}
       </Self>
     );
   };
 
-  /**
-   * click task.
-   */
-  private onClick = () => {
-    Action.UI.select(this.props.node.id);
-  };
-
-  /**
-   * start drag.
-   */
   private onMoveStart = (e: MouseEvent) => {
-    const { startedAt, finishedAt } = this.props.node;
     this.setState({
       dragging: {
-        startedAt,
-        finishedAt,
+        startedAt: this.props.node.startedAt,
+        finishedAt: this.props.node.finishedAt,
         x: e.clientX,
         y: e.clientY
       }
     });
   };
 
-  /**
-   * end drag.
-   */
   private onMoveEnd = () => {
     if (!this.state.dragging) return;
 
-    Action.Task.update(this.props.node.id, {
-      startedAt: this.state.dragging.startedAt || this.props.node.startedAt,
-      finishedAt: this.state.dragging.finishedAt || this.props.node.finishedAt
+    const { startedAt, finishedAt } = this.state.dragging;
+    this.setState({ dragging: undefined }, () => {
+      Action.Task.update(this.props.node.id, { startedAt, finishedAt });
     });
-    this.setState({ dragging: undefined });
   };
 
-  /**
-   * drag self.
-   */
   private onMoveSelf = (e: MouseEvent) => {
     if (!this.state.dragging) return;
 
     const { scale, columnWidth } = this.props;
-    const { startedAt, finishedAt } = this.props.node;
     const diffX = e.clientX - this.state.dragging.x;
-    const startedAtDiff = State.UI.x2time(diffX, columnWidth, scale);
-    const finishedAtDiff = State.UI.x2time(diffX, columnWidth, scale);
     this.setState({
       dragging: {
         ...this.state.dragging,
-        startedAt: startOfDay(startedAt.getTime() + startedAtDiff),
-        finishedAt: startOfDay(finishedAt.getTime() + finishedAtDiff)
+        startedAt: startOfDay(
+          this.props.node.startedAt.getTime() +
+            State.UI.x2time(diffX, columnWidth, scale)
+        ),
+        finishedAt: startOfDay(
+          this.props.node.finishedAt.getTime() +
+            State.UI.x2time(diffX, columnWidth, scale)
+        )
       }
     });
   };
 
-  /**
-   * drag finishedAt.
-   */
   private onMoveNext = (e: MouseEvent) => {
     if (!this.state.dragging) return;
 
     const { scale, columnWidth } = this.props;
-    const finishedAt = this.props.node.finishedAt;
     const diffX = e.clientX - this.state.dragging.x;
-    const diffTime = State.UI.x2time(diffX, columnWidth, scale);
     this.setState({
       dragging: {
         ...this.state.dragging,
-        finishedAt: startOfDay(finishedAt.getTime() + diffTime)
+        finishedAt: startOfDay(
+          this.props.node.finishedAt.getTime() +
+            State.UI.x2time(diffX, columnWidth, scale)
+        )
       }
     });
   };
 
-  /**
-   * drag startedAt.
-   */
   private onMovePrev = (e: MouseEvent) => {
     if (!this.state.dragging) return;
 
     const { scale, columnWidth } = this.props;
-    const startedAt = this.props.node.startedAt;
     const diffX = e.clientX - this.state.dragging.x;
-    const diffTime = State.UI.x2time(diffX, columnWidth, scale);
     this.setState({
       dragging: {
         ...this.state.dragging,
-        startedAt: startOfDay(startedAt.getTime() + diffTime)
+        startedAt: startOfDay(
+          this.props.node.startedAt.getTime() +
+            State.UI.x2time(diffX, columnWidth, scale)
+        )
       }
     });
+  };
+
+  private onClick = () => {
+    Action.UI.select(this.props.node.id);
   };
 }
 
@@ -184,11 +182,25 @@ const TaskLine = styled.div<{
   selected: boolean;
   node: State.Task.TaskNode;
 }>`
+  position: relative;
   width: 100%;
   height: 100%;
   border-radius: 2px;
-  background: ${props => (props.selected ? '#484' : '#448')};
+  background: ${props =>
+    props.selected ? '#484' : props.node.children.length ? '#fdd' : '#448'};
   cursor: move;
+`;
+
+const Arrow = styled.div<{ dir: 'left' | 'right' }>`
+  position: absolute;
+  top: 50%;
+  ${props => (props.dir === 'left' ? 'right: 100%' : 'left: 100%')};
+  transform: translateY(-50%);
+  width: 7px;
+  height: 7px;
+  border-radius: 25%;
+  background: #f88;
+  z-index: 2;
 `;
 
 const TaskLabel = styled.div<{ rowHeight: number }>`

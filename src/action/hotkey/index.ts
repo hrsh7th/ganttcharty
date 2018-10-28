@@ -11,6 +11,7 @@ export const keyMap = {
   'remove task': ['backspace'],
   'expand task': ['shift+right'],
   'collapse task': ['shift+left'],
+  'sort tasks': ['s'],
   'toggle export': ['shift+e']
 };
 
@@ -26,12 +27,34 @@ export const handlers = {
   'move left': e => {
     e.preventDefault();
     const state = State.get()!;
-    Action.UI.moveSelectedTask(-State.Option.scaleTime(state.option.scale));
+    if (state.ui.selectedTaskId) {
+      const diff = State.Option.scaleTime(state.option.scale);
+      const task = State.Task.get(state.tasks, state.ui.selectedTaskId)!;
+      Action.Task.update(task.id, {
+        startedAt: new Date(
+          State.Task.startedAt(state.tasks, task.id).getTime() - diff
+        ),
+        finishedAt: new Date(
+          State.Task.finishedAt(state.tasks, task.id).getTime() - diff
+        )
+      });
+    }
   },
   'move right': e => {
     e.preventDefault();
     const state = State.get()!;
-    Action.UI.moveSelectedTask(State.Option.scaleTime(state.option.scale));
+    if (state.ui.selectedTaskId) {
+      const diff = State.Option.scaleTime(state.option.scale);
+      const task = State.Task.get(state.tasks, state.ui.selectedTaskId)!;
+      Action.Task.update(task.id, {
+        startedAt: new Date(
+          State.Task.startedAt(state.tasks, task.id).getTime() + diff
+        ),
+        finishedAt: new Date(
+          State.Task.finishedAt(state.tasks, task.id).getTime() + diff
+        )
+      });
+    }
   },
   'add task': e => {
     e.preventDefault();
@@ -54,6 +77,9 @@ export const handlers = {
     if (state.ui.selectedTaskId) {
       Action.Task.collapse(state.ui.selectedTaskId);
     }
+  },
+  'sort tasks': () => {
+    Action.Task.sort();
   },
   'toggle export': () => {
     Action.UI.toggleExportView(!State.get()!.ui.exporting);
