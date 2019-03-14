@@ -12,7 +12,9 @@ export const keyMap = {
   'expand task': ['shift+right'],
   'collapse task': ['shift+left'],
   'sort tasks': ['s'],
-  'toggle export': ['shift+e']
+  'toggle export': ['shift+e'],
+  'zoom up': ['ctrl+='],
+  'zoom down': ['ctrl+-']
 };
 
 export const handlers = {
@@ -80,6 +82,12 @@ export const handlers = {
   },
   'sort tasks': () => {
     Action.Task.sort();
+  },
+  'zoom up': () => {
+    Action.Option.zoomup();
+  },
+  'zoom down': () => {
+    Action.Option.zoomdown();
   },
   'toggle export': () => {
     Action.UI.toggleExportView(!State.get()!.ui.exporting);

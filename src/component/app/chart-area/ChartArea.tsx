@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import startOfDay from 'date-fns/start_of_day';
+import startOfWeek from 'date-fns/start_of_week';
 import * as State from '../../../state';
 import { TaskList } from './task/TaskList';
 import { Axis } from './axis/Axis';
@@ -40,10 +41,13 @@ export const ChartArea = React.forwardRef(({ onWheel }: Props, ref: any) => (
               style={{
                 transform: `translateX(${-State.UI.restWidth(
                   new Date(
-                    state.currentTime.getTime() - state.baseTime.getTime()
+                    state.currentTime.getTime() -
+                      startOfWeek(state.baseTime.getTime(), {
+                        weekStartsOn: 1
+                      }).getTime()
                   ),
-                  state.scale,
-                  state.columnWidth,
+                  'week',
+                  state.columnWidth * 7,
                   2
                 )}px)`
               }}
@@ -108,8 +112,8 @@ const TaskListBackground = styled.div<{
   will-change: transform;
   position: absolute;
   top: 0;
-  left: -${props => props.columnWidth * 2}px;
-  right: -${props => props.columnWidth * 2}px;
+  left: -${props => props.columnWidth * 7}px;
+  right: -${props => props.columnWidth * 7}px;
   bottom: 0;
   background-image: repeating-linear-gradient(
       180deg,
@@ -121,9 +125,9 @@ const TaskListBackground = styled.div<{
     repeating-linear-gradient(
       90deg,
       #f8f8f8 0px,
-      #f8f8f8 ${props => props.columnWidth}px,
-      transparent ${props => props.columnWidth}px,
-      transparent ${props => props.columnWidth * 2}px
+      #f8f8f8 ${props => props.columnWidth * 7}px,
+      transparent ${props => props.columnWidth * 7}px,
+      transparent ${props => props.columnWidth * 7 * 2}px
     );
 `;
 
