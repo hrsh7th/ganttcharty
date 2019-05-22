@@ -24,6 +24,7 @@ export type Props<Row extends object> = {
   };
   forwardedRef: React.RefObject<HTMLDivElement>;
   onMoving: MoveEventHandler;
+  onWheel: React.WheelEventHandler<HTMLDivElement>;
 };
 
 const ScrollableStyle = {
@@ -70,7 +71,14 @@ export class Grid<Row extends object> extends React.PureComponent<Props<Row>> {
         </HeaderBox>
         <BodyBox>
           <Movable onMoving={this.onMoving}>
-            <div style={ScrollableStyle} ref={this.props.forwardedRef}>
+            <div
+              style={Object.assign({}, ScrollableStyle, {
+                overflowX: 'scroll'
+              })}
+              ref={this.props.forwardedRef}
+              onWheel={this.props.onWheel}
+              onScroll={this.onScroll}
+            >
               {this.rows()}
             </div>
           </Movable>
@@ -107,8 +115,14 @@ export class Grid<Row extends object> extends React.PureComponent<Props<Row>> {
 
   private onMoving = (e: MouseEvent, diff: Diff) => {
     if (this.header.current) {
-      this.header.current.scrollLeft += diff.x;
+      this.header.current.scrollLeft += -diff.currentX;
     }
     this.props.onMoving(e, diff);
+  };
+
+  private onScroll = (_: React.UIEvent<HTMLDivElement>) => {
+    if (this.header.current && this.props.forwardedRef.current) {
+      this.header.current.scrollLeft = this.props.forwardedRef.current.scrollLeft;
+    }
   };
 }

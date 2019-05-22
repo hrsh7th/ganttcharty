@@ -22,65 +22,72 @@ const Consumer = State.select(state => ({
 
 export type Props = {
   onMoving: MoveEventHandler;
+  onScroll: (e: React.UIEvent<HTMLDivElement>) => void;
 };
 
-export const ChartArea = React.forwardRef(({ onMoving }: Props, ref: any) => (
-  <Consumer>
-    {state => (
-      <Self width={state.viewportWidth - state.headerWidth}>
-        <HeaderBox height={state.axisHeight}>
-          <Axis />
-        </HeaderBox>
-        <Movable onMoving={onMoving}>
-          <Box height={state.viewportHeight - state.axisHeight} ref={ref}>
-            <TaskListContentArea {...state}>
-              <TaskListBackground
-                {...state}
-                style={{
-                  transform: `translateX(${-State.UI.restWidth(
-                    new Date(
-                      state.currentTime.getTime() -
-                        startOfWeek(state.baseTime.getTime(), {
-                          weekStartsOn: 1
-                        }).getTime()
-                    ),
-                    'week',
-                    state.columnWidth * 7,
-                    2
-                  )}px)`
-                }}
-              />
-              <TaskListSeekArea
-                {...state}
-                style={{
-                  transform: `translateX(${-State.UI.x(
-                    state.currentTime,
-                    state.baseTime,
-                    state.scale,
-                    state.columnWidth
-                  )}px)`
-                }}
-              >
-                <Now
+export const ChartArea = React.forwardRef(
+  ({ onMoving, onScroll }: Props, ref: any) => (
+    <Consumer>
+      {state => (
+        <Self width={state.viewportWidth - state.headerWidth}>
+          <HeaderBox height={state.axisHeight}>
+            <Axis />
+          </HeaderBox>
+          <Movable onMoving={onMoving}>
+            <Box
+              height={state.viewportHeight - state.axisHeight}
+              ref={ref}
+              onScroll={onScroll}
+            >
+              <TaskListContentArea {...state}>
+                <TaskListBackground
+                  {...state}
+                  style={{
+                    transform: `translateX(${-State.UI.restWidth(
+                      new Date(
+                        state.currentTime.getTime() -
+                          startOfWeek(state.baseTime.getTime(), {
+                            weekStartsOn: 1
+                          }).getTime()
+                      ),
+                      'week',
+                      state.columnWidth * 7,
+                      2
+                    )}px)`
+                  }}
+                />
+                <TaskListSeekArea
                   {...state}
                   style={{
                     transform: `translateX(${-State.UI.x(
+                      state.currentTime,
                       state.baseTime,
-                      state.nowDay,
                       state.scale,
                       state.columnWidth
                     )}px)`
                   }}
-                />
-                <TaskList />
-              </TaskListSeekArea>
-            </TaskListContentArea>
-          </Box>
-        </Movable>
-      </Self>
-    )}
-  </Consumer>
-));
+                >
+                  <Now
+                    {...state}
+                    style={{
+                      transform: `translateX(${-State.UI.x(
+                        state.baseTime,
+                        state.nowDay,
+                        state.scale,
+                        state.columnWidth
+                      )}px)`
+                    }}
+                  />
+                  <TaskList />
+                </TaskListSeekArea>
+              </TaskListContentArea>
+            </Box>
+          </Movable>
+        </Self>
+      )}
+    </Consumer>
+  )
+);
 
 const Self = styled.div<{ width: number }>`
   width: ${props => props.width}px;
@@ -91,7 +98,8 @@ const Box = styled.div<{ height: number }>`
   width: 100%;
   height: ${props => props.height}px;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: scroll;
 `;
 
 const HeaderBox = styled(Box)`

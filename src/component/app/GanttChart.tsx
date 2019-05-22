@@ -30,8 +30,16 @@ export class GanttChart extends React.PureComponent {
           listeners={Action.Hotkey.handlers}
         >
           <Self className="GanttChart">
-            <HeaderArea ref={this.header} onMoving={this.onHeaderAreaMoving} />
-            <ChartArea ref={this.chart} onMoving={this.onChartAreaMoving} />
+            <HeaderArea
+              ref={this.header}
+              onMoving={this.onHeaderAreaMoving}
+              onWheel={this.onHeaderAreaWheel}
+            />
+            <ChartArea
+              ref={this.chart}
+              onMoving={this.onChartAreaMoving}
+              onScroll={this.onChartAreaScroll}
+            />
             <Export />
           </Self>
         </Hotkeys>
@@ -46,14 +54,22 @@ export class GanttChart extends React.PureComponent {
 
   private onHeaderAreaMoving = (_: MouseEvent, diff: Diff) => {
     if (this.header.current) {
-      this.header.current.scrollLeft += diff.x;
+      this.header.current.scrollLeft += -diff.currentX;
     }
-    this.syncY(this.header, this.chart, diff.y);
+    this.syncY(this.header, this.chart, -diff.currentY);
+  };
+
+  private onHeaderAreaWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    this.syncY(this.header, this.chart, e.deltaY);
   };
 
   private onChartAreaMoving = (_: MouseEvent, diff: Diff) => {
-    Action.UI.updateCurrentTime(diff.x);
-    this.syncY(this.chart, this.header, diff.y);
+    Action.UI.updateCurrentTime(-diff.currentX);
+    this.syncY(this.chart, this.header, -diff.currentY);
+  };
+
+  private onChartAreaScroll = (_: React.UIEvent<HTMLDivElement>) => {
+    this.syncY(this.chart, this.header, 0);
   };
 
   private syncY = (

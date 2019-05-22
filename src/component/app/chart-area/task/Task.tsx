@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import startOfDay from 'date-fns/start_of_day';
 import * as Action from '../../../../action';
 import * as State from '../../../../state';
-import { Movable } from '../../../ui-kit/movable';
+import { Movable, Diff } from '../../../ui-kit/movable';
 
 export type Props = {
   node: State.Task.TaskNode;
@@ -15,13 +14,9 @@ export type Props = {
   selected: boolean;
 };
 
-export type State = {
-  dragging?: {
-    x: number;
-    y: number;
-    startedAt: Date;
-    finishedAt: Date;
-  };
+type State = {
+  startedAt?: Date;
+  finishedAt?: Date;
 };
 
 export class Task extends React.PureComponent<Props, State> {
@@ -30,12 +25,8 @@ export class Task extends React.PureComponent<Props, State> {
   public render = () => {
     const { baseTime, scale, columnWidth } = this.props;
     const isParent = !!this.props.node.children.length;
-    const startedAt =
-      (this.state.dragging && this.state.dragging.startedAt) ||
-      this.props.node.startedAt;
-    const finishedAt =
-      (this.state.dragging && this.state.dragging.finishedAt) ||
-      this.props.node.finishedAt;
+    const startedAt = this.props.node.startedAt;
+    const finishedAt = this.props.node.finishedAt;
 
     return (
       <Self
@@ -56,112 +47,85 @@ export class Task extends React.PureComponent<Props, State> {
           )}px`
         }}
       >
-        <TaskLabel rowHeight={this.props.rowHeight}>
-          {this.props.node.name}
-        </TaskLabel>
+        {/* HandlePrev */}
         {!isParent ? (
-          <Movable
-            onMoveStart={this.onMoveStart}
-            onMoveEnd={this.onMoveEnd}
-            onMoving={this.onMovePrev}
-          >
+          <Movable onMoveStart={this.onMoveStart} onMoving={this.onMovingPrev}>
             <HandlePrev />
           </Movable>
         ) : null}
-        <Movable
-          onMoveStart={this.onMoveStart}
-          onMoveEnd={this.onMoveEnd}
-          onMoving={this.onMoveSelf}
-        >
+
+        {/* TaskLine */}
+        <Movable onMoveStart={this.onMoveStart} onMoving={this.onMovingSelf}>
           <TaskLine
             title={this.props.node.name}
             isParent={isParent}
             {...this.props}
           />
         </Movable>
+
+        {/* HandleNext */}
         {!isParent ? (
-          <Movable
-            onMoveStart={this.onMoveStart}
-            onMoveEnd={this.onMoveEnd}
-            onMoving={this.onMoveNext}
-          >
+          <Movable onMoveStart={this.onMoveStart} onMoving={this.onMovingNext}>
             <HandleNext />
           </Movable>
         ) : null}
+
+        {/* TaskLabel */}
+        <TaskLabel
+          rowHeight={this.props.rowHeight}
+          barHeight={this.props.barHeight}
+        >
+          {this.props.node.name}
+        </TaskLabel>
       </Self>
     );
   };
 
-  private onMoveStart = (e: MouseEvent) => {
-    this.setState({
-      dragging: {
-        startedAt: this.props.node.startedAt,
-        finishedAt: this.props.node.finishedAt,
-        x: e.clientX,
-        y: e.clientY
-      }
-    });
+  private onMoveStart = () => {
+    this.setState(() => ({
+      startedAt: this.props.node.startedAt,
+      finishedAt: this.props.node.finishedAt
+    }));
   };
 
-  private onMoveEnd = () => {
-    if (!this.state.dragging) return;
-
-    const { startedAt, finishedAt } = this.state.dragging;
-    this.setState({ dragging: undefined }, () => {
-      Action.Task.update(this.props.node.id, { startedAt, finishedAt });
-    });
-  };
-
-  private onMoveSelf = (e: MouseEvent) => {
-    if (!this.state.dragging) return;
-
+  private onMovingPrev = (_: MouseEvent, diff: Diff) => {
+    if (!this.state.startedAt || !this.state.finishedAt) {
+      return;
+    }
     const { scale, columnWidth } = this.props;
-    const diffX = e.clientX - this.state.dragging.x;
-    this.setState({
-      dragging: {
-        ...this.state.dragging,
-        startedAt: startOfDay(
-          this.props.node.startedAt.getTime() +
-            State.UI.x2time(diffX, columnWidth, scale)
-        ),
-        finishedAt: startOfDay(
-          this.props.node.finishedAt.getTime() +
-            State.UI.x2time(diffX, columnWidth, scale)
-        )
-      }
-    });
+    const startedAt = new Date(
+      this.state.startedAt.getTime() +
+        State.UI.x2time(diff.totalX, columnWidth, scale)
+    );
+    Action.Task.update(this.props.node.id, { startedAt });
   };
 
-  private onMoveNext = (e: MouseEvent) => {
-    if (!this.state.dragging) return;
-
+  private onMovingSelf = (_: MouseEvent, diff: Diff) => {
+    if (!this.state.startedAt || !this.state.finishedAt) {
+      return;
+    }
     const { scale, columnWidth } = this.props;
-    const diffX = e.clientX - this.state.dragging.x;
-    this.setState({
-      dragging: {
-        ...this.state.dragging,
-        finishedAt: startOfDay(
-          this.props.node.finishedAt.getTime() +
-            State.UI.x2time(diffX, columnWidth, scale)
-        )
-      }
-    });
+    const startedAt = new Date(
+      this.state.startedAt.getTime() +
+        State.UI.x2time(diff.totalX, columnWidth, scale)
+    );
+    const finishedAt = new Date(
+      this.state.finishedAt.getTime() +
+        State.UI.x2time(diff.totalX, columnWidth, scale)
+    );
+    Action.Task.update(this.props.node.id, { startedAt, finishedAt });
   };
 
-  private onMovePrev = (e: MouseEvent) => {
-    if (!this.state.dragging) return;
-
+  private onMovingNext = (_: MouseEvent, diff: Diff) => {
+    if (!this.state.startedAt || !this.state.finishedAt) {
+      return;
+    }
     const { scale, columnWidth } = this.props;
-    const diffX = e.clientX - this.state.dragging.x;
-    this.setState({
-      dragging: {
-        ...this.state.dragging,
-        startedAt: startOfDay(
-          this.props.node.startedAt.getTime() +
-            State.UI.x2time(diffX, columnWidth, scale)
-        )
-      }
-    });
+    const finishedAt = new Date(
+      this.state.finishedAt.getTime() +
+        State.UI.x2time(diff.totalX, columnWidth, scale)
+    );
+    Action.Task.update(this.props.node.id, { finishedAt });
   };
 
   private onClick = () => {
@@ -184,19 +148,24 @@ const TaskLine = styled.div<{
   width: 100%;
   height: 100%;
   border-radius: 2px;
-  border: 1px solid #ddd;
-  background: ${props =>
-    props.selected ? '#484' : props.node.children.length ? '#fdd' : '#448'};
+  border: 1px solid ${props => (props.selected ? '#f88' : '#ddd')};
+  background: ${props => (props.node.children.length ? '#fdd' : '#448')};
   cursor: move;
 `;
 
-const TaskLabel = styled.div<{ rowHeight: number }>`
+const TaskLabel = styled.div<{ rowHeight: number; barHeight: number }>`
   position: absolute;
   top: 0;
-  right: 100%;
+  left: 8px;
   margin-right: 4px;
   line-height: ${props => props.rowHeight}px;
   white-space: nowrap;
+  pointer-events: none;
+  font-size: 10px;
+  text-shadow: #000 1px 1px 0, #000 -1px -1px 0, #000 -1px 1px 0,
+    #000 1px -1px 0, #000 0px 1px 0, #000 0-1px 0, #000 -1px 0 0, #000 1px 0 0;
+  color: #f8f8f8;
+  user-select: none;
   pointer-events: none;
 `;
 

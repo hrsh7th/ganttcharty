@@ -34,10 +34,10 @@ export const scaleTime = (scale: Scale) =>
 
 export const defaults = (option: Partial<Option> = {}) => {
   option.headerWidth = 240;
-  option.rowHeight = 24;
+  option.rowHeight = 30;
   option.columnWidth = 24;
   option.scale = 'day';
-  option.barHeight = 12;
+  option.barHeight = 22;
   option.axisHeight = 32;
   option.indentWidth = 12;
   option.baseTime = startOfDay(

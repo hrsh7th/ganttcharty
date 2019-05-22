@@ -3,8 +3,10 @@ import ReactDOM from 'react-dom';
 import closest from 'closest-element';
 
 export type Diff = {
-  x: number;
-  y: number;
+  currentX: number;
+  currentY: number;
+  totalX: number;
+  totalY: number;
 };
 
 export type MoveEventHandler = (e: MouseEvent, diff: Diff) => void;
@@ -18,6 +20,10 @@ export type Props = {
 
 export class Movable extends React.PureComponent<Props> {
   private isMoving = false;
+  private startPosition: { x: number; y: number } = {
+    x: 0,
+    y: 0
+  };
   private currentPosition: { x: number; y: number } = {
     x: 0,
     y: 0
@@ -42,19 +48,25 @@ export class Movable extends React.PureComponent<Props> {
     ) {
       return;
     }
-    document.addEventListener('mousemove', this.onMouseMove, { capture: true });
-    document.addEventListener('mouseup', this.onMouseUp, { capture: true });
+    document.addEventListener('mousemove', this.onMouseMove);
+    document.addEventListener('mouseup', this.onMouseUp);
   };
 
   private onMouseMove = (e: MouseEvent) => {
     if (this.isMoving) {
       this.props.onMoving &&
         this.props.onMoving(e, {
-          x: this.currentPosition.x - e.clientX,
-          y: this.currentPosition.y - e.clientY
+          currentX: e.clientX - this.currentPosition.x,
+          currentY: e.clientY - this.currentPosition.y,
+          totalX: e.clientX - this.startPosition.x,
+          totalY: e.clientY - this.startPosition.y
         });
     } else {
       this.isMoving = true;
+      this.startPosition = {
+        x: e.clientX,
+        y: e.clientY
+      };
       this.props.onMoveStart && this.props.onMoveStart(e);
     }
 
@@ -66,14 +78,14 @@ export class Movable extends React.PureComponent<Props> {
 
   private onMouseUp = (e: MouseEvent) => {
     this.isMoving = false;
-    document.removeEventListener('mousemove', this.onMouseMove, {
-      capture: true
-    });
-    document.removeEventListener('mouseup', this.onMouseUp, { capture: true });
+    document.removeEventListener('mousemove', this.onMouseMove);
+    document.removeEventListener('mouseup', this.onMouseUp);
     this.props.onMoveEnd &&
       this.props.onMoveEnd(e, {
-        x: this.currentPosition.x - e.clientX,
-        y: this.currentPosition.y - e.clientY
+        currentX: e.clientX - this.currentPosition.x,
+        currentY: e.clientY - this.currentPosition.y,
+        totalX: e.clientX - this.startPosition.x,
+        totalY: e.clientY - this.startPosition.y
       });
   };
 }

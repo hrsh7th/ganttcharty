@@ -45,6 +45,7 @@ export function createDraggable<T>(context: DragDropContext<T>) {
 
     private onMouseDown = (e: React.MouseEvent<HTMLElement>) => {
       e.preventDefault();
+      e.stopPropagation();
       document.addEventListener('mousemove', this.onMouseMove);
       document.addEventListener('mouseup', this.onMouseUp);
     };

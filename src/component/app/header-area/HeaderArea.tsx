@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import * as State from '../../../state';
 import { Grid } from '../../ui-kit/grid';
 import { BodyRow, BodyCell } from './body';
+import { Diff } from '../../ui-kit/movable';
 
 const Consumer = State.select(state => ({
   viewportHeight: state.ui.viewportHeight,
@@ -16,61 +17,72 @@ const Consumer = State.select(state => ({
 }));
 
 export type Props = {
-  onMoving: (e: MouseEvent, diff: { x: number; y: number }) => void;
+  onMoving: (e: MouseEvent, diff: Diff) => void;
+  onWheel: (e: React.WheelEvent<HTMLDivElement>) => void;
 };
 
-export const HeaderArea = React.forwardRef(({ onMoving }: Props, ref: any) => (
-  <Consumer>
-    {state => (
-      <Self headerWidth={state.headerWidth}>
-        <Grid<State.Task.TaskNode>
-          keyName="id"
-          columns={state.columns}
-          rows={State.Task.tasks(state.tasks)}
-          Box={props => (
-            <Box height={state.viewportHeight}>{props.children}</Box>
-          )}
-          header={{
-            HeaderBox: props => (
-              <HeaderBox height={state.axisHeight}>{props.children}</HeaderBox>
-            ),
-            HeaderRow: props => (
-              <HeaderRow height={state.axisHeight}>{props.children}</HeaderRow>
-            ),
-            HeaderCell: props => (
-              <HeaderCell width={props.column.width} height={state.axisHeight}>
-                {props.column.name}
-              </HeaderCell>
-            )
-          }}
-          body={{
-            BodyBox: props => (
-              <Box height={state.viewportHeight - state.axisHeight}>
-                {props.children}
-              </Box>
-            ),
-            BodyRow: props => (
-              <BodyRow rowHeight={state.rowHeight} row={props.row}>
-                {props.children}
-              </BodyRow>
-            ),
-            BodyCell: props => (
-              <BodyCell
-                row={props.row}
-                selected={props.row.id === state.selectedTaskId}
-                column={props.column}
-                indentWidth={state.indentWidth}
-                rowHeight={state.rowHeight}
-              />
-            )
-          }}
-          forwardedRef={ref}
-          onMoving={onMoving}
-        />
-      </Self>
-    )}
-  </Consumer>
-));
+export const HeaderArea = React.forwardRef(
+  ({ onMoving, onWheel }: Props, ref: any) => (
+    <Consumer>
+      {state => (
+        <Self headerWidth={state.headerWidth}>
+          <Grid<State.Task.TaskNode>
+            keyName="id"
+            columns={state.columns}
+            rows={State.Task.tasks(state.tasks)}
+            Box={props => (
+              <Box height={state.viewportHeight}>{props.children}</Box>
+            )}
+            header={{
+              HeaderBox: props => (
+                <HeaderBox height={state.axisHeight}>
+                  {props.children}
+                </HeaderBox>
+              ),
+              HeaderRow: props => (
+                <HeaderRow height={state.axisHeight}>
+                  {props.children}
+                </HeaderRow>
+              ),
+              HeaderCell: props => (
+                <HeaderCell
+                  width={props.column.width}
+                  height={state.axisHeight}
+                >
+                  {props.column.name}
+                </HeaderCell>
+              )
+            }}
+            body={{
+              BodyBox: props => (
+                <Box height={state.viewportHeight - state.axisHeight}>
+                  {props.children}
+                </Box>
+              ),
+              BodyRow: props => (
+                <BodyRow rowHeight={state.rowHeight} row={props.row}>
+                  {props.children}
+                </BodyRow>
+              ),
+              BodyCell: props => (
+                <BodyCell
+                  row={props.row}
+                  selected={props.row.id === state.selectedTaskId}
+                  column={props.column}
+                  indentWidth={state.indentWidth}
+                  rowHeight={state.rowHeight}
+                />
+              )
+            }}
+            forwardedRef={ref}
+            onMoving={onMoving}
+            onWheel={onWheel}
+          />
+        </Self>
+      )}
+    </Consumer>
+  )
+);
 
 const Self = styled.div<{ headerWidth: number }>`
   width: ${props => props.headerWidth}px;
