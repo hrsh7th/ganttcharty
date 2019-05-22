@@ -5,6 +5,7 @@ import startOfWeek from 'date-fns/start_of_week';
 import * as State from '../../../state';
 import { TaskList } from './task/TaskList';
 import { Axis } from './axis/Axis';
+import { Movable, MoveEventHandler } from '../../ui-kit/movable';
 
 const Consumer = State.select(state => ({
   viewportWidth: state.ui.viewportWidth,
@@ -20,64 +21,62 @@ const Consumer = State.select(state => ({
 }));
 
 export type Props = {
-  onWheel: React.WheelEventHandler<HTMLDivElement>;
+  onMoving: MoveEventHandler;
 };
 
-export const ChartArea = React.forwardRef(({ onWheel }: Props, ref: any) => (
+export const ChartArea = React.forwardRef(({ onMoving }: Props, ref: any) => (
   <Consumer>
     {state => (
       <Self width={state.viewportWidth - state.headerWidth}>
         <HeaderBox height={state.axisHeight}>
           <Axis />
         </HeaderBox>
-        <Box
-          height={state.viewportHeight - state.axisHeight}
-          ref={ref}
-          onWheel={onWheel}
-        >
-          <TaskListContentArea {...state}>
-            <TaskListBackground
-              {...state}
-              style={{
-                transform: `translateX(${-State.UI.restWidth(
-                  new Date(
-                    state.currentTime.getTime() -
-                      startOfWeek(state.baseTime.getTime(), {
-                        weekStartsOn: 1
-                      }).getTime()
-                  ),
-                  'week',
-                  state.columnWidth * 7,
-                  2
-                )}px)`
-              }}
-            />
-            <TaskListSeekArea
-              {...state}
-              style={{
-                transform: `translateX(${-State.UI.x(
-                  state.currentTime,
-                  state.baseTime,
-                  state.scale,
-                  state.columnWidth
-                )}px)`
-              }}
-            >
-              <Now
+        <Movable onMoving={onMoving}>
+          <Box height={state.viewportHeight - state.axisHeight} ref={ref}>
+            <TaskListContentArea {...state}>
+              <TaskListBackground
+                {...state}
+                style={{
+                  transform: `translateX(${-State.UI.restWidth(
+                    new Date(
+                      state.currentTime.getTime() -
+                        startOfWeek(state.baseTime.getTime(), {
+                          weekStartsOn: 1
+                        }).getTime()
+                    ),
+                    'week',
+                    state.columnWidth * 7,
+                    2
+                  )}px)`
+                }}
+              />
+              <TaskListSeekArea
                 {...state}
                 style={{
                   transform: `translateX(${-State.UI.x(
+                    state.currentTime,
                     state.baseTime,
-                    state.nowDay,
                     state.scale,
                     state.columnWidth
                   )}px)`
                 }}
-              />
-              <TaskList />
-            </TaskListSeekArea>
-          </TaskListContentArea>
-        </Box>
+              >
+                <Now
+                  {...state}
+                  style={{
+                    transform: `translateX(${-State.UI.x(
+                      state.baseTime,
+                      state.nowDay,
+                      state.scale,
+                      state.columnWidth
+                    )}px)`
+                  }}
+                />
+                <TaskList />
+              </TaskListSeekArea>
+            </TaskListContentArea>
+          </Box>
+        </Movable>
       </Self>
     )}
   </Consumer>

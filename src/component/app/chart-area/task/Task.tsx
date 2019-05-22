@@ -73,14 +73,11 @@ export class Task extends React.PureComponent<Props, State> {
           onMoveEnd={this.onMoveEnd}
           onMoving={this.onMoveSelf}
         >
-          <TaskLine title={this.props.node.name} {...this.props}>
-            {isParent ? (
-              <>
-                <Arrow dir="left" />
-                <Arrow dir="right" />
-              </>
-            ) : null}
-          </TaskLine>
+          <TaskLine
+            title={this.props.node.name}
+            isParent={isParent}
+            {...this.props}
+          />
         </Movable>
         {!isParent ? (
           <Movable
@@ -181,26 +178,16 @@ const Self = styled.div<{ rowHeight: number; barHeight: number }>`
 const TaskLine = styled.div<{
   selected: boolean;
   node: State.Task.TaskNode;
+  isParent: boolean;
 }>`
   position: relative;
   width: 100%;
   height: 100%;
   border-radius: 2px;
+  border: 1px solid #ddd;
   background: ${props =>
     props.selected ? '#484' : props.node.children.length ? '#fdd' : '#448'};
   cursor: move;
-`;
-
-const Arrow = styled.div<{ dir: 'left' | 'right' }>`
-  position: absolute;
-  top: 50%;
-  ${props => (props.dir === 'left' ? 'right: 100%' : 'left: 100%')};
-  transform: translateY(-50%);
-  width: 7px;
-  height: 7px;
-  border-radius: 25%;
-  background: #f88;
-  z-index: 2;
 `;
 
 const TaskLabel = styled.div<{ rowHeight: number }>`
@@ -221,7 +208,7 @@ const Handle = styled.div<{
   position: absolute;
   top: 0;
   left: ${props => props.left};
-  width: 12px;
+  width: 4px;
   height: 100%;
   transform: translateX(${props => props.x});
   cursor: ${props => props.cursor};

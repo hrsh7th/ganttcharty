@@ -40,6 +40,7 @@
     "singleQuote": true
   },
   "devDependencies": {
+    "@types/classnames": "^2.2.7",
     "@types/date-fns": "^2.6.0",
     "@types/jest": "^23.3.7",
     "@types/lodash": "^4.14.117",
@@ -66,6 +67,7 @@
     "webpack-merge": "^4.1.4"
   },
   "dependencies": {
+    "classnames": "^2.2.6",
     "closest-element": "0.0.3",
     "date-fns": "^1.29.0",
     "hotkeys-js": "^3.3.8",

@@ -6,6 +6,7 @@ import { HeaderArea } from './header-area/HeaderArea';
 import { ChartArea } from './chart-area/ChartArea';
 import { Export } from './export/Export';
 import * as Action from '../../action';
+import { Diff } from '../ui-kit/movable';
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -29,8 +30,8 @@ export class GanttChart extends React.PureComponent {
           listeners={Action.Hotkey.handlers}
         >
           <Self className="GanttChart">
-            <HeaderArea ref={this.header} onWheel={this.onHeaderAreaWheel} />
-            <ChartArea ref={this.chart} onWheel={this.onChartAreaWheel} />
+            <HeaderArea ref={this.header} onMoving={this.onHeaderAreaMoving} />
+            <ChartArea ref={this.chart} onMoving={this.onChartAreaMoving} />
             <Export />
           </Self>
         </Hotkeys>
@@ -43,18 +44,16 @@ export class GanttChart extends React.PureComponent {
     Action.UI.updateViewport({ width, height });
   };
 
-  private onHeaderAreaWheel = (e: React.WheelEvent<HTMLDivElement>) => {
-    e.preventDefault();
+  private onHeaderAreaMoving = (_: MouseEvent, diff: Diff) => {
     if (this.header.current) {
-      this.header.current.scrollLeft += e.deltaX;
+      this.header.current.scrollLeft += diff.x;
     }
-    this.syncY(this.header, this.chart, e.deltaY);
+    this.syncY(this.header, this.chart, diff.y);
   };
 
-  private onChartAreaWheel = (e: React.WheelEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    Action.UI.updateCurrentTime(e.deltaX);
-    this.syncY(this.chart, this.header, e.deltaY);
+  private onChartAreaMoving = (_: MouseEvent, diff: Diff) => {
+    Action.UI.updateCurrentTime(diff.x);
+    this.syncY(this.chart, this.header, diff.y);
   };
 
   private syncY = (

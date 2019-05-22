@@ -11,7 +11,7 @@ export default class Body extends React.PureComponent<Props> {
     style: {}
   };
 
-  private previousStyles: any = {};
+  private previousStyles: { prop: string; value: string }[] = [];
 
   public componentDidMount() {
     this.toggleClassName(true);
@@ -54,7 +54,12 @@ export default class Body extends React.PureComponent<Props> {
     });
 
     if (apply) {
-      this.previousStyles = { ...document.body.style };
+      this.previousStyles = styles.map(({ prop }) => {
+        return {
+          prop: prop,
+          value: document.body.style[prop as any]
+        };
+      });
       styles.forEach(({ prop, value }) => {
         document.body.style[prop] = value;
       });
@@ -62,9 +67,9 @@ export default class Body extends React.PureComponent<Props> {
       styles.forEach(({ prop }) => {
         document.body.style[prop] = (null as any) as string;
       });
-      Object.keys(this.previousStyles || {}).map(key => {
+      this.previousStyles.forEach(({ prop, value }) => {
         // @ts-ignore
-        document.body.style[key] = this.previousStyles[key];
+        document.body.style[prop] = value;
       });
     }
   }

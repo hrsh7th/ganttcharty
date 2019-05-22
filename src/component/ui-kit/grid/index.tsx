@@ -1,4 +1,5 @@
 import React from 'react';
+import { Movable, MoveEventHandler, Diff } from '../movable';
 
 export type Column<Row extends object> = {
   key: keyof Row;
@@ -22,7 +23,7 @@ export type Props<Row extends object> = {
     BodyCell: React.ComponentType<unknown & { column: Column<Row>; row: Row }>;
   };
   forwardedRef: React.RefObject<HTMLDivElement>;
-  onWheel: React.WheelEventHandler;
+  onMoving: MoveEventHandler;
 };
 
 const ScrollableStyle = {
@@ -68,13 +69,11 @@ export class Grid<Row extends object> extends React.PureComponent<Props<Row>> {
           </div>
         </HeaderBox>
         <BodyBox>
-          <div
-            style={ScrollableStyle}
-            ref={this.props.forwardedRef}
-            onWheel={this.onWheel}
-          >
-            {this.rows()}
-          </div>
+          <Movable onMoving={this.onMoving}>
+            <div style={ScrollableStyle} ref={this.props.forwardedRef}>
+              {this.rows()}
+            </div>
+          </Movable>
         </BodyBox>
       </Box>
     );
@@ -106,10 +105,10 @@ export class Grid<Row extends object> extends React.PureComponent<Props<Row>> {
     ));
   }
 
-  private onWheel = (e: React.WheelEvent) => {
+  private onMoving = (e: MouseEvent, diff: Diff) => {
     if (this.header.current) {
-      this.header.current.scrollLeft += e.deltaX;
+      this.header.current.scrollLeft += diff.x;
     }
-    this.props.onWheel(e);
+    this.props.onMoving(e, diff);
   };
 }

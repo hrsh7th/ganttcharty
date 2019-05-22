@@ -16,10 +16,10 @@ const Consumer = State.select(state => ({
 }));
 
 export type Props = {
-  onWheel: React.WheelEventHandler;
+  onMoving: (e: MouseEvent, diff: { x: number; y: number }) => void;
 };
 
-export const HeaderArea = React.forwardRef(({ onWheel }: Props, ref: any) => (
+export const HeaderArea = React.forwardRef(({ onMoving }: Props, ref: any) => (
   <Consumer>
     {state => (
       <Self headerWidth={state.headerWidth}>
@@ -65,7 +65,7 @@ export const HeaderArea = React.forwardRef(({ onWheel }: Props, ref: any) => (
             )
           }}
           forwardedRef={ref}
-          onWheel={onWheel}
+          onMoving={onMoving}
         />
       </Self>
     )}
