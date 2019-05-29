@@ -39,9 +39,10 @@ export const ChartArea = React.forwardRef(
               ref={ref}
               onScroll={onScroll}
             >
-              <TaskListContentArea {...state}>
+              <TaskListContentArea>
                 <TaskListBackground
-                  {...state}
+                  columnWidth={state.columnWidth}
+                  rowHeight={state.rowHeight}
                   style={{
                     transform: `translateX(${-State.UI.restWidth(
                       new Date(
@@ -57,7 +58,6 @@ export const ChartArea = React.forwardRef(
                   }}
                 />
                 <TaskListSeekArea
-                  {...state}
                   style={{
                     transform: `translateX(${-State.UI.x(
                       state.currentTime,
@@ -68,7 +68,7 @@ export const ChartArea = React.forwardRef(
                   }}
                 >
                   <Now
-                    {...state}
+                    columnWidth={state.columnWidth}
                     style={{
                       transform: `translateX(${-State.UI.x(
                         state.baseTime,

@@ -1,5 +1,13 @@
 import startOfDay from 'date-fns/start_of_day';
 
+export type MilestoneId = string;
+export type Milestone = {
+  id: MilestoneId;
+  name: string;
+  description: string;
+  at: Date;
+};
+
 /**
  * task types.
  */
@@ -11,6 +19,7 @@ export type Task = {
   name: string;
   description: string;
   parentId?: TaskId;
+  milestones: Milestone[];
   collapsed?: boolean;
 };
 
@@ -32,7 +41,7 @@ const cache: any = {};
 function invalidate(task: Task, allTasks: Task[], force: boolean) {
   if (cache[task.id] && (cache[task.id].task !== task || force)) {
     delete cache[task.id];
-    if (task.parentId) {
+    if (typeof task.parentId !== 'undefined') {
       invalidate(get(allTasks, task.parentId)!, allTasks, true);
     }
   }
@@ -104,12 +113,12 @@ export const getChildren = (
 /**
  * startedAt.
  */
-export const startedAt = (tasks: Task[], taskId: TaskId) => {
+export const startedAt = (tasks: Task[], taskId: TaskId): Date => {
   const children = getChildren(tasks, taskId, false).sort((a, b) => {
     return startedAt(tasks, a.id).getTime() - startedAt(tasks, b.id).getTime();
   });
   if (children.length) {
-    return children[0].startedAt;
+    return startedAt(tasks, children[0].id);
   }
 
   return get(tasks, taskId)!.startedAt;
@@ -118,17 +127,20 @@ export const startedAt = (tasks: Task[], taskId: TaskId) => {
 /**
  * finishedAt.
  */
-export const finishedAt = (tasks: Task[], taskId: TaskId) => {
+export const finishedAt = (tasks: Task[], taskId: TaskId): Date => {
   const children = getChildren(tasks, taskId, false).sort((a, b) => {
     return (
       finishedAt(tasks, b.id).getTime() - finishedAt(tasks, a.id).getTime()
     );
   });
   if (children.length) {
-    return children[0].finishedAt;
+    return finishedAt(tasks, children[0].id);
   }
 
-  return get(tasks, taskId)!.finishedAt;
+  const task = get(tasks, taskId)!;
+  return task.startedAt.getTime() === task.finishedAt.getTime()
+    ? new Date(task.startedAt.getTime() + 24 * 60 * 60 * 1000)
+    : task.finishedAt;
 };
 
 /**
@@ -217,6 +229,7 @@ export const defaults = (tasks: any[]) => {
     .map(task => {
       task.startedAt = startOfDay(task.startedAt);
       task.finishedAt = startOfDay(task.finishedAt);
+      task.milestones = [].concat(task.milestones || []);
       return task;
     })
     .sort(

@@ -34,6 +34,8 @@ export class Hotkeys<
     Object.keys(this.props.keymap).forEach(name => {
       this.props.keymap[name].forEach(key => {
         hotkeys(key, this.id, (ke: KeyboardEvent, he: HotkeysEvent) => {
+          ke.preventDefault();
+          ke.stopPropagation();
           this.props.listeners[name](ke, he);
         });
       });

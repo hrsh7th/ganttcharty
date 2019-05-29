@@ -43,11 +43,13 @@ export class GanttChart extends React.PureComponent {
             >
               <Self className="GanttChart">
                 <HeaderArea
+                  key="1"
                   ref={this.header}
                   onMoving={this.onHeaderAreaMoving}
                   onWheel={this.onHeaderAreaWheel}
                 />
                 <ChartArea
+                  key="2"
                   ref={this.chart}
                   onMoving={this.onChartAreaMoving}
                   onScroll={this.onChartAreaScroll}
@@ -104,4 +106,5 @@ const Self = styled.div`
   display: flex;
   font-size: 8px;
   background: #fff;
+  user-select: none;
 `;

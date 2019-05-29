@@ -30,7 +30,8 @@ export class Task extends React.PureComponent<Props, State> {
 
     return (
       <Self
-        {...this.props}
+        rowHeight={this.props.rowHeight}
+        barHeight={this.props.barHeight}
         onClick={this.onClick}
         style={{
           transform: `translateX(${State.UI.x(
@@ -49,13 +50,21 @@ export class Task extends React.PureComponent<Props, State> {
       >
         {/* HandlePrev */}
         {!isParent ? (
-          <Movable onMoveStart={this.onMoveStart} onMoving={this.onMovingPrev}>
+          <Movable
+            onMoveStart={this.onMoveStart}
+            onMoving={this.onMovingPrev}
+            onMoveEnd={this.onMoveEnd}
+          >
             <HandlePrev />
           </Movable>
         ) : null}
 
         {/* TaskLine */}
-        <Movable onMoveStart={this.onMoveStart} onMoving={this.onMovingSelf}>
+        <Movable
+          onMoveStart={this.onMoveStart}
+          onMoving={this.onMovingSelf}
+          onMoveEnd={this.onMoveEnd}
+        >
           <TaskLine
             selected={this.props.selected}
             childrenLength={this.props.node.children.length}
@@ -64,7 +73,11 @@ export class Task extends React.PureComponent<Props, State> {
 
         {/* HandleNext */}
         {!isParent ? (
-          <Movable onMoveStart={this.onMoveStart} onMoving={this.onMovingNext}>
+          <Movable
+            onMoveStart={this.onMoveStart}
+            onMoving={this.onMovingNext}
+            onMoveEnd={this.onMoveEnd}
+          >
             <HandleNext />
           </Movable>
         ) : null}
@@ -84,6 +97,13 @@ export class Task extends React.PureComponent<Props, State> {
     this.setState(() => ({
       startedAt: this.props.node.startedAt,
       finishedAt: this.props.node.finishedAt
+    }));
+  };
+
+  private onMoveEnd = () => {
+    this.setState(() => ({
+      startedAt: undefined,
+      finishedAt: undefined
     }));
   };
 
@@ -145,9 +165,17 @@ const TaskLine = styled.div<{
   position: relative;
   width: 100%;
   height: 100%;
-  border-radius: 2px;
-  border: 1px solid ${props => (props.selected ? '#f88' : '#ddd')};
-  background: ${props => (props.childrenLength ? '#fdd' : '#448')};
+  ${props =>
+    props.childrenLength
+      ? `
+    border-bottom: 2px solid ${props.selected ? '#f88' : '#ddd'};
+  `
+      : `
+    border-radius: 2px;
+    border: 1px solid ${props.selected ? '#f88' : '#ddd'};
+    background: #448;
+  `}
+  user-select: none;
   cursor: move;
 `;
 

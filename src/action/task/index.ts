@@ -174,6 +174,7 @@ export const updateStartedAt = (taskId: State.Task.TaskId, date: Date) => {
     const diff =
       date.getTime() -
       State.Task.startedAt(state.tasks, children[0].id).getTime();
+
     children.forEach(task => {
       updateStartedAt(
         task.id,
@@ -209,6 +210,7 @@ export const updateFinishedAt = (taskId: State.Task.TaskId, date: Date) => {
     const diff =
       date.getTime() -
       State.Task.finishedAt(state.tasks, children[0].id).getTime();
+
     children.forEach(task => {
       task.startedAt = new Date(
         State.Task.startedAt(state.tasks, task.id).getTime() + diff

@@ -23,6 +23,7 @@ module.exports = {
       }
     ],
     ['@babel/plugin-transform-react-constant-elements'],
-    ['@babel/plugin-transform-react-inline-elements']
+    ['@babel/plugin-transform-react-inline-elements'],
+    ['babel-plugin-styled-components']
   ]
 };

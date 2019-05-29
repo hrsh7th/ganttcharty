@@ -9,7 +9,10 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        include: path.resolve(__dirname, './src'),
+        include: [
+          path.resolve(__dirname, './src'),
+          path.resolve(__dirname, './debug')
+        ],
         use: [
           {
             loader: 'babel-loader',

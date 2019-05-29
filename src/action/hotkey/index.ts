@@ -20,6 +20,10 @@ export const keyMap = {
 };
 
 export const handlers = {
+  '*': e => {
+    e.preventDefault();
+    e.stopPropagation();
+  },
   'selected up': e => {
     e.preventDefault();
     Action.UI.selectPrevTask();
@@ -64,40 +68,40 @@ export const handlers = {
     e.preventDefault();
     Action.Task.add(State.get()!.ui.selectedTaskId);
   },
-  'remove task': () => {
+  'remove task': _ => {
     const state = State.get()!;
     if (state.ui.selectedTaskId) {
       Action.Task.remove(state.ui.selectedTaskId);
     }
   },
-  'expand task': () => {
+  'expand task': _ => {
     const state = State.get()!;
     if (state.ui.selectedTaskId) {
       Action.Task.expand(state.ui.selectedTaskId);
     }
   },
-  'collapse task': () => {
+  'collapse task': _ => {
     const state = State.get()!;
     if (state.ui.selectedTaskId) {
       Action.Task.collapse(state.ui.selectedTaskId);
     }
   },
-  'sort tasks': () => {
+  'sort tasks': _ => {
     Action.Task.sort();
   },
-  'zoom up': () => {
+  'zoom up': _ => {
     Action.Option.zoomup();
   },
-  'zoom down': () => {
+  'zoom down': _ => {
     Action.Option.zoomdown();
   },
-  'toggle export': () => {
+  'toggle export': _ => {
     Action.UI.toggleExportView(!State.get()!.ui.exporting);
   },
-  'enter fullscreen': () => {
+  'enter fullscreen': _ => {
     Action.UI.enterFullscreen();
   },
-  'exit fullscreen': () => {
+  'exit fullscreen': _ => {
     Action.UI.exitFullscreen();
   }
 } as {
