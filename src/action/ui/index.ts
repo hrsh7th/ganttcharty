@@ -75,3 +75,15 @@ export const selectPrevTask = () => {
     }
   });
 };
+
+export const enterFullscreen = () => {
+  State.update(state => {
+    state.ui.fullscreen = true;
+  });
+};
+
+export const exitFullscreen = () => {
+  State.update(state => {
+    state.ui.fullscreen = false;
+  });
+};

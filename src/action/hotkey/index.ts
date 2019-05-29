@@ -14,7 +14,9 @@ export const keyMap = {
   'sort tasks': ['s'],
   'toggle export': ['shift+e'],
   'zoom up': ['ctrl+='],
-  'zoom down': ['ctrl+-']
+  'zoom down': ['ctrl+-'],
+  'enter fullscreen': ['f'],
+  'exit fullscreen': ['esc']
 };
 
 export const handlers = {
@@ -91,6 +93,12 @@ export const handlers = {
   },
   'toggle export': () => {
     Action.UI.toggleExportView(!State.get()!.ui.exporting);
+  },
+  'enter fullscreen': () => {
+    Action.UI.enterFullscreen();
+  },
+  'exit fullscreen': () => {
+    Action.UI.exitFullscreen();
   }
 } as {
   [key in keyof typeof keyMap]: (ke: KeyboardEvent, he: HotkeysEvent) => void

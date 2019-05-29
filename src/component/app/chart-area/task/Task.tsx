@@ -57,9 +57,8 @@ export class Task extends React.PureComponent<Props, State> {
         {/* TaskLine */}
         <Movable onMoveStart={this.onMoveStart} onMoving={this.onMovingSelf}>
           <TaskLine
-            title={this.props.node.name}
-            isParent={isParent}
-            {...this.props}
+            selected={this.props.selected}
+            childrenLength={this.props.node.children.length}
           />
         </Movable>
 
@@ -141,15 +140,14 @@ const Self = styled.div<{ rowHeight: number; barHeight: number }>`
 
 const TaskLine = styled.div<{
   selected: boolean;
-  node: State.Task.TaskNode;
-  isParent: boolean;
+  childrenLength: number;
 }>`
   position: relative;
   width: 100%;
   height: 100%;
   border-radius: 2px;
   border: 1px solid ${props => (props.selected ? '#f88' : '#ddd')};
-  background: ${props => (props.node.children.length ? '#fdd' : '#448')};
+  background: ${props => (props.childrenLength ? '#fdd' : '#448')};
   cursor: move;
 `;
 

@@ -9,9 +9,16 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        use: ['ts-loader']
+        include: path.resolve(__dirname, './src'),
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              cacheDirectory: true
+            }
+          }
+        ]
       }
     ]
   }
 };
-

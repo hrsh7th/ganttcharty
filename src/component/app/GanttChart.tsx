@@ -1,14 +1,20 @@
 import React from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import ResizeDetector from 'react-resize-detector';
+import Fullscreen from 'react-full-screen';
 import { Hotkeys } from '../ui-kit/hotkeys';
 import { HeaderArea } from './header-area/HeaderArea';
 import { ChartArea } from './chart-area/ChartArea';
 import { Export } from './export/Export';
 import * as Action from '../../action';
+import * as State from '../../state';
 import { Diff } from '../ui-kit/movable';
 
 const GlobalStyle = createGlobalStyle`
+  html, body {
+    height: 100%;
+  }
+
   * {
     box-sizing: border-box;
     padding: 0;
@@ -16,35 +22,43 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
+const Consumer = State.select(state => ({
+  fullscreen: state.ui.fullscreen
+}));
+
 export class GanttChart extends React.PureComponent {
   private header = React.createRef<HTMLDivElement>();
   private chart = React.createRef<HTMLDivElement>();
 
   public render() {
     return (
-      <>
-        <ResizeDetector handleWidth handleHeight onResize={this.onResize} />
-        <Hotkeys
-          scope="root"
-          keymap={Action.Hotkey.keyMap}
-          listeners={Action.Hotkey.handlers}
-        >
-          <Self className="GanttChart">
-            <HeaderArea
-              ref={this.header}
-              onMoving={this.onHeaderAreaMoving}
-              onWheel={this.onHeaderAreaWheel}
-            />
-            <ChartArea
-              ref={this.chart}
-              onMoving={this.onChartAreaMoving}
-              onScroll={this.onChartAreaScroll}
-            />
-            <Export />
-          </Self>
-        </Hotkeys>
-        <GlobalStyle />
-      </>
+      <Consumer>
+        {state => (
+          <Fullscreen enabled={state.fullscreen}>
+            <ResizeDetector handleWidth handleHeight onResize={this.onResize} />
+            <Hotkeys
+              scope="root"
+              keymap={Action.Hotkey.keyMap}
+              listeners={Action.Hotkey.handlers}
+            >
+              <Self className="GanttChart">
+                <HeaderArea
+                  ref={this.header}
+                  onMoving={this.onHeaderAreaMoving}
+                  onWheel={this.onHeaderAreaWheel}
+                />
+                <ChartArea
+                  ref={this.chart}
+                  onMoving={this.onChartAreaMoving}
+                  onScroll={this.onChartAreaScroll}
+                />
+                <Export />
+              </Self>
+            </Hotkeys>
+            <GlobalStyle />
+          </Fullscreen>
+        )}
+      </Consumer>
     );
   }
 
@@ -89,4 +103,5 @@ const Self = styled.div`
   height: 100%;
   display: flex;
   font-size: 8px;
+  background: #fff;
 `;

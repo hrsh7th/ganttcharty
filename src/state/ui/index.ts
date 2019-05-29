@@ -9,6 +9,7 @@ export type UI = {
   currentTime: Date;
   selectedTaskId?: State.Task.TaskId;
   exporting: boolean;
+  fullscreen: boolean;
 };
 
 /**
@@ -113,5 +114,6 @@ export const defaults = (
   ui.viewportHeight = element.offsetHeight;
   ui.currentTime = option.baseTime;
   ui.exporting = false;
+  ui.fullscreen = false;
   return ui;
 };

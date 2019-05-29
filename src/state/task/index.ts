@@ -27,35 +27,55 @@ export type TaskNode = Task & {
 /**
  * create tasks.
  */
+const cache: any = {};
+
+function invalidate(task: Task, allTasks: Task[], force: boolean) {
+  if (cache[task.id] && (cache[task.id].task !== task || force)) {
+    delete cache[task.id];
+    if (task.parentId) {
+      invalidate(get(allTasks, task.parentId)!, allTasks, true);
+    }
+  }
+}
+
 export const tasks = (allTasks: Task[]) => {
+  allTasks.forEach(task => {
+    invalidate(task, allTasks, false);
+  });
+
   return (function traverse(
     tasks: Task[],
     parentId?: TaskId,
     depth: number = 0
   ): TaskNode[] {
     const parent = get(tasks, parentId);
-    return allTasks.filter(task => task.parentId === parentId).reduce(
-      (nodes, task) => {
-        const children = !task.collapsed
-          ? traverse(allTasks, task.id, depth + 1)
-          : [];
+    return allTasks
+      .filter(task => task.parentId === parentId)
+      .reduce(
+        (nodes, task) => {
+          const children = !task.collapsed
+            ? traverse(allTasks, task.id, depth + 1)
+            : [];
 
-        return nodes
-          .concat([
-            {
-              ...task,
-              task,
-              parent,
-              startedAt: startedAt(allTasks, task.id),
-              finishedAt: finishedAt(allTasks, task.id),
-              children,
-              depth
-            }
-          ])
-          .concat(children);
-      },
-      [] as TaskNode[]
-    );
+          if (!cache[task.id]) {
+            cache[task.id] = {
+              node: {
+                ...task,
+                task,
+                parent,
+                startedAt: startedAt(allTasks, task.id),
+                finishedAt: finishedAt(allTasks, task.id),
+                children,
+                depth
+              },
+              task: task
+            };
+          }
+
+          return nodes.concat([cache[task.id].node]).concat(children);
+        },
+        [] as TaskNode[]
+      );
   })(allTasks, undefined);
 };
 
