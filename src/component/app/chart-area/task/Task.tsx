@@ -169,6 +169,7 @@ const TaskLine = styled.div<{
     props.childrenLength
       ? `
     border-bottom: 2px solid ${props.selected ? '#f88' : '#ddd'};
+    background: rgba(0, 0, 0, 0.025);
   `
       : `
     border-radius: 2px;

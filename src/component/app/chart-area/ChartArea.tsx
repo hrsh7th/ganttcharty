@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import startOfDay from 'date-fns/start_of_day';
-import startOfWeek from 'date-fns/start_of_week';
+import { startOfDay } from 'date-fns';
+import { startOfWeek } from 'date-fns';
 import * as State from '../../../state';
 import { TaskList } from './task/TaskList';
 import { Axis } from './axis/Axis';
@@ -21,12 +21,13 @@ const Consumer = State.select(state => ({
 }));
 
 export type Props = {
+  onWheel: (e: WheelEvent) => void;
   onMoving: MoveEventHandler;
   onScroll: (e: React.UIEvent<HTMLDivElement>) => void;
 };
 
 export const ChartArea = React.forwardRef(
-  ({ onMoving, onScroll }: Props, ref: any) => (
+  ({ onWheel, onMoving, onScroll }: Props, ref: any) => (
     <Consumer>
       {state => (
         <Self width={state.viewportWidth - state.headerWidth}>
@@ -38,6 +39,7 @@ export const ChartArea = React.forwardRef(
               height={state.viewportHeight - state.axisHeight}
               ref={ref}
               onScroll={onScroll}
+              onWheel={onWheel}
             >
               <TaskListContentArea>
                 <TaskListBackground

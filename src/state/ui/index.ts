@@ -1,6 +1,6 @@
-import startOfWeek from 'date-fns/start_of_week';
-import endOfWeek from 'date-fns/end_of_week';
-import eachDay from 'date-fns/each_day';
+import { startOfWeek } from 'date-fns';
+import { endOfWeek } from 'date-fns';
+import { eachDayOfInterval } from 'date-fns';
 import * as State from '../';
 
 export type UI = {
@@ -86,7 +86,7 @@ export const dayAxis = (
     startTime.getTime() + viewportTime + State.Option.WEEK,
     { weekStartsOn: 1 }
   );
-  return eachDay(startTime, finishTime).reduce(
+  return eachDayOfInterval({ start: startTime, end: finishTime }).reduce(
     (weeks, day) => {
       if (day.getDay() === 1) {
         weeks.push({

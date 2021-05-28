@@ -1,4 +1,4 @@
-import startOfDay from 'date-fns/start_of_day';
+import { startOfDay } from 'date-fns';
 import * as State from '../';
 import { Column } from '../../component/ui-kit/grid';
 

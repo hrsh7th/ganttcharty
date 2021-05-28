@@ -1,4 +1,4 @@
-import startOfDay from 'date-fns/start_of_day';
+import { parseISO, startOfDay } from 'date-fns';
 
 export type MilestoneId = string;
 export type Milestone = {
@@ -227,8 +227,8 @@ export const getNext = (tasks: Task[], taskId: TaskId): Task | null => {
 export const defaults = (tasks: any[]) => {
   return tasks
     .map(task => {
-      task.startedAt = startOfDay(task.startedAt);
-      task.finishedAt = startOfDay(task.finishedAt);
+      task.startedAt = startOfDay(parseISO(task.startedAt));
+      task.finishedAt = startOfDay(parseISO(task.finishedAt));
       task.milestones = [].concat(task.milestones || []);
       return task;
     })

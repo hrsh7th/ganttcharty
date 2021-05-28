@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import format from 'date-fns/format';
-import startOfWeek from 'date-fns/start_of_week';
+import { format } from 'date-fns';
+import { startOfWeek } from 'date-fns';
 import * as State from '../../../../../state';
 
 const Consumer = State.select(state => ({
@@ -24,12 +24,12 @@ export const DayAxis = () => (
         state.viewportWidth
       ).map(week => (
         <Week key={week.day.getTime()} columnWidth={state.columnWidth}>
-          <WeekLabel>{format(week.day, 'YYYY/MM/DD')}</WeekLabel>
+          <WeekLabel>{format(week.day, 'yyyy/MM/dd')}</WeekLabel>
           <Days>
             {week.days.map(day => (
               <Day
                 key={day.getTime()}
-                title={format(day, 'YYYY/MM/DD')}
+                title={format(day, 'yyyy/MM/dd')}
                 columnWidth={state.columnWidth}
               >
                 {state.dayLabel[day.getDay()]}

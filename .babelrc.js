@@ -6,6 +6,7 @@ module.exports = {
         loose: true,
         modules: false,
         useBuiltIns: 'usage',
+        corejs: 3,
         targets: {
           browsers: ['ie >= 11', 'last 2 versions']
         }

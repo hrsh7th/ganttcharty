@@ -11,3 +11,9 @@ export const zoomdown = () => {
     state.option.columnWidth -= 3;
   });
 };
+
+export const changeHeaderWidth = (width: number) => {
+  State.update(state => {
+    state.option.headerWidth = width;
+  });
+};

@@ -41,7 +41,7 @@ export default class BodyCell extends React.PureComponent<Props> {
     return (
       <InlineEdit
         value={this.props.row.startedAt}
-        format="YYYY/MM/DD"
+        format="yyyy/MM/dd"
         onChange={this.onInlineChange}
       />
     );
@@ -51,7 +51,7 @@ export default class BodyCell extends React.PureComponent<Props> {
     return (
       <InlineEdit
         value={this.props.row.finishedAt}
-        format="YYYY/MM/DD"
+        format="yyyy/MM/dd"
         onChange={this.onInlineChange}
       />
     );
@@ -127,6 +127,8 @@ const Self = styled.div<{
 }>`
   position: relative;
   padding: 0 8px;
+  display: flex;
+  align-items: center;
   min-width: ${props => props.width}px;
   height: ${props => props.height}px;
   line-height: ${props => props.height}px;
@@ -144,10 +146,6 @@ const Self = styled.div<{
 `;
 
 const DragHandle = styled.div`
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
-  display: inline-block;
   vertical-align: top;
   width: 12px;
   border-top: 1px solid #ccc;
@@ -167,7 +165,6 @@ const Expander = styled.div<{
   rowHeight: number;
   depth: number;
 }>`
-  display: inline-block;
   vertical-align: bottom;
   margin-left: ${props => props.indentWidth * props.depth}px;
   width: ${props => props.rowHeight}px;
@@ -187,6 +184,6 @@ const Spacer = styled.div<{
   depth: number;
 }>`
   width: ${props => props.indentWidth * props.depth + props.rowHeight}px;
-  display: inline-block;
+  height: 100%;
   vertical-align: top;
 `;

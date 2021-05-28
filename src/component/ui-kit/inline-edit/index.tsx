@@ -1,6 +1,6 @@
 import React from 'react';
-import format from 'date-fns/format';
-import parse from 'date-fns/parse';
+import { format } from 'date-fns';
+import { parse } from 'date-fns';
 import { Hotkeys } from '../hotkeys';
 import { Outside } from '../outside';
 
@@ -84,7 +84,7 @@ export class InlineEdit<
           ref={this.editing}
           style={InlineStyle}
           type="date"
-          value={format(this.state.value, 'YYYY-MM-DD')}
+          value={format(this.state.value, 'yyyy-MM-dd')}
           onChange={this.onChange}
         />
       );

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import startOfWeek from 'date-fns/start_of_week';
+import { startOfWeek } from 'date-fns';
 import * as State from '../../../../state';
 import { DayAxis } from './day/DayAxis';
 

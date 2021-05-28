@@ -15,7 +15,7 @@ export type Props = {
   onMoveStart?: (e: MouseEvent) => void;
   onMoving?: MoveEventHandler;
   onMoveEnd?: MoveEventHandler;
-  children: React.ReactNode;
+  children: React.ReactElement;
 };
 
 export class Movable extends React.PureComponent<Props> {
@@ -30,12 +30,11 @@ export class Movable extends React.PureComponent<Props> {
   };
 
   public render() {
-    const kid = React.Children.only(this.props.children);
-    return React.cloneElement(kid, {
-      ...kid.props,
+    return React.cloneElement(this.props.children, {
+      ...this.props.children.props,
       'data-movable': true,
       onMouseDown: (e: React.MouseEvent<HTMLElement>) => {
-        kid.props.onMouseDown && kid.props.onMouseDown(e);
+        this.props.children.props.onMouseDown && this.props.children.props.onMouseDown(e);
         this.onMouseDown(e);
       }
     });

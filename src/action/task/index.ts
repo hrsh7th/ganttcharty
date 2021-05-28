@@ -117,10 +117,10 @@ export const remove = (id: State.Task.TaskId) => {
     state.tasks.splice(state.tasks.indexOf(target), 1);
 
     // move to target.
-    if (next) {
-      state.ui.selectedTaskId = next.id;
-    } else if (prev) {
+    if (prev) {
       state.ui.selectedTaskId = prev.id;
+    } else if (next) {
+      state.ui.selectedTaskId = next.id;
     }
 
     // clear selecting if remove last task.
