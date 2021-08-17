@@ -4,18 +4,18 @@ import * as Action from '../../../../action';
 import * as State from '../../../../state';
 import { Droppable } from '../../dnd/task';
 
-export type Props = {
+export type BodyRowProps = {
   row: State.Task.TaskNode;
   rowHeight: number;
   children: React.ReactNode;
 };
 
-export type State = {
+export type BodyRowState = {
   droppable: boolean;
 };
 
-export default class BodyRow extends React.PureComponent<Props, State> {
-  public state: State = {
+export default class BodyRow extends React.PureComponent<BodyRowProps, BodyRowState> {
+  public state: BodyRowState = {
     droppable: false
   };
 

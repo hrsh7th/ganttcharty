@@ -7,89 +7,87 @@ import { TaskList } from './task/TaskList';
 import { Axis } from './axis/Axis';
 import { Movable, MoveEventHandler } from '../../ui-kit/movable';
 
-const Consumer = State.select(state => ({
-  viewportWidth: state.ui.viewportWidth,
-  viewportHeight: state.ui.viewportHeight,
-  headerWidth: state.option.headerWidth,
-  axisHeight: state.option.axisHeight,
-  rowHeight: state.option.rowHeight,
-  columnWidth: state.option.columnWidth,
-  scale: state.option.scale,
-  baseTime: state.option.baseTime,
-  currentTime: state.ui.currentTime,
-  nowDay: startOfDay(new Date())
-}));
-
 export type Props = {
   onWheel: (e: WheelEvent) => void;
   onMoving: MoveEventHandler;
   onScroll: (e: React.UIEvent<HTMLDivElement>) => void;
 };
 
-export const ChartArea = React.forwardRef(
-  ({ onWheel, onMoving, onScroll }: Props, ref: any) => (
-    <Consumer>
-      {state => (
-        <Self width={state.viewportWidth - state.headerWidth}>
-          <HeaderBox height={state.axisHeight}>
-            <Axis />
-          </HeaderBox>
-          <Movable onMoving={onMoving}>
-            <Box
-              height={state.viewportHeight - state.axisHeight}
-              ref={ref}
-              onScroll={onScroll}
-              onWheel={onWheel}
-            >
-              <TaskListContentArea>
-                <TaskListBackground
+const C = React.forwardRef(
+  ({ onWheel, onMoving, onScroll }: Props, ref: any) => {
+    const state = State.use(state => ({
+      viewportWidth: state.ui.viewportWidth,
+      viewportHeight: state.ui.viewportHeight,
+      headerWidth: state.option.headerWidth,
+      axisHeight: state.option.axisHeight,
+      rowHeight: state.option.rowHeight,
+      columnWidth: state.option.columnWidth,
+      scale: state.option.scale,
+      baseTime: state.option.baseTime,
+      currentTime: state.ui.currentTime,
+      nowDay: startOfDay(new Date())
+    }));
+    return (
+      <Self width={state.viewportWidth - state.headerWidth}>
+        <HeaderBox height={state.axisHeight}>
+          <Axis />
+        </HeaderBox>
+        <Movable onMoving={onMoving}>
+          <Box
+            height={state.viewportHeight - state.axisHeight}
+            ref={ref}
+            onScroll={onScroll}
+            onWheel={onWheel}
+          >
+            <TaskListContentArea>
+              <TaskListBackground
+                columnWidth={state.columnWidth}
+                rowHeight={state.rowHeight}
+                style={{
+                  transform: `translateX(${-State.UI.restWidth(
+                    new Date(
+                      state.currentTime.getTime() -
+                      startOfWeek(state.baseTime.getTime(), {
+                        weekStartsOn: 1
+                      }).getTime()
+                    ),
+                    'week',
+                    state.columnWidth * 7,
+                    2
+                  )}px)`
+                }}
+              />
+              <TaskListSeekArea
+                style={{
+                  transform: `translateX(${-State.UI.x(
+                    state.currentTime,
+                    state.baseTime,
+                    state.scale,
+                    state.columnWidth
+                  )}px)`
+                }}
+              >
+                <Now
                   columnWidth={state.columnWidth}
-                  rowHeight={state.rowHeight}
-                  style={{
-                    transform: `translateX(${-State.UI.restWidth(
-                      new Date(
-                        state.currentTime.getTime() -
-                          startOfWeek(state.baseTime.getTime(), {
-                            weekStartsOn: 1
-                          }).getTime()
-                      ),
-                      'week',
-                      state.columnWidth * 7,
-                      2
-                    )}px)`
-                  }}
-                />
-                <TaskListSeekArea
                   style={{
                     transform: `translateX(${-State.UI.x(
-                      state.currentTime,
                       state.baseTime,
+                      state.nowDay,
                       state.scale,
                       state.columnWidth
                     )}px)`
                   }}
-                >
-                  <Now
-                    columnWidth={state.columnWidth}
-                    style={{
-                      transform: `translateX(${-State.UI.x(
-                        state.baseTime,
-                        state.nowDay,
-                        state.scale,
-                        state.columnWidth
-                      )}px)`
-                    }}
-                  />
-                  <TaskList />
-                </TaskListSeekArea>
-              </TaskListContentArea>
-            </Box>
-          </Movable>
-        </Self>
-      )}
-    </Consumer>
-  )
+                />
+                <TaskList />
+              </TaskListSeekArea>
+            </TaskListContentArea>
+          </Box>
+        </Movable>
+      </Self>
+    );
+  }
 );
+export const ChartArea = React.memo(C as any);
 
 const Self = styled.div<{ width: number }>`
   width: ${props => props.width}px;

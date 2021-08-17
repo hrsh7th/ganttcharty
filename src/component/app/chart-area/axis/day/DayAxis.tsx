@@ -4,20 +4,19 @@ import { format } from 'date-fns';
 import { startOfWeek } from 'date-fns';
 import * as State from '../../../../../state';
 
-const Consumer = State.select(state => ({
-  scale: state.option.scale,
-  columnWidth: state.option.columnWidth,
-  dayLabel: state.option.dayLabel,
-  viewportWidth: state.ui.viewportWidth,
-  currentTimestamp: startOfWeek(state.ui.currentTime, {
-    weekStartsOn: 1
-  }).getTime()
-}));
-
-export const DayAxis = () => (
-  <Consumer>
-    {state =>
-      State.UI.dayAxis(
+export const DayAxis = () => {
+  const state = State.use(state => ({
+    scale: state.option.scale,
+    columnWidth: state.option.columnWidth,
+    dayLabel: state.option.dayLabel,
+    viewportWidth: state.ui.viewportWidth,
+    currentTimestamp: startOfWeek(state.ui.currentTime, {
+      weekStartsOn: 1
+    }).getTime()
+  }))
+  return (
+    <>
+      {State.UI.dayAxis(
         new Date(state.currentTimestamp),
         state.scale,
         state.columnWidth,
@@ -37,10 +36,10 @@ export const DayAxis = () => (
             ))}
           </Days>
         </Week>
-      ))
-    }
-  </Consumer>
-);
+      ))}
+    </>
+  );
+};
 
 const Week = styled.div<{ columnWidth: number }>`
   width: ${props => props.columnWidth * 7}px;

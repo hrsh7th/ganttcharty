@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import ResizeDetector from 'react-resize-detector';
 import { Hotkeys } from '../ui-kit/hotkeys';
@@ -22,82 +22,42 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const Consumer = State.select(state => ({
-  fullscreen: state.ui.fullscreen
-}));
+export const GanttChart = () => {
+  const headerRef = useRef<HTMLDivElement>(null);
+  const chartRef = useRef<HTMLDivElement>(null);
+  const fullscreen = State.use(s => s.ui.fullscreen);
 
-export class GanttChart extends React.PureComponent {
-  private header = React.createRef<HTMLDivElement>();
-  private chart = React.createRef<HTMLDivElement>();
-
-  public render() {
-    return (
-      <Consumer>
-        {state => (
-          <>
-            <ResizeDetector handleWidth handleHeight onResize={this.onResize} />
-            <Hotkeys
-              scope="root"
-              keymap={Action.Hotkey.keyMap}
-              listeners={Action.Hotkey.handlers}
-            >
-              <Fullscreen on={state.fullscreen}>
-                <Self className="GanttChart">
-                  <HeaderArea
-                    key="1"
-                    ref={this.header}
-                    onMoving={this.onHeaderAreaMoving}
-                    onWheel={this.onHeaderAreaWheel}
-                  />
-                  <ChartArea
-                    key="2"
-                    ref={this.chart}
-                    onWheel={this.onChartAreaWheel}
-                    onMoving={this.onChartAreaMoving}
-                    onScroll={this.onChartAreaScroll}
-                  />
-                  <Export />
-                </Self>
-              </Fullscreen>
-            </Hotkeys>
-            <GlobalStyle />
-          </>
-        )}
-      </Consumer>
-    );
-  }
-
-  private onResize = (width?: number, height?: number) => {
+  const onResize = useCallback((width?: number, height?: number) => {
     if (width && height) {
       Action.UI.updateViewport({ width, height });
     }
-  };
+  }, []);
 
-  private onHeaderAreaMoving = (_: MouseEvent, diff: Diff) => {
-    if (this.header.current) {
-      this.header.current.scrollLeft += -diff.currentX;
+  const onHeaderAreaMoving = useCallback((_: MouseEvent, diff: Diff) => {
+    if (headerRef.current) {
+      headerRef.current.scrollLeft += -diff.currentX;
     }
-    this.syncY(this.header, this.chart, -diff.currentY);
-  };
+    syncY(headerRef, chartRef, -diff.currentY);
+  }, []);
 
-  private onHeaderAreaWheel = (e: React.WheelEvent<HTMLDivElement>) => {
-    this.syncY(this.header, this.chart, e.deltaY);
-  };
+  const onHeaderAreaWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
+    syncY(headerRef, chartRef, e.deltaY);
+  }, []);
 
-  private onChartAreaWheel = (e: WheelEvent) => {
+  const onChartAreaWheel = useCallback((e: WheelEvent) => {
     Action.UI.updateCurrentTime(e.deltaX);
-  };
+  }, []);
 
-  private onChartAreaMoving = (_: MouseEvent, diff: Diff) => {
+  const onChartAreaMoving = useCallback((_: MouseEvent, diff: Diff) => {
     Action.UI.updateCurrentTime(-diff.currentX);
-    this.syncY(this.chart, this.header, -diff.currentY);
-  };
+    syncY(chartRef, headerRef, -diff.currentY);
+  }, []);
 
-  private onChartAreaScroll = (_: React.UIEvent<HTMLDivElement>) => {
-    this.syncY(this.chart, this.header, 0);
-  };
+  const onChartAreaScroll = useCallback((_: React.UIEvent<HTMLDivElement>) => {
+    syncY(chartRef, headerRef, 0);
+  }, []);
 
-  private syncY = (
+  const syncY = useCallback((
     from: React.RefObject<HTMLDivElement>,
     to: React.RefObject<HTMLDivElement>,
     diffY: number
@@ -106,7 +66,38 @@ export class GanttChart extends React.PureComponent {
       from.current.scrollTop += diffY;
       to.current.scrollTop = from.current.scrollTop;
     }
-  };
+  }, []);
+
+  return (
+    <>
+      <ResizeDetector handleWidth handleHeight onResize={onResize} />
+      <Hotkeys
+        scope="root"
+        keymap={Action.Hotkey.keyMap}
+        listeners={Action.Hotkey.handlers}
+      >
+        <Fullscreen on={fullscreen}>
+          <Self className="GanttChart">
+            <HeaderArea
+              key="1"
+              ref={headerRef}
+              onMoving={onHeaderAreaMoving}
+              onWheel={onHeaderAreaWheel}
+            />
+            <ChartArea
+              key="2"
+              ref={chartRef}
+              onWheel={onChartAreaWheel}
+              onMoving={onChartAreaMoving}
+              onScroll={onChartAreaScroll}
+            />
+            <Export />
+          </Self>
+        </Fullscreen>
+      </Hotkeys>
+      <GlobalStyle />
+    </>
+  );
 }
 
 const Self = styled.div`

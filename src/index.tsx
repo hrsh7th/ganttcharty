@@ -12,15 +12,8 @@ export { State };
 
 export function render(id: string, state: Input) {
   const element = document.getElementById(id)!;
-  ReactDOM.render(
-    <State.Provider state={defaults(element, state)}>
-      <GanttChart />
-    </State.Provider>,
-    element
-  );
-  return {
-    get: State.get
-  };
+  State.setup(defaults(element, state));
+  ReactDOM.render(<GanttChart />, element);
 }
 
 const defaults = (element: HTMLElement, input: Input): State.State => {
